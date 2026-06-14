@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Términos y Condiciones | Ventarys AI</title>
+    
+    <!-- Configuración de AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-9019277340139989">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
+    
+    <!-- SEO y Metadatos -->
+    <link rel="icon" href="logo.png">
+    <meta name="description" content="Términos y Condiciones de uso de Ventarys AI. Reglas claras para un entorno de Inteligencia Artificial abierto y seguro." />
+    
+    <!-- Material Web Components (Google Oficial) -->
+    <script type="module" src="https://esm.run/@material/web/all.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes e Iconos -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'blob': 'blob 10s infinite alternate',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '50%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '100%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            /* Design Tokens: Modo Claro */
+            --md-sys-color-primary: #000000;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-secondary-container: #e5e5e5;
+            --md-sys-color-on-secondary-container: #000000;
+            --md-sys-color-surface: #ffffff;
+            --md-sys-color-on-surface: #111111;
+            --md-sys-color-on-surface-variant: #444444;
+            --md-sys-color-outline: #777777;
+            --md-sys-color-outline-variant: #cccccc;
+            --md-sys-color-surface-container-lowest: #ffffff;
+            --md-sys-color-surface-container-low: #f5f5f5;
+            --md-sys-color-surface-container: #eeeeee;
+            --md-sys-color-surface-container-high: #e0e0e0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Design Tokens: Modo Oscuro */
+                --md-sys-color-primary: #ffffff;
+                --md-sys-color-on-primary: #000000;
+                --md-sys-color-secondary-container: #333333;
+                --md-sys-color-on-secondary-container: #ffffff;
+                --md-sys-color-surface: #121212;
+                --md-sys-color-on-surface: #f0f0f0;
+                --md-sys-color-on-surface-variant: #bbbbbb;
+                --md-sys-color-outline: #888888;
+                --md-sys-color-outline-variant: #444444;
+                --md-sys-color-surface-container-lowest: #000000;
+                --md-sys-color-surface-container-low: #111111;
+                --md-sys-color-surface-container: #1a1a1a;
+                --md-sys-color-surface-container-high: #222222;
+            }
+        }
+
+        body { 
+            background-color: var(--md-sys-color-surface-container-lowest);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+        @media (prefers-color-scheme: dark) {
+            .glass-nav { background: rgba(0, 0, 0, 0.7); }
+        }
+
+        .m3-card {
+            background-color: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        .m3-card:hover {
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .logo-mono {
+            filter: brightness(0);
+            transition: filter 0.3s ease;
+        }
+        @media (prefers-color-scheme: dark) {
+            .logo-mono { filter: brightness(0) invert(1); }
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        md-icon {
+            font-family: 'Material Symbols Rounded', sans-serif;
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Estilos específicos para la tipografía legal */
+        .prose-legal h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--md-sys-color-on-surface);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        .prose-legal p, .prose-legal li {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            line-height: 1.75;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 1rem;
+        }
+        .prose-legal ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .prose-legal strong {
+            color: var(--md-sys-color-on-surface);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="font-body overflow-x-hidden transition-colors duration-300">
+
+    <!-- Fondo de Blobs Abstractos -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="fixed w-full z-50 glass-nav top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="ventarys.net" class="flex items-center gap-3 group">
+                <img src="https://file.garden/aKIWFnfXzhwEFeKS/VentarysAI/App-logo.png" alt="Ventarys Logo" class="w-9 h-9 object-contain logo-mono group-hover:scale-105 transition-transform duration-300">
+                <span class="text-xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)] font-sans">Ventarys</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8 px-6 py-2.5 rounded-full border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] backdrop-blur-md">
+                <a href="ventarys.net" class="text-sm font-semibold text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Volver al Inicio</a>
+                <a href="privacy.html" class="text-sm font-semibold text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Privacidad</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:block">
+                    <md-filled-button href="https://ventarys-chat.infinityfreeapp.com/">
+                        <md-icon slot="icon">rocket_launch</md-icon>
+                        Abrir App
+                    </md-filled-button>
+                </div>
+                <md-icon-button id="mobile-menu-btn" class="md:hidden">
+                    <md-icon>menu</md-icon>
+                </md-icon-button>
+            </div>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-[80px] left-0 w-full bg-[var(--md-sys-color-surface-container-lowest)] backdrop-blur-xl border-b border-[var(--md-sys-color-outline-variant)] shadow-xl transition-all">
+            <md-list class="bg-transparent">
+                <md-list-item href="ventarys.net">
+                    <div slot="headline">Volver al Inicio</div>
+                </md-list-item>
+                <md-list-item href="privacy.html">
+                    <div slot="headline">Privacidad</div>
+                </md-list-item>
+            </md-list>
+            <div class="p-4 border-t border-[var(--md-sys-color-outline-variant)]">
+                <md-filled-button href="https://ventarys-chat.infinityfreeapp.com/" class="w-full">Iniciar Aplicación</md-filled-button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- [HERO SECTION LEGAL] -->
+    <header class="relative pt-40 pb-16 lg:pt-48 lg:pb-24 overflow-hidden z-10 flex flex-col items-center justify-center">
+        <div class="max-w-4xl mx-auto px-6 text-center animate-fade-in-up">
+            
+            <!-- Etiqueta Monocromática -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface)] text-xs font-bold tracking-wide mb-8">
+                <md-icon style="font-size: 16px;">gavel</md-icon>
+                TÉRMINOS DE SERVICIO
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-[var(--md-sys-color-on-surface)] mb-6 leading-[1.1] font-sans">
+                Términos y Condiciones
+            </h1>
+            
+            <p class="text-[var(--md-sys-color-on-surface-variant)] max-w-2xl mx-auto text-lg md:text-xl leading-relaxed font-medium">
+                Reglas claras para un entorno abierto. Al utilizar Ventarys AI, te comprometes a hacer un uso ético, responsable y seguro de la tecnología.
+            </p>
+
+            <p class="text-[var(--md-sys-color-outline)] text-sm font-mono mt-8">
+                Última actualización: Marzo 2026
+            </p>
+        </div>
+    </header>
+
+    <!-- [CONTENIDO LEGAL] -->
+    <section class="py-12 relative z-10 mb-20">
+        <div class="max-w-4xl mx-auto px-6">
+            
+            <div class="m3-card p-8 md:p-14 reveal prose-legal bg-[var(--md-sys-color-surface)]">
+                
+                <p>Bienvenido a <strong>Ventarys AI</strong>. Estos Términos y Condiciones regulan el acceso y uso de nuestra plataforma web, aplicación móvil y los servicios de asistencia mediante inteligencia artificial que proveemos.</p>
+
+                <div class="my-10 p-6 rounded-2xl bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] flex items-start gap-4">
+                    <md-icon class="text-[var(--md-sys-color-primary)] mt-1">handshake</md-icon>
+                    <div>
+                        <strong class="text-lg block mb-1 text-[var(--md-sys-color-on-surface)]">Aceptación de los Términos</strong>
+                        <p class="mb-0 text-sm">Al acceder o utilizar Ventarys AI de cualquier forma, confirmas que has leído, comprendido y aceptado estar sujeto a estos Términos y Condiciones. Si no estás de acuerdo con alguna parte, no debes utilizar nuestro servicio.</p>
+                    </div>
+                </div>
+
+                <h2>1. Descripción del Servicio</h2>
+                <p>Ventarys AI funciona como un intermediario tecnológico seguro ("Middleman Ciego"). Proporcionamos una interfaz de usuario optimizada y un túnel seguro para interactuar con modelos de lenguaje de inteligencia artificial de código abierto (Open Source) alojados por terceros (como Pollinations.ai).</p>
+                <ul>
+                    <li>No somos creadores ni propietarios de los modelos de IA subyacentes.</li>
+                    <li>Ofrecemos el servicio tal cual ("As-is"), buscando la mayor disponibilidad posible, pero sin garantizar tiempos de respuesta ininterrumpidos.</li>
+                </ul>
+
+                <h2>2. Reglas de Uso Aceptable y Seguro</h2>
+                <p>Ventarys está diseñado para ser una herramienta educativa, creativa y de productividad. Te comprometes a utilizar la plataforma de manera ética. <strong>Queda estrictamente prohibido utilizar Ventarys AI para generar, promover o difundir:</strong></p>
+                <ul>
+                    <li>Contenido que promueva la violencia, el odio, la discriminación o el daño a uno mismo o a terceros.</li>
+                    <li>Contenido ilegal, engañoso, o que facilite la comisión de delitos.</li>
+                    <li>Material sugerente, inapropiado o perjudicial, incluyendo la solicitud de información sobre drogas, apuestas ilegales, o temas no aptos para un entorno seguro y familiar.</li>
+                    <li>Spam, campañas de desinformación masiva, o ataques cibernéticos (como generación de malware).</li>
+                </ul>
+                <p>Nos reservamos el derecho de bloquear el acceso a la plataforma (vía bloqueo de IP u otros medios a nivel de red) si detectamos un uso que infrinja estas reglas fundamentales.</p>
+
+                <h2>3. Exención de Responsabilidad ("Alucinaciones" de la IA)</h2>
+                <p>La inteligencia artificial generativa es una tecnología experimental. Los modelos utilizados por Ventarys AI pueden, en ocasiones, generar información que suena plausible pero que es incorrecta, inexacta o inventada (comúnmente llamado "alucinaciones").</p>
+                <ul>
+                    <li><strong>Verificación independiente:</strong> Eres el único responsable de verificar cualquier afirmación, fragmento de código, consejo médico, legal o financiero generado por la IA antes de utilizarlo.</li>
+                    <li><strong>Ausencia de garantías:</strong> Ventarys (y JNTX Studio) no asume ninguna responsabilidad por los daños directos, indirectos o consecuentes derivados del uso o la confianza depositada en la información generada por la plataforma.</li>
+                </ul>
+
+                <h2>4. Privacidad y Datos de Usuario</h2>
+                <p>Tu privacidad es nuestra prioridad técnica. Como se detalla en nuestra <a href="privacy.html" class="text-[var(--md-sys-color-primary)] underline decoration-2 underline-offset-4">Política de Privacidad</a>, no requerimos creación de cuentas y no almacenamos tu historial de chat en servidores remotos. Todo el procesamiento de retención de conversaciones se realiza localmente en tu dispositivo.</p>
+
+                <h2>5. Propiedad Intelectual</h2>
+                <p><strong>De la interfaz:</strong> El diseño, código de la interfaz de usuario, logotipo y la marca "Ventarys" son propiedad de JNTX Studio.</p>
+                <p><strong>Del contenido generado:</strong> Nosotros no reclamamos derechos de autor sobre el texto o código generado a través de tus interacciones con la IA. El uso comercial o público de las salidas de la IA depende de las licencias específicas de los modelos Open Source subyacentes utilizados para la inferencia.</p>
+
+                <h2>6. Modificaciones a los Términos</h2>
+                <p>Podemos modificar estos Términos y Condiciones en cualquier momento para reflejar cambios en nuestra plataforma, políticas de terceros o requisitos legales. El uso continuado de Ventarys AI después de cualquier modificación constituye tu aceptación de los nuevos términos.</p>
+
+                <h2>7. Contacto y Soporte</h2>
+                <p>Si tienes preguntas sobre estos Términos, puedes ponerte en contacto con los desarrolladores escribiendo a: <strong>ventarys@proton.me</strong></p>
+                
+                <div class="mt-12 pt-8 border-t border-[var(--md-sys-color-outline-variant)] text-center">
+                    <md-filled-button href="index.html" class="mt-4">
+                        <md-icon slot="icon">arrow_back</md-icon>
+                        Aceptar y Volver a Ventarys
+                    </md-filled-button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Moderno Monocromo -->
+    <footer class="bg-[var(--md-sys-color-surface-container-low)] pt-16 pb-12 relative z-10 overflow-hidden border-t border-[var(--md-sys-color-outline-variant)]">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+                <div class="max-w-xs">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain logo-mono">
+                        <span class="text-2xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">Ventarys AI</span>
+                    </div>
+                    <p class="text-[var(--md-sys-color-on-surface-variant)] text-sm leading-relaxed font-medium">
+                        Construyendo un entorno donde la inteligencia de vanguardia colabora respetando la autonomía humana.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-16 text-sm">
+                    <div class="flex flex-col gap-4">
+                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Plataforma</span>
+                        <a href="https://ventarys-chat.infinityfreeapp.com/" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Abrir Consola</a>
+                        <a href="index.html#features" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Especificaciones</a>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Comunidad</span>
+                        <a href="https://ventarys-ai.blogspot.com/2026/01/ventarys-ai.html" target="_blank" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Blog de Novedades</a>
+                        <a href="mailto:ventarys@proton.me" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Contacto Soporte</a>
+                    </div>
+                    <div class="flex flex-col gap-4 col-span-2 md:col-span-1">
+                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Legal</span>
+                        <a href="privacy.html" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Privacidad</a>
+                        <a href="terms.html" class="text-[var(--md-sys-color-primary)] font-semibold transition-colors">Términos</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-[var(--md-sys-color-outline-variant)] pt-8 mb-8">
+                <div class="flex items-start gap-3 p-4 bg-[var(--md-sys-color-surface-container)] rounded-xl border border-[var(--md-sys-color-outline-variant)]">
+                    <md-icon class="text-[var(--md-sys-color-on-surface)]">info</md-icon>
+                    <p class="text-[var(--md-sys-color-on-surface-variant)] text-xs font-medium leading-relaxed">
+                        <strong class="text-[var(--md-sys-color-on-surface)]">Aviso:</strong> La IA puede producir información inexacta o alucinaciones. Recomendamos verificar datos críticos de forma independiente. Ventarys facilita el acceso a motores open-source y no asume responsabilidad sobre las salidas generadas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 text-xs text-[var(--md-sys-color-on-surface-variant)] font-medium">
+                <p>© 2026 Ventarys. Filosofía Open Source.</p>
+                <div class="flex items-center gap-2">
+                    <span>Desarrollado por</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="text-[var(--md-sys-color-on-surface)] font-bold hover:underline transition-colors">JNTX Studio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Banner Cookies Flotante M3 -->
+    <div id="cookie-consent" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-3xl m3-card rounded-2xl p-5 z-[60] hidden flex-col sm:flex-row items-center justify-between gap-5 shadow-2xl transition-all duration-500 translate-y-20 opacity-0 border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-high)]">
+        <md-elevation></md-elevation>
+        <div class="flex items-center gap-3">
+            <md-icon class="hidden sm:block">cookie</md-icon>
+            <p class="text-sm text-[var(--md-sys-color-on-surface)] text-center sm:text-left leading-relaxed font-semibold">
+                Utilizamos cookies funcionales mínimas para mantener la plataforma gratuita (AdSense). Al continuar, aceptas nuestra política. <b>Cero rastreadores intrusivos garantizado.</b>
+            </p>
+        </div>
+        <md-filled-button onclick="acceptCookies()" class="w-full sm:w-auto flex-shrink-0">
+            Comprendido
+        </md-filled-button>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Animaciones de Scroll Suaves
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -40px 0px"
+            };
+            
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                });
+            }, revealOptions);
+            
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+
+        // Manejo de Cookies
+        const cookieBanner = document.getElementById('cookie-consent');
+        
+        function checkCookies() {
+            if (!localStorage.getItem('ventarys_consent')) {
+                cookieBanner.classList.remove('hidden');
+                cookieBanner.style.display = 'flex';
+                setTimeout(() => {
+                    cookieBanner.classList.remove('translate-y-20', 'opacity-0');
+                }, 100);
+            }
+        }
+        
+        function acceptCookies() {
+            localStorage.setItem('ventarys_consent', 'true');
+            cookieBanner.classList.add('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 500);
+        }
+
+        // Menú Móvil
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+
+        // Favicon Dinámico
+        const initDynamicFavicon = () => {
+            const favicon = document.querySelector("link[rel='icon']");
+            if (!favicon) return;
+            
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = favicon.href;
+            
+            const renderFavicon = () => {
+                if (!img.width) return;
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                ctx.filter = isDark ? 'brightness(0) invert(1)' : 'brightness(0)';
+                ctx.drawImage(img, 0, 0);
+                
+                try {
+                    favicon.href = canvas.toDataURL('image/png');
+                } catch (e) {
+                    console.warn("Políticas CORS impidieron modificar el favicon dinámicamente.");
+                }
+            };
+
+            img.onload = () => {
+                renderFavicon();
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderFavicon);
+            };
+        };
+
+        window.addEventListener('load', () => {
+            initDynamicFavicon();
+            setTimeout(checkCookies, 1500); 
+        });
+    </script>
+</body>
+</html>
