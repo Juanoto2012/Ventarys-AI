@@ -21,274 +21,321 @@
     
     <!-- Fuentes e Iconos -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- LÓGICA DE DETECCIÓN DE IDIOMA AUTOMÁTICA -->
     <script>
-        tailwind.config = {
-            darkMode: 'media',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        body: ['"Inter"', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-out forwards',
-                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'blob': 'blob 10s infinite alternate',
-                    },
-                    keyframes: {
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '50%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '100%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                        }
-                    }
+        (function() {
+            if (!localStorage.getItem('ventarys_lang_detected')) {
+                const browserLang = navigator.language.slice(0, 2);
+                const supportedLangs = ['es', 'en', 'fr', 'de', 'it', 'pt', 'zh-CN', 'ja'];
+                const targetLang = supportedLangs.includes(browserLang) ? browserLang : 'en';
+
+                if (targetLang !== 'es') {
+                    document.cookie = `googtrans=/es/${targetLang}; path=/;`;
+                    document.cookie = `googtrans=/es/${targetLang}; path=/; domain=${location.hostname};`;
                 }
+                localStorage.setItem('ventarys_lang_detected', 'true');
             }
-        }
+        })();
     </script>
 
     <style>
+        /* Monochromatic Material 3 Overrides - Ultra Minimalista */
         :root {
-            /* Design Tokens: Modo Claro */
             --md-sys-color-primary: #000000;
             --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-secondary-container: #e5e5e5;
-            --md-sys-color-on-secondary-container: #000000;
+            --md-sys-color-outline: #e5e5e5;
             --md-sys-color-surface: #ffffff;
-            --md-sys-color-on-surface: #111111;
-            --md-sys-color-on-surface-variant: #444444;
-            --md-sys-color-outline: #777777;
-            --md-sys-color-outline-variant: #cccccc;
-            --md-sys-color-surface-container-lowest: #ffffff;
-            --md-sys-color-surface-container-low: #f5f5f5;
-            --md-sys-color-surface-container: #eeeeee;
-            --md-sys-color-surface-container-high: #e0e0e0;
+            --md-sys-color-on-surface: #000000;
+            --md-sys-typescale-label-large-font: 'Outfit', sans-serif;
+            --md-sys-shape-corner-full: 4px;
+            color-scheme: light dark;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                /* Design Tokens: Modo Oscuro */
                 --md-sys-color-primary: #ffffff;
                 --md-sys-color-on-primary: #000000;
-                --md-sys-color-secondary-container: #333333;
-                --md-sys-color-on-secondary-container: #ffffff;
-                --md-sys-color-surface: #121212;
-                --md-sys-color-on-surface: #f0f0f0;
-                --md-sys-color-on-surface-variant: #bbbbbb;
-                --md-sys-color-outline: #888888;
-                --md-sys-color-outline-variant: #444444;
-                --md-sys-color-surface-container-lowest: #000000;
-                --md-sys-color-surface-container-low: #111111;
-                --md-sys-color-surface-container: #1a1a1a;
-                --md-sys-color-surface-container-high: #222222;
+                --md-sys-color-outline: #262626;
+                --md-sys-color-surface: #0a0a0a;
+                --md-sys-color-on-surface: #ffffff;
             }
         }
 
         body { 
-            background-color: var(--md-sys-color-surface-container-lowest);
-            color: var(--md-sys-color-on-surface);
+            background-color: theme('colors.white');
+            color: theme('colors.black');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: theme('colors.ventarys.950');
+                color: theme('colors.white');
+            }
+        }
+
+        /* OVERRIDES GOOGLE TRANSLATE */
+        .goog-te-banner-frame.skiptranslate, 
+        .goog-te-banner-frame,
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd,
+        #goog-gt-tt,
+        .goog-te-gadget-icon { 
+            display: none !important; 
+            visibility: hidden !important;
+        }
+        body { top: 0px !important; }
+        #google_translate_element { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+
+        /* Estilo del selector nativo personalizado */
+        .lang-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+            padding-right: 1.2rem;
+        }
+        .lang-select option {
+            background-color: theme('colors.white');
+            color: theme('colors.black');
+            font-family: 'Inter', sans-serif;
         }
         @media (prefers-color-scheme: dark) {
-            .glass-nav { background: rgba(0, 0, 0, 0.7); }
+            .lang-select option {
+                background-color: theme('colors.ventarys.950');
+                color: theme('colors.white');
+            }
         }
 
-        .m3-card {
-            background-color: var(--md-sys-color-surface-container-lowest);
-            border: 1px solid var(--md-sys-color-outline-variant);
-            border-radius: 24px;
+        /* Nav transparente ultrasutil */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            .glass-nav { 
+                background: rgba(10, 10, 10, 0.8); 
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+        }
+
+        /* Minimalist Cards - Rediseño elegante */
+        .minimal-card {
+            background-color: transparent;
+            border: 1px solid theme('colors.ventarys.gray.200');
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .m3-card:hover {
-            border-color: var(--md-sys-color-primary);
-        }
-
-        .logo-mono {
-            filter: brightness(0);
-            transition: filter 0.3s ease;
+        .minimal-card:hover {
+            border-color: theme('colors.black');
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
         }
         @media (prefers-color-scheme: dark) {
-            .logo-mono { filter: brightness(0) invert(1); }
+            .minimal-card { border-color: theme('colors.ventarys.gray.800'); }
+            .minimal-card:hover { 
+                border-color: theme('colors.white');
+                box-shadow: 0 10px 40px -10px rgba(255,255,255,0.05);
+            }
         }
 
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .logo-mono { filter: brightness(0); transition: filter 0.3s ease; }
+        @media (prefers-color-scheme: dark) { .logo-mono { filter: brightness(0) invert(1); } }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
         
         md-icon {
             font-family: 'Material Symbols Rounded', sans-serif;
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
-
-        /* Estilos específicos para la tipografía legal */
-        .prose-legal h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--md-sys-color-on-surface);
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-            letter-spacing: -0.025em;
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 300; }
+        
+        /* Loader Minimalista */
+        .loader {
+            border: 1px solid theme('colors.ventarys.gray.200');
+            border-top: 1px solid theme('colors.black');
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
-        .prose-legal p, .prose-legal li {
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
-            line-height: 1.75;
-            color: var(--md-sys-color-on-surface-variant);
-            margin-bottom: 1rem;
+        @media (prefers-color-scheme: dark) {
+            .loader {
+                border: 1px solid theme('colors.ventarys.gray.800');
+                border-top: 1px solid theme('colors.white');
+            }
         }
-        .prose-legal ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            margin-bottom: 1.5rem;
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Grid background ultra sutil */
+        .bg-grid {
+            background-size: 60px 60px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
         }
-        .prose-legal strong {
-            color: var(--md-sys-color-on-surface);
-            font-weight: 700;
+        @media (prefers-color-scheme: dark) {
+            .bg-grid { background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px); }
         }
     </style>
 </head>
-<body class="font-body overflow-x-hidden transition-colors duration-300">
+<body class="transition-colors duration-500 relative font-body selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
 
-    <!-- Fondo de Blobs Abstractos -->
-    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob" style="animation-delay: 4s;"></div>
-    </div>
+    <!-- Widget Invisible de Google Translate -->
+    <div id="google_translate_element"></div>
 
-    <!-- Navegación -->
-    <nav class="fixed w-full z-50 glass-nav top-0 transition-all duration-300">
+    <div class="fixed inset-0 z-0 pointer-events-none bg-grid opacity-50"></div>
+
+    <!-- Navegación Elegante -->
+    <nav id="main-nav" class="fixed w-full z-50 glass-nav top-0 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <img src="logo.png" alt="Ventarys Logo" class="w-9 h-9 object-contain logo-mono group-hover:scale-105 transition-transform duration-300">
-                <span class="text-xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)] font-sans">Ventarys</span>
+            <a href="index.html" class="flex items-center gap-4 group">
+                <img src="logo.png" alt="Ventarys Logo" class="w-6 h-6 object-contain logo-mono opacity-80 group-hover:opacity-100 transition-opacity">
+                <span class="text-xl font-sans font-medium tracking-wide">Ventarys</span>
             </a>
             
-            <div class="hidden md:flex items-center gap-8 px-6 py-2.5 rounded-full border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] backdrop-blur-md">
-                <a href="index.html#features" class="text-sm font-semibold text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Volver al Inicio</a>
-                <a href="index.html#architecture" class="text-sm font-semibold text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Arquitectura</a>
+            <div class="hidden md:flex items-center gap-10 translate-yes">
+                <a href="index.html#ecosistema" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Ecosistema</a>
+                <a href="index.html#ventarys-idx" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">IDX Editor</a>
+                <a href="index.html#api" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">API</a>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div class="hidden md:block">
-                    <md-filled-button href="https://ventarys-chat.infinityfreeapp.com/">
-                        <md-icon slot="icon">rocket_launch</md-icon>
-                        Abrir App
+            <div class="flex items-center gap-4 translate-yes">
+                <!-- Selector de Idioma Desktop -->
+                <div class="hidden md:flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity relative">
+                    <md-icon class="text-[16px] notranslate" translate="no">language</md-icon>
+                    <select class="lang-select text-xs font-medium bg-transparent uppercase tracking-wider" onchange="changeLanguage(this.value)">
+                        <option value="es">ES</option>
+                        <option value="en">EN</option>
+                        <option value="fr">FR</option>
+                        <option value="de">DE</option>
+                        <option value="pt">PT</option>
+                        <option value="zh-CN">ZH</option>
+                    </select>
+                    <md-icon class="text-[12px] absolute right-0 pointer-events-none notranslate" translate="no">expand_more</md-icon>
+                </div>
+
+                <div class="hidden md:block ml-4">
+                    <md-filled-button href="/asistant.html">
+                        Acceder
                     </md-filled-button>
                 </div>
                 <md-icon-button id="mobile-menu-btn" class="md:hidden">
-                    <md-icon>menu</md-icon>
+                    <md-icon class="notranslate" translate="no">menu</md-icon>
                 </md-icon-button>
             </div>
         </div>
 
         <!-- Menú Móvil -->
-        <div id="mobile-menu" class="hidden md:hidden absolute top-[80px] left-0 w-full bg-[var(--md-sys-color-surface-container-lowest)] backdrop-blur-xl border-b border-[var(--md-sys-color-outline-variant)] shadow-xl transition-all">
-            <md-list class="bg-transparent">
-                <md-list-item href="index.html">
-                    <div slot="headline">Volver al Inicio</div>
-                </md-list-item>
-                <md-list-item href="index.html#architecture">
-                    <div slot="headline">Arquitectura</div>
-                </md-list-item>
-            </md-list>
-            <div class="p-4 border-t border-[var(--md-sys-color-outline-variant)]">
-                <md-filled-button href="https://ventarys-chat.infinityfreeapp.com/" class="w-full">Iniciar Aplicación</md-filled-button>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-[80px] left-0 w-full bg-white/95 dark:bg-ventarys-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-2xl transition-all translate-yes">
+            <div class="flex flex-col p-6 gap-6 font-sans text-lg">
+                <a href="index.html#ecosistema" class="font-medium text-gray-800 dark:text-gray-200" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ecosistema</a>
+                <a href="index.html#ventarys-idx" class="font-medium text-gray-800 dark:text-gray-200" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ventarys IDX</a>
+                <a href="index.html#api" class="font-medium text-gray-800 dark:text-gray-200" onclick="document.getElementById('mobile-menu').classList.add('hidden')">API Developers</a>
+                
+                <div class="flex items-center justify-between py-4 border-t border-gray-100 dark:border-gray-900 mt-2">
+                    <span class="text-sm font-medium text-gray-400">Idioma</span>
+                    <select class="lang-select text-sm font-medium bg-transparent border border-gray-200 dark:border-gray-800 rounded px-3 py-1" onchange="changeLanguage(this.value)">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="pt">Português</option>
+                        <option value="zh-CN">中文</option>
+                    </select>
+                </div>
+
+                <md-filled-button href="/asistant.html" class="w-full">Acceder a la plataforma</md-filled-button>
             </div>
         </div>
     </nav>
 
-    <!-- [HERO SECTION LEGAL] -->
-    <header class="relative pt-40 pb-16 lg:pt-48 lg:pb-24 overflow-hidden z-10 flex flex-col items-center justify-center">
-        <div class="max-w-4xl mx-auto px-6 text-center animate-fade-in-up">
-            
-            <!-- Etiqueta Monocromática -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface)] text-xs font-bold tracking-wide mb-8">
-                <md-icon style="font-size: 16px;">policy</md-icon>
-                DOCUMENTO LEGAL OFICIAL
+    <!-- [HERO SECTION ULTRA MINIMALISTA] -->
+    <header class="relative pt-48 pb-32 lg:pt-64 lg:pb-40 z-10 flex flex-col items-center text-center translate-yes">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="animate-fade-in-up">
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase mb-10 text-gray-500 dark:text-gray-400">
+                    <span class="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse"></span>
+                    Política de Privacidad
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-sans font-light tracking-tight mb-8 leading-[1.1] text-gray-900 dark:text-white">
+                    Privacidad <br>
+                    <span class="font-semibold">Absoluta.</span>
+                </h1>
+                
+                <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed mb-14 font-light">
+                    Transparencia total y cero retención. Descubre exactamente por qué Ventarys AI es el entorno más seguro para tus conversaciones.
+                </p>
             </div>
-            
-            <h1 class="text-4xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-[var(--md-sys-color-on-surface)] mb-6 leading-[1.1] font-sans">
-                Política de Privacidad
-            </h1>
-            
-            <p class="text-[var(--md-sys-color-on-surface-variant)] max-w-2xl mx-auto text-lg md:text-xl leading-relaxed font-medium">
-                Transparencia absoluta y cero retención. Descubre exactamente por qué Ventarys AI es el entorno más seguro para tus conversaciones.
-            </p>
-
-            <p class="text-[var(--md-sys-color-outline)] text-sm font-mono mt-8">
-                Última actualización: Marzo 2026
-            </p>
         </div>
     </header>
 
     <!-- [CONTENIDO LEGAL] -->
-    <section class="py-12 relative z-10 mb-20">
+    <section class="py-32 relative z-10 translate-yes">
         <div class="max-w-4xl mx-auto px-6">
             
-            <div class="m3-card p-8 md:p-14 reveal prose-legal bg-[var(--md-sys-color-surface)]">
+            <div class="minimal-card p-10 md:p-14 reveal">
                 
                 <p>En <strong>Ventarys AI</strong>, creemos que la privacidad no es una característica opcional, sino un derecho humano fundamental. Esta Política de Privacidad describe cómo manejamos (o mejor dicho, cómo <em>no</em> manejamos) tu información cuando utilizas nuestra plataforma web y aplicación móvil.</p>
 
-                <div class="my-10 p-6 rounded-2xl bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] flex items-start gap-4">
-                    <md-icon class="text-[var(--md-sys-color-primary)] mt-1">shield_person</md-icon>
+                <div class="my-10 p-6 rounded-2xl bg-gray-50/50 dark:bg-ventarys-900/20 border border-gray-200 dark:border-gray-800 flex items-start gap-4">
+                    <md-icon class="text-black dark:text-white mt-1 notranslate" translate="no">shield_person</md-icon>
                     <div>
-                        <strong class="text-lg block mb-1 text-[var(--md-sys-color-on-surface)]">El resumen rápido:</strong>
-                        <p class="mb-0 text-sm">No tenemos base de datos de usuarios. No te pedimos tu correo electrónico. Todo tu historial de chat se guarda exclusivamente en tu dispositivo físico. Lo que escribes aquí, es tuyo.</p>
+                        <strong class="text-lg block mb-1 text-gray-900 dark:text-white">El resumen rápido:</strong>
+                        <p class="mb-0 text-sm text-gray-500 dark:text-gray-400">No tenemos base de datos de usuarios. No te pedimos tu correo electrónico. Todo tu historial de chat se guarda exclusivamente en tu dispositivo físico. Lo que escribes aquí, es tuyo.</p>
                     </div>
                 </div>
 
-                <h2>1. Recopilación de Datos Personales</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">1. Recopilación de Datos Personales</h2>
                 <p><strong>Ventarys no recopila información de identificación personal (PII).</strong> Debido a nuestra arquitectura de "Middleman Ciego", no existe un proceso de registro, ni perfiles de usuario. No guardamos nombres, correos, ni números de teléfono.</p>
 
-                <h2>2. Almacenamiento y Procesamiento de Conversaciones</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">2. Almacenamiento y Procesamiento de Conversaciones</h2>
                 <p>Nuestra plataforma funciona invirtiendo el modelo de la industria tradicional:</p>
-                <ul>
+                <ul class="list-disc pl-6 mb-6 space-y-2">
                     <li><strong>Almacenamiento Local:</strong> Tu historial de chat, configuraciones y preferencias se almacenan estrictamente mediante la API <code>localStorage</code> de tu navegador web o almacenamiento local de la app móvil. Esto significa que los datos residen físicamente en tu hardware.</li>
                     <li><strong>Procesamiento en Tránsito:</strong> Para generar respuestas de inteligencia artificial, tus prompts (textos) son enviados a través de un canal cifrado (TLS 1.3) a proveedores de inferencia Open Source (como Pollinations.ai o endpoints similares).</li>
                     <li><strong>Cero Retención:</strong> Ventarys no almacena, graba ni retiene copias de los prompts enviados ni de las respuestas recibidas en ningún servidor propio.</li>
                 </ul>
 
-                <h2>3. Uso de Cookies y Publicidad</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">3. Uso de Cookies y Publicidad</h2>
                 <p>Para mantener la infraestructura de Ventarys AI de manera gratuita, utilizamos <strong>Google AdSense</strong> para mostrar anuncios en partes de la interfaz web.</p>
-                <ul>
+                <ul class="list-disc pl-6 mb-6 space-y-2">
                     <li><strong>Cookies Funcionales:</strong> Utilizamos una cookie mínima (<code>ventarys_consent</code>) únicamente para recordar si has cerrado el banner de información, mejorando tu experiencia visual.</li>
                     <li><strong>Cookies de AdSense:</strong> Google AdSense utiliza cookies para mostrarte anuncios basados en tus visitas previas a nuestro sitio web u otros sitios en Internet.</li>
-                    <li>Puedes desactivar el uso de cookies publicitarias personalizadas visitando la <a href="https://myadcenter.google.com/" target="_blank" class="text-[var(--md-sys-color-primary)] underline decoration-2 underline-offset-4">Configuración de Anuncios de Google</a>.</li>
+                    <li>Puedes desactivar el uso de cookies publicitarias personalizadas visitando la <a href="https://myadcenter.google.com/" target="_blank" class="text-black dark:text-white underline decoration-2 underline-offset-4">Configuración de Anuncios de Google</a>.</li>
                 </ul>
 
-                <h2>4. Análisis de Tráfico (Analytics)</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">4. Análisis de Tráfico (Analytics)</h2>
                 <p>Podemos utilizar herramientas de análisis de tráfico completamente anonimizadas (cero cookies de rastreo transversal) únicamente para contabilizar la cantidad de visitantes y asegurar la estabilidad de la red. Estos sistemas no vinculan las visitas con tus interacciones de chat locales.</p>
 
-                <h2>5. Tus Derechos y Control Total</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">5. Tus Derechos y Control Total</h2>
                 <p>Dado que no almacenamos tus datos en la nube, el control recae totalmente sobre ti. Puedes borrar toda tu información, historial y preferencias instantáneamente realizando lo siguiente:</p>
-                <ul>
+                <ul class="list-disc pl-6 mb-6 space-y-2">
                     <li>Borrando la caché y los datos de sitio (<code>localStorage</code>) en la configuración de tu navegador.</li>
                     <li>Desinstalando la aplicación móvil (en caso de usarla) o borrando los datos de la app desde los ajustes del sistema operativo.</li>
                 </ul>
 
-                <h2>6. Cambios en la Política</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">6. Cambios en la Política</h2>
                 <p>Ventarys puede actualizar esta política para reflejar cambios tecnológicos o legales. Te animamos a revisar periódicamente esta página. Al ser un servicio sin registro, no podemos notificarte por correo electrónico sobre estos cambios.</p>
 
-                <h2>7. Contacto</h2>
+                <h2 class="text-2xl md:text-3xl font-sans font-semibold tracking-tight mb-6 mt-12">7. Contacto</h2>
                 <p>Si tienes dudas sobre el código de la plataforma, la arquitectura de privacidad o esta política, puedes contactar al equipo de desarrollo (JNTX Studio) a través del correo: <strong>ventarys@proton.me</strong></p>
                 
-                <div class="mt-12 pt-8 border-t border-[var(--md-sys-color-outline-variant)] text-center">
-                    <md-filled-button href="ventarys.net" class="mt-4">
-                        <md-icon slot="icon">arrow_back</md-icon>
+                <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+                    <md-filled-button href="index.html" class="mt-4">
+                        <md-icon slot="icon" class="notranslate" translate="no">arrow_back</md-icon>
                         Entendido, volver a Ventarys
                     </md-filled-button>
                 </div>
@@ -296,73 +343,94 @@
         </div>
     </section>
 
-    <!-- Footer Moderno Monocromo (El mismo de la página principal) -->
-    <footer class="bg-[var(--md-sys-color-surface-container-low)] pt-16 pb-12 relative z-10 overflow-hidden border-t border-[var(--md-sys-color-outline-variant)]">
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
-                <div class="max-w-xs">
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain logo-mono">
-                        <span class="text-2xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">Ventarys AI</span>
+<!-- Footer Elegante -->
+    <footer class="bg-white dark:bg-ventarys-950 pt-24 pb-12 relative z-10 border-t border-gray-100 dark:border-gray-900 translate-yes">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+                <div class="md:col-span-2 max-w-sm">
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain logo-mono translate-no">
+                        <span class="text-lg font-sans font-medium tracking-wide translate-no">Ventarys</span>
                     </div>
-                    <p class="text-[var(--md-sys-color-on-surface-variant)] text-sm leading-relaxed font-medium">
-                        Construyendo un entorno donde la inteligencia de vanguardia colabora respetando la autonomía humana.
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">
+                        Construyendo el estándar de la interacción privada con Inteligencia Artificial. Open source por convicción.
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-16 text-sm">
-                    <div class="flex flex-col gap-4">
-                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Plataforma</span>
-                        <a href="chat.html" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Abrir chat</a>
-                        <a href="index.html#features" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Especificaciones</a>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Comunidad</span>
-                        <a href="https://ventarys-ai.blogspot.com/2026/01/ventarys-ai.html" target="_blank" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Blog de Novedades</a>
-                        <a href="mailto:ventarys@proton.me" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Contacto Soporte</a>
-                    </div>
-                    <div class="flex flex-col gap-4 col-span-2 md:col-span-1">
-                        <span class="text-[var(--md-sys-color-on-surface)] font-bold tracking-wider uppercase text-xs">Legal</span>
-                        <a href="privacy.html" class="text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] transition-colors">Privacidad</a>
-                    </div>
+                <div class="flex flex-col gap-4">
+                    <span class="font-mono tracking-widest uppercase text-[10px] text-gray-400 mb-2">Plataforma</span>
+                    <a href="/asistant.html" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys AI</a>
+                    <a href="index.html#ventarys-idx" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys IDX</a>
+                    <a href="index.html#api" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">API</a>
+                </div>
+                
+                <div class="flex flex-col gap-4">
+                    <span class="font-mono tracking-widest uppercase text-[10px] text-gray-400 mb-2">Comunidad</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">GitHub</a>
+                    <a href="forum.html" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Foro</a>
+                    <a href="privacy.html" class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Privacidad</a>
                 </div>
             </div>
             
-            <div class="border-t border-[var(--md-sys-color-outline-variant)] pt-8 mb-8">
-                <div class="flex items-start gap-3 p-4 bg-[var(--md-sys-color-surface-container)] rounded-xl border border-[var(--md-sys-color-outline-variant)]">
-                    <md-icon class="text-[var(--md-sys-color-on-surface)]">info</md-icon>
-                    <p class="text-[var(--md-sys-color-on-surface-variant)] text-xs font-medium leading-relaxed">
-                        <strong class="text-[var(--md-sys-color-on-surface)]">Aviso:</strong> La IA puede producir información inexacta o alucinaciones. Recomendamos verificar datos críticos de forma independiente. Ventarys facilita el acceso a motores open-source y no asume responsabilidad sobre las salidas generadas.
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 text-xs text-[var(--md-sys-color-on-surface-variant)] font-medium">
-                <p>© 2026 Ventarys. Filosofía Open Source.</p>
+            <div class="border-t border-gray-100 dark:border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 font-light">
+                <p>© 2026 Ventarys. Todos los derechos reservados.</p>
                 <div class="flex items-center gap-2">
-                    <span>Desarrollado por</span>
-                    <a href="https://github.com/Juanoto2012" target="_blank" class="text-[var(--md-sys-color-on-surface)] font-bold hover:underline transition-colors">JNTX Studio</a>
+                    <span>Diseñado y desarrollado por</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors translate-no">JNTX Studio</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Banner Cookies Flotante M3 -->
-    <div id="cookie-consent" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-3xl m3-card rounded-2xl p-5 z-[60] hidden flex-col sm:flex-row items-center justify-between gap-5 shadow-2xl transition-all duration-500 translate-y-20 opacity-0 border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-high)]">
-        <md-elevation></md-elevation>
-        <div class="flex items-center gap-3">
-            <md-icon class="hidden sm:block">cookie</md-icon>
-            <p class="text-sm text-[var(--md-sys-color-on-surface)] text-center sm:text-left leading-relaxed font-semibold">
-                Utilizamos cookies funcionales mínimas para mantener la plataforma gratuita (AdSense). Al continuar, aceptas nuestra política. <b>Cero rastreadores intrusivos garantizado.</b>
-            </p>
-        </div>
-        <md-filled-button onclick="acceptCookies()" class="w-full sm:w-auto flex-shrink-0">
-            Comprendido
-        </md-filled-button>
+    <!-- Banner Cookies Minimalista -->
+    <div id="cookie-consent" class="translate-yes fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-xl bg-white dark:bg-ventarys-950 border border-gray-200 dark:border-gray-800 p-4 rounded z-[60] hidden flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-700 translate-y-10 opacity-0">
+        <p class="text-xs text-gray-500 text-center sm:text-left font-light leading-relaxed">
+            Mantenemos el servicio con publicidad mínima. <b>Sin rastreadores abusivos.</b>
+        </p>
+        <button onclick="acceptCookies()" class="flex-shrink-0 text-xs font-medium uppercase tracking-widest border border-black dark:border-white px-6 py-2 rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+            Entendido
+        </button>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- SCRIPT DE TRADUCCIÓN DE GOOGLE -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es', 
+                includedLanguages: 'es,en,fr,de,it,pt,zh-CN,ja',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- SCRIPTS CORE -->
     <script>
+        // Cambio de idioma nativo
+        function changeLanguage(langCode) {
+            const googleSelect = document.querySelector('.goog-te-combo');
+            if (googleSelect) {
+                googleSelect.value = langCode;
+                googleSelect.dispatchEvent(new Event('change'));
+            } else {
+                document.cookie = `googtrans=/es/${langCode}; path=/;`;
+                document.cookie = `googtrans=/es/${langCode}; path=/; domain=${location.hostname};`;
+                location.reload();
+            }
+            localStorage.setItem('ventarys_lang_detected', 'true'); 
+            document.querySelectorAll('.lang-select').forEach(select => {
+                select.value = langCode;
+            });
+        }
+
+        window.addEventListener('load', () => {
+            const match = document.cookie.match(/googtrans=\/es\/([^;]+)/);
+            const currentLang = match ? match[1] : 'es';
+            document.querySelectorAll('.lang-select').forEach(select => {
+                select.value = currentLang;
+            });
+        });
+
         // Animaciones de Scroll Suaves
         document.addEventListener("DOMContentLoaded", () => {
             const reveals = document.querySelectorAll('.reveal');
@@ -407,12 +475,12 @@
         }
 
         // Menú Móvil
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        if (btn && menu) {
-            btn.addEventListener('click', () => {
-                menu.classList.toggle('hidden');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
             });
         }
 
