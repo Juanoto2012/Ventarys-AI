@@ -1,0 +1,33 @@
+name = "ventarys-ai"
+type = "JavaScript"
+account_id = ""
+workers_dev = true
+
+[pages]
+framework = "<non>"
+type = "static"
+production_branch = "main"
+
+rules = []
+
+[site]
+bucket = "."
+
+[build]
+command = ""
+
+[env.production]
+name = "ventarys-ai-production"
+routes = ["*.ventarys-ai.pages.dev"]
+
+[env.staging]
+name = "ventarys-ai-staging"
+routes = ["*.ventarys-ai-staging.pages.dev"]
+
+[[routes]]
+pattern = "ventarys.net/*"
+zone_name = "ventarys.net"
+
+[[routes]]
+pattern = "www.ventarys.net/*"
+zone_name = "ventarys.net"
