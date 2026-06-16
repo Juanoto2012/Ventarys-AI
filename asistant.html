@@ -1761,14 +1761,8 @@
             updateChatHistory();
             initSpeechRecognition();
             updateFeatureChips();
-            const pathParts = window.location.pathname.split('/');
-            let urlChatId = null;
-            if (pathParts.length >= 3 && pathParts[1] === 'c') {
-                urlChatId = pathParts[2];
-            }
-            if (urlChatId && allChats[urlChatId]) {
-                loadChat(urlChatId, true);
-            } else if (currentChatId && allChats[currentChatId]) {
+
+            if (currentChatId && allChats[currentChatId]) {
                 loadChat(currentChatId, true);
             } else {
                 createNewChatUIOnly();
@@ -1776,13 +1770,9 @@
             updateFavicon(document.getElementById('ventarys-app-root').classList.contains('light'));
         }
         window.addEventListener('popstate', (e) => {
-            const pathParts = window.location.pathname.split('/');
-            let urlChatId = null;
-            if (pathParts.length >= 3 && pathParts[1] === 'c') {
-                urlChatId = pathParts[2];
-            }
-            if (urlChatId && allChats[urlChatId]) loadChat(urlChatId, true);
-            else {
+            if (e.state?.chatId && allChats[e.state.chatId]) {
+                loadChat(e.state.chatId, true);
+            } else {
                 createNewChatUIOnly();
             }
         });
@@ -2184,7 +2174,6 @@
             if (!currentChatId) {
                 currentChatId = CryptoJS.lib.WordArray.random(16).toString();
                 allChats[currentChatId] = { title: text.substring(0, 30) || "Nuevo Chat", messages: [] };
-                try { window.history.pushState({ chatId: currentChatId }, '', '/c/' + currentChatId); } catch (e) { }
             }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('messages-list').classList.remove('hidden');
@@ -2572,7 +2561,6 @@
             document.getElementById('welcome-screen').classList.remove('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
-            try { window.history.pushState(null, '', '/'); } catch (e) { }
             closeSidebarMobile();
         }
         function updateChatHistory(filterText = '') {
@@ -2625,7 +2613,6 @@
             if (!allChats[id]) return;
             currentChatId = id;
             AppStorage.setItem('current_chat_id', id);
-            if (!noPush) { try { window.history.pushState({ chatId: id }, '', '/c/' + id); } catch (e) { } }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
@@ -2677,7 +2664,6 @@
                 isDanger: true,
                 onConfirm: async () => {
                     await AppStorage.clearAll();
-                    try { window.history.pushState(null, '', '/'); } catch (e) { }
                     location.reload();
                 }
             });
