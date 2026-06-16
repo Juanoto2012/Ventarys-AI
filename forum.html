@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Comunidad y Foro | Ventarys AI</title>
-    
-    <!-- Configuración de AdSense -->
+    <title>Ventarys Community | Forum</title>
+
+    <!-- AdSense Configuration -->
     <meta name="google-adsense-account" content="ca-pub-9019277340139989">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
-    
-    <!-- SEO y Metadatos -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989"
+        crossorigin="anonymous"></script>
+
+    <!-- SEO and Metadata -->
     <link rel="icon" href="logo.png">
-    <meta name="description" content="Comunidad de Ventarys AI. Foro de discusión, estilo Stack Overflow con Material Design." />
-    
-    <!-- Material Web Components (Google Oficial) -->
+    <meta name="description"
+        content="Ventarys Community. Share ideas, ask questions, and collaborate in our open AI forum." />
+
+    <!-- Material Web Components -->
     <script type="module" src="https://esm.run/@material/web/all.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Fuentes e Iconos -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -29,21 +35,25 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Outfit"', 'sans-serif'],
                         body: ['"Inter"', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     },
+                    colors: {
+                        ventarys: {
+                            black: '#000000',
+                            white: '#ffffff',
+                            gray: { 50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4', 800: '#262626', 900: '#171717', 950: '#0a0a0a' },
+                            accent: '#888888'
+                        }
+                    },
                     animation: {
-                        'fade-in': 'fadeIn 0.8s ease-out forwards',
-                        'blob': 'blob 10s infinite alternate',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '50%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '100%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                        }
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
                     }
                 }
             }
@@ -51,324 +61,437 @@
     </script>
 
     <style>
+        /* Monochromatic Material 3 Overrides - Ultra Minimalist */
         :root {
             --md-sys-color-primary: #000000;
             --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-secondary-container: #e5e5e5;
-            --md-sys-color-on-secondary-container: #000000;
+            --md-sys-color-outline: #e5e5e5;
             --md-sys-color-surface: #ffffff;
-            --md-sys-color-on-surface: #111111;
-            --md-sys-color-on-surface-variant: #444444;
-            --md-sys-color-outline: #777777;
-            --md-sys-color-outline-variant: #cccccc;
-            --md-sys-color-surface-container-lowest: #ffffff;
-            --md-sys-color-surface-container-low: #f5f5f5;
-            --md-sys-color-surface-container: #eeeeee;
-            --md-sys-color-surface-container-high: #e0e0e0;
+            --md-sys-color-on-surface: #000000;
+            --md-sys-typescale-label-large-font: 'Outfit', sans-serif;
+            --md-sys-shape-corner-full: 4px;
+            color-scheme: light dark;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
                 --md-sys-color-primary: #ffffff;
                 --md-sys-color-on-primary: #000000;
-                --md-sys-color-secondary-container: #333333;
-                --md-sys-color-on-secondary-container: #ffffff;
-                --md-sys-color-surface: #121212;
-                --md-sys-color-on-surface: #f0f0f0;
-                --md-sys-color-on-surface-variant: #bbbbbb;
-                --md-sys-color-outline: #888888;
-                --md-sys-color-outline-variant: #333333;
-                --md-sys-color-surface-container-lowest: #000000;
-                --md-sys-color-surface-container-low: #111111;
-                --md-sys-color-surface-container: #1a1a1a;
-                --md-sys-color-surface-container-high: #222222;
+                --md-sys-color-outline: #262626;
+                --md-sys-color-surface: #0a0a0a;
+                --md-sys-color-on-surface: #ffffff;
             }
         }
 
-        body { 
-            background-color: var(--md-sys-color-surface-container-lowest);
-            color: var(--md-sys-color-on-surface);
+        body {
+            background-color: theme('colors.white');
+            color: theme('colors.black');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
-        }
         @media (prefers-color-scheme: dark) {
-            .glass-nav { background: rgba(0, 0, 0, 0.85); }
+            body {
+                background-color: theme('colors.ventarys.950');
+                color: theme('colors.white');
+            }
+        }
+
+        /* Ultra-subtle Glass Nav */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass-nav {
+                background: rgba(10, 10, 10, 0.8);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        /* Minimalist Cards */
+        .minimal-card {
+            background-color: transparent;
+            border: 1px solid theme('colors.ventarys.gray.200');
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .minimal-card {
+                border-color: theme('colors.ventarys.gray.800');
+            }
         }
 
         .logo-mono {
             filter: brightness(0);
             transition: filter 0.3s ease;
         }
+
         @media (prefers-color-scheme: dark) {
-            .logo-mono { filter: brightness(0) invert(1); }
+            .logo-mono {
+                filter: brightness(0) invert(1);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         md-icon {
             font-family: 'Material Symbols Rounded', sans-serif;
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        *, md-filled-button, md-text-button, md-icon-button, md-ripple {
-            --md-sys-color-primary: #000000;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #333333;
-            --md-sys-color-on-primary-container: #ffffff;
-            --md-filled-button-container-color: #000000;
-            --md-filled-button-label-text-color: #ffffff;
-            --md-text-button-label-text-color: #000000;
-            --md-text-button-hover-label-text-color: #333333;
-            --md-text-button-pressed-label-text-color: #555555;
-            --md-icon-button-icon-color: #111111;
-            --md-ripple-hover-color: rgba(0, 0, 0, 0.08);
-            --md-ripple-pressed-color: rgba(0, 0, 0, 0.12);
+        /* Ultra subtle Grid Background */
+        .bg-grid {
+            background-size: 60px 60px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
         }
 
         @media (prefers-color-scheme: dark) {
-            *, md-filled-button, md-text-button, md-icon-button, md-ripple {
-                --md-sys-color-primary: #ffffff;
-                --md-sys-color-on-primary: #000000;
-                --md-sys-color-primary-container: #cccccc;
-                --md-sys-color-on-primary-container: #000000;
-                --md-filled-button-container-color: #ffffff;
-                --md-filled-button-label-text-color: #000000;
-                --md-text-button-label-text-color: #ffffff;
-                --md-text-button-hover-label-text-color: #cccccc;
-                --md-text-button-pressed-label-text-color: #aaaaaa;
-                --md-icon-button-icon-color: #f0f0f0;
-                --md-ripple-hover-color: rgba(255, 255, 255, 0.08);
-                --md-ripple-pressed-color: rgba(255, 255, 255, 0.12);
+            .bg-grid {
+                background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             }
         }
 
+        /* HTML Comment Box Overrides for Minimalist UI */
         #HCB_comment_box {
-            color: var(--md-sys-color-on-surface) !important;
+            color: inherit !important;
             font-family: inherit !important;
         }
-        #HCB_comment_box textarea, 
+
+        #HCB_comment_box textarea,
         #HCB_comment_box input[type="text"],
         #HCB_comment_box .hcb-text-box {
-            background-color: var(--md-sys-color-surface-container-low) !important;
-            color: var(--md-sys-color-on-surface) !important;
-            border: 1px solid var(--md-sys-color-outline-variant) !important;
-            border-radius: 12px !important;
+            background-color: transparent !important;
+            color: inherit !important;
+            border: 1px solid theme('colors.ventarys.gray.200') !important;
+            border-radius: 4px !important;
             padding: 12px !important;
             width: 100% !important;
             box-shadow: none !important;
-            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 14px !important;
+            resize: vertical;
+            min-height: 100px;
         }
+
+        @media (prefers-color-scheme: dark) {
+
+            #HCB_comment_box textarea,
+            #HCB_comment_box input[type="text"] {
+                border-color: theme('colors.ventarys.gray.800') !important;
+            }
+        }
+
         #HCB_comment_box .btn,
         #HCB_comment_box .submit {
-            background-color: var(--md-sys-color-primary) !important;
-            color: var(--md-sys-color-on-primary) !important;
+            background-color: theme('colors.black') !important;
+            color: theme('colors.white') !important;
             background-image: none !important;
             text-shadow: none !important;
             border: none !important;
-            border-radius: 20px !important;
-            padding: 8px 24px !important;
-            font-weight: 600 !important;
+            border-radius: 4px !important;
+            padding: 10px 24px !important;
+            font-weight: 500 !important;
             cursor: pointer;
+            font-family: 'Outfit', sans-serif !important;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 12px;
+            margin-top: 10px;
             transition: opacity 0.2s;
         }
-        .comment { 
-            border: 1px solid var(--md-sys-color-outline-variant) !important;
-            border-radius: 12px !important;
-            padding: 16px !important;
-            margin-bottom: 16px !important;
-            background-color: var(--md-sys-color-surface-container-lowest) !important;
+
+        @media (prefers-color-scheme: dark) {
+
+            #HCB_comment_box .btn,
+            #HCB_comment_box .submit {
+                background-color: theme('colors.white') !important;
+                color: theme('colors.black') !important;
+            }
         }
-        .hcb-icon, .home-desc { display: none !important; }
+
+        #HCB_comment_box .btn:hover {
+            opacity: 0.8;
+        }
+
+        .comment {
+            border: 1px solid theme('colors.ventarys.gray.200') !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+            background-color: transparent !important;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .comment {
+                border-color: theme('colors.ventarys.gray.800') !important;
+            }
+        }
+
+        /* Hide ugly HCB default elements */
+        .hcb-icon,
+        .home-desc,
+        .hcb-link,
+        #hcb_msg {
+            display: none !important;
+        }
+
+        .hcb-mod {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .comment>span.author {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .comment>span.date {
+            font-size: 11px;
+            opacity: 0.5;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 10px;
+        }
+
+        .comment>div {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* Hide scrollbar for nav */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="font-body overflow-x-hidden transition-colors duration-300 antialiased flex flex-col min-h-screen">
 
-    <!-- Fondo de Blobs Abstractos -->
-    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-black/5 dark:bg-white/5 rounded-full blur-[120px] animate-blob" style="animation-delay: 4s;"></div>
-    </div>
+<body
+    class="transition-colors duration-500 relative font-body selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black min-h-screen flex flex-col">
 
-    <!-- Navegación Superior -->
-    <nav class="fixed w-full z-50 glass-nav top-0 transition-all duration-300 h-16 flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full flex items-center justify-between gap-4">
-            
-            <div class="flex items-center gap-4">
-                <md-icon-button id="mobile-menu-btn" class="md:hidden" onclick="toggleMobileMenu()">
-                    <md-icon>menu</md-icon>
+    <div class="fixed inset-0 z-0 pointer-events-none bg-grid opacity-50"></div>
+
+    <!-- Elegant Navigation -->
+    <nav id="main-nav" class="fixed w-full z-50 glass-nav top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-4 group">
+                <img src="logo.png" alt="Ventarys Logo"
+                    class="w-6 h-6 object-contain logo-mono opacity-80 group-hover:opacity-100 transition-opacity">
+                <span class="text-xl font-sans font-medium tracking-wide">Ventarys Community</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-10 translate-yes">
+                <a href="index.html"
+                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Platform
+                    Home</a>
+                <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank"
+                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">GitHub</a>
+            </div>
+
+            <div class="flex items-center gap-4 translate-yes">
+                <div class="hidden md:block ml-4">
+                    <md-outlined-button href="/asistant.html">
+                        Launch AI
+                    </md-outlined-button>
+                </div>
+                <md-icon-button id="mobile-menu-btn" class="md:hidden">
+                    <md-icon class="notranslate" translate="no">menu</md-icon>
                 </md-icon-button>
-                
-                <a href="index.html" class="flex items-center gap-3 group relative overflow-hidden rounded-lg p-1">
-                    <md-ripple></md-ripple>
-                    <img id="main-logo" src="logo.png" alt="Ventarys Logo" class="w-7 h-7 object-contain logo-mono group-hover:scale-105 transition-transform duration-300">
-                    <span class="text-xl font-bold tracking-tight text-[var(--md-sys-color-on-surface)] font-sans">Ventarys</span>
-                </a>
             </div>
+        </div>
 
-            <div class="hidden md:flex flex-1 max-w-2xl relative">
-                <md-icon class="absolute left-3 top-2.5 text-[var(--md-sys-color-outline)]" style="font-size: 20px;">search</md-icon>
-                <input type="text" placeholder="Buscar discusiones..." class="w-full pl-10 pr-4 py-2 bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] rounded-full text-sm focus:outline-none focus:border-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-surface)] transition-all">
-            </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-[80px] left-0 w-full bg-white/95 dark:bg-ventarys-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-2xl transition-all translate-yes">
+            <div class="flex flex-col p-6 gap-6 font-sans text-lg">
+                <a href="index.html" class="font-medium text-gray-800 dark:text-gray-200"
+                    onclick="document.getElementById('mobile-menu').classList.add('hidden')">Platform Home</a>
+                <a href="https://github.com/Juanoto2012/Ventarys-AI"
+                    class="font-medium text-gray-800 dark:text-gray-200"
+                    onclick="document.getElementById('mobile-menu').classList.add('hidden')">GitHub</a>
 
-            <div class="flex items-center gap-2">
-                <md-text-button href="index.html" class="hidden sm:inline-flex">Inicio</md-text-button>
-                <md-filled-button href="https://ventarys-chat.infinityfreeapp.com/" target="_blank" class="hidden sm:inline-flex">Abrir App</md-filled-button>
+                <md-filled-button href="/asistant.html" class="w-full">Launch AI</md-filled-button>
             </div>
         </div>
     </nav>
 
-    <!-- [LAYOUT PRINCIPAL] -->
-    <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-6 pt-24 px-4 sm:px-6 relative z-10 pb-20">
-        
-        <!-- Overlay de menú móvil -->
-        <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none md:hidden" onclick="toggleMobileMenu()"></div>
+    <!-- [APP LAYOUT] -->
+    <div class="max-w-7xl mx-auto w-full px-6 pt-32 pb-24 flex-grow flex flex-col md:flex-row gap-10 relative z-10">
 
-        <!-- Sidebar Izquierdo -->
-        <aside id="left-sidebar" class="hidden md:block absolute md:relative z-50 md:z-auto bg-[var(--md-sys-color-surface)] md:bg-transparent top-16 md:top-24 left-0 w-64 md:w-48 h-[calc(100vh-4rem)] md:h-fit shadow-xl md:shadow-none p-4 md:p-0 shrink-0 no-scrollbar transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0">
-            <nav class="flex flex-col gap-1 text-sm font-medium">
-                <div class="text-[11px] font-bold uppercase text-[var(--md-sys-color-outline)] mb-2 ml-3">Canales</div>
-                
-                <a href="#global" onclick="switchChannel('global'); return false;" id="nav-global" class="channel-link relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-r-full transition-all border-l-4 -ml-1">
-                    <md-ripple></md-ripple>
-                    <md-icon style="font-size: 18px;">public</md-icon> Global
-                </a>
+        <!-- Channels Sidebar -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <!-- Mobile Horizontal Scroll / Desktop Vertical List -->
+            <div class="md:sticky md:top-32 flex md:flex-col gap-2 overflow-x-auto no-scrollbar pb-4 md:pb-0">
+                <div class="hidden md:block text-[10px] font-bold tracking-widest uppercase mb-4 text-gray-400 mt-2">
+                    Channels</div>
 
-                <a href="#preguntas" onclick="switchChannel('preguntas'); return false;" id="nav-preguntas" class="channel-link relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-r-full transition-all border-l-4 -ml-1">
-                    <md-ripple></md-ripple>
-                    <md-icon style="font-size: 18px;">help</md-icon> Preguntas
-                </a>
+                <button onclick="switchChannel('global')" id="nav-global"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
+                    <md-icon class="text-[18px]">public</md-icon> General Discussion
+                </button>
 
-                <a href="#reportes" onclick="switchChannel('reportes'); return false;" id="nav-reportes" class="channel-link relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-r-full transition-all border-l-4 -ml-1">
-                    <md-ripple></md-ripple>
-                    <md-icon style="font-size: 18px;">bug_report</md-icon> Reportes
-                </a>
+                <button onclick="switchChannel('showcase')" id="nav-showcase"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <md-icon class="text-[18px]">palette</md-icon> Creations Showcase
+                </button>
 
-                <a href="#ideas" onclick="switchChannel('ideas'); return false;" id="nav-ideas" class="channel-link relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-r-full transition-all border-l-4 -ml-1">
-                    <md-ripple></md-ripple>
-                    <md-icon style="font-size: 18px;">lightbulb</md-icon> Ideas y Sug.
-                </a>
-                
-                <div class="text-[11px] font-bold uppercase text-[var(--md-sys-color-outline)] mb-2 mt-6 ml-3">Plataforma</div>
-                <a href="index.html" class="relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-full hover:bg-[var(--md-sys-color-surface-container-low)] text-[var(--md-sys-color-on-surface-variant)] transition-colors">
-                    <md-ripple></md-ripple>
-                    <md-icon style="font-size: 18px;">home</md-icon> Inicio Ventarys
-                </a>
-            </nav>
+                <button onclick="switchChannel('questions')" id="nav-questions"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <md-icon class="text-[18px]">help</md-icon> Q&A & Support
+                </button>
+
+                <button onclick="switchChannel('devs')" id="nav-devs"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <md-icon class="text-[18px]">code</md-icon> API & Developers
+                </button>
+
+                <button onclick="switchChannel('ideas')" id="nav-ideas"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <md-icon class="text-[18px]">lightbulb</md-icon> Feature Requests
+                </button>
+
+                <button onclick="switchChannel('reports')" id="nav-reports"
+                    class="channel-link flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <md-icon class="text-[18px]">bug_report</md-icon> Bug Reports
+                </button>
+            </div>
         </aside>
 
-        <!-- Columna Central -->
-        <main class="flex-1 min-w-0 md:pl-6 md:border-l border-[var(--md-sys-color-outline-variant)]">
-            <div class="flex justify-between items-center mb-6 pl-1">
-                <h1 id="channel-title" class="text-[28px] font-bold text-[var(--md-sys-color-on-surface)] font-sans tracking-tight">Comunidad Global</h1>
-            </div>
-            
-            <div id="channel-desc" class="text-[15px] text-[var(--md-sys-color-on-surface-variant)] mb-8 pl-1">
-                Únete a la conversación. Deja tus ideas, preguntas o comentarios usando la caja a continuación.
+        <!-- Main Content Area -->
+        <main class="flex-grow min-w-0">
+            <div class="mb-10 animate-fade-in-up">
+                <div class="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase mb-4 text-gray-500"
+                    id="channel-tag">
+                    #global
+                </div>
+                <h1 id="channel-title" class="text-3xl md:text-5xl font-sans font-semibold tracking-tight mb-4">General
+                    Discussion</h1>
+                <p id="channel-desc" class="text-gray-500 dark:text-gray-400 text-lg font-light">
+                    Join the general conversation about Ventarys AI. Introduce yourself, chat about AI trends, and
+                    connect.
+                </p>
             </div>
 
-            <div class="w-full">
-                 <div id="HCB_comment_box">
-                     <div class="p-8 text-center text-[var(--md-sys-color-on-surface-variant)] animate-pulse">Cargando discusiones...</div>
-                 </div>
-                 <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
+            <!-- Comment Box Integration -->
+            <div class="minimal-card p-6 md:p-10 animate-fade-in-up" style="animation-delay: 100ms;">
+                <div id="HCB_comment_box">
+                    <div class="py-12 flex justify-center">
+                        <!-- Custom minimal loader -->
+                        <div class="w-8 h-8 border-t-2 border-black dark:border-white rounded-full animate-spin"></div>
+                    </div>
+                </div>
             </div>
         </main>
 
-        <!-- Sidebar Derecho -->
-        <aside class="hidden xl:block w-[300px] shrink-0 sticky top-24 h-fit">
-            <div class="border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-[var(--md-sys-color-surface-container)] font-bold px-4 py-3 text-[var(--md-sys-color-on-surface)] text-sm border-b border-[var(--md-sys-color-outline-variant)]">
-                    Blog de Ventarys
+        <!-- Right Sidebar (Guidelines) -->
+        <aside class="hidden lg:block w-72 flex-shrink-0 animate-fade-in">
+            <div class="sticky top-32 minimal-card p-6">
+                <div class="flex items-center gap-2 text-sm font-sans font-medium mb-4">
+                    <md-icon class="text-[18px]">gavel</md-icon> Community Guidelines
                 </div>
-                <ul class="flex flex-col text-sm text-[var(--md-sys-color-on-surface-variant)]">
-                    <li class="relative overflow-hidden p-4 border-b border-[var(--md-sys-color-outline-variant)] hover:bg-[var(--md-sys-color-surface-container)] transition-colors cursor-pointer">
-                        <md-ripple></md-ripple>
-                        <div class="flex gap-3 items-start">
-                            <md-icon class="text-[var(--md-sys-color-primary)] text-base shrink-0 mt-0.5">edit</md-icon>
-                            <span class="leading-relaxed">Actualización: Nuevo modelo de procesamiento integrado y diseño M3.</span>
-                        </div>
-                    </li>
-                    <li class="relative overflow-hidden p-4 hover:bg-[var(--md-sys-color-surface-container)] transition-colors cursor-pointer">
-                        <md-ripple></md-ripple>
-                        <div class="flex gap-3 items-start">
-                            <md-icon class="text-[var(--md-sys-color-primary)] text-base shrink-0 mt-0.5">chat</md-icon>
-                            <span class="leading-relaxed">Cómo escribir buenos reportes de error en el foro.</span>
-                        </div>
-                    </li>
+                <ul class="text-xs text-gray-500 dark:text-gray-400 font-light space-y-4">
+                    <li><strong class="text-black dark:text-white font-medium">1. Be Respectful:</strong> Treat everyone
+                        with kindness. Harassment or toxic behavior will result in a ban.</li>
+                    <li><strong class="text-black dark:text-white font-medium">2. Keep it Safe:</strong> This is a safe
+                        environment. Do not post or request any inappropriate, illegal, or harmful content.</li>
+                    <li><strong class="text-black dark:text-white font-medium">3. Stay on Topic:</strong> Use the
+                        appropriate channels for bugs, feature requests, or coding help.</li>
+                    <li><strong class="text-black dark:text-white font-medium">4. Protect Privacy:</strong> Do not share
+                        personal information, API keys, or sensitive data in the public forum.</li>
                 </ul>
             </div>
         </aside>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-[var(--md-sys-color-surface-container-low)] pt-12 pb-8 border-t border-[var(--md-sys-color-outline-variant)] relative z-10 mt-auto">
-        <div class="max-w-7xl mx-auto px-6 text-sm flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <img src="logo.png" alt="Logo" class="w-6 h-6 object-contain logo-mono">
-                <span class="font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">Ventarys Open Source</span>
+    <!-- Elegant Footer -->
+    <footer
+        class="bg-white dark:bg-ventarys-950 pt-20 pb-12 relative z-10 border-t border-gray-100 dark:border-gray-900 mt-auto">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain logo-mono">
+                    <span class="font-sans font-medium tracking-wide">Ventarys AI</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="terms.html" class="hover:text-black dark:hover:text-white transition-colors">Terms</a>
+                    <a href="privacy.html" class="hover:text-black dark:hover:text-white transition-colors">Privacy</a>
+                    <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank"
+                        class="hover:text-black dark:hover:text-white transition-colors">GitHub</a>
+                </div>
+                <div class="text-xs font-light">© 2026 Ventarys. All rights reserved.</div>
             </div>
-            <div class="flex gap-6 font-medium text-[var(--md-sys-color-on-surface-variant)]">
-                <a href="#" class="hover:text-[var(--md-sys-color-primary)] transition-colors">Términos</a>
-                <a href="#" class="hover:text-[var(--md-sys-color-primary)] transition-colors">Privacidad</a>
-                <a href="mailto:ventarys@proton.me" class="hover:text-[var(--md-sys-color-primary)] transition-colors">Contacto</a>
-            </div>
-            <div class="text-[var(--md-sys-color-outline)]">© 2026 JNTX Studio.</div>
         </div>
     </footer>
 
+    <!-- CORE SCRIPTS -->
     <script>
-        // --- LOGICA DE FAVICON DINAMICO ---
-        function updateFavicon() {
-            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const logoUrl = "logo.png";
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = logoUrl;
-            
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 64;
-                canvas.height = 64;
-                const ctx = canvas.getContext('2d');
-                
-                // Aplicar filtros equivalentes a .logo-mono
-                if (isDark) {
-                    // Modo oscuro: Invertir a Blanco (brightness 0 + invert 1)
-                    ctx.filter = 'brightness(0) invert(1)';
-                } else {
-                    // Modo claro: Todo Negro (brightness 0)
-                    ctx.filter = 'brightness(0)';
-                }
-                
-                ctx.drawImage(img, 0, 0, 64, 64);
-                
-                const dynamicFavicon = document.getElementById('dynamic-favicon');
-                dynamicFavicon.href = canvas.toDataURL('image/png');
-            };
-        }
-
-        // --- LOGICA DE CANALES ---
+        // --- CHANNELS DATA ---
         const channelsData = {
-            'global': { title: 'Comunidad Global', desc: 'Únete a la conversación general de la comunidad Ventarys. Todo es bienvenido aquí.' },
-            'preguntas': { title: 'Preguntas y Ayuda', desc: '¿Tienes dudas sobre cómo usar la plataforma? Haz tus preguntas aquí.' },
-            'reportes': { title: 'Reportes de Error', desc: 'Si encontraste un bug, repórtalo en este canal con detalles técnicos.' },
-            'ideas': { title: 'Ideas y Sugerencias', desc: '¿Qué características te gustaría ver en el futuro? Comparte tus sugerencias.' }
+            'global': {
+                title: 'General Discussion',
+                desc: 'Join the general conversation about Ventarys AI. Introduce yourself, chat about AI trends, and connect.',
+                tag: '#global'
+            },
+            'showcase': {
+                title: 'Creations Showcase',
+                desc: 'Share the cool things you have built or generated using Ventarys tools.',
+                tag: '#showcase'
+            },
+            'questions': {
+                title: 'Q&A & Support',
+                desc: 'Need help with prompts, setups, or errors? Ask the community here.',
+                tag: '#questions'
+            },
+            'devs': {
+                title: 'API & Developers',
+                desc: 'Discuss API integrations, local model setups, BYOK, and IDX extensions.',
+                tag: '#devs'
+            },
+            'ideas': {
+                title: 'Feature Requests',
+                desc: 'Have a great idea for the next update? Let us know what we should build next.',
+                tag: '#ideas'
+            },
+            'reports': {
+                title: 'Bug Reports',
+                desc: 'Found a glitch? Describe the issue so we can investigate and patch it.',
+                tag: '#reports'
+            }
         };
 
+        // --- FORUM LOGIC ---
         function switchChannel(channelId) {
             if (!channelsData[channelId]) channelId = 'global';
+
+            // Update UI Text
             document.getElementById('channel-title').innerText = channelsData[channelId].title;
             document.getElementById('channel-desc').innerText = channelsData[channelId].desc;
+            document.getElementById('channel-tag').innerText = channelsData[channelId].tag;
             window.location.hash = channelId;
 
-            const activeClasses = ['bg-[var(--md-sys-color-surface-container)]', 'text-[var(--md-sys-color-on-surface)]', 'font-bold', 'border-[var(--md-sys-color-primary)]'];
-            const inactiveClasses = ['hover:bg-[var(--md-sys-color-surface-container-low)]', 'text-[var(--md-sys-color-on-surface-variant)]', 'border-transparent'];
+            // Update Sidebar Active States
+            const activeClasses = ['bg-gray-100', 'dark:bg-gray-900', 'text-black', 'dark:text-white'];
+            const inactiveClasses = ['text-gray-500', 'hover:bg-gray-50', 'dark:hover:bg-gray-900/50'];
 
             document.querySelectorAll('.channel-link').forEach(link => {
                 link.classList.remove(...activeClasses);
@@ -381,58 +504,50 @@
                 activeLink.classList.add(...activeClasses);
             }
 
+            // Reload HTMLCommentBox for the specific channel
             loadCommentsForChannel(channelId);
-            
-            if(window.innerWidth < 768) {
-                 const sidebar = document.getElementById('left-sidebar');
-                 if(!sidebar.classList.contains('hidden') && !sidebar.classList.contains('-translate-x-full')) toggleMobileMenu();
-            }
         }
 
         function loadCommentsForChannel(channelId) {
-            window.hcb_user = { PAGE: 'ventarys-foro-' + channelId };
+            // Set unique page ID for the channel
+            window.hcb_user = {
+                PAGE: 'ventarys-forum-v2-' + channelId,
+                MAX_CHARS: 2000 // Limit chars to keep UI clean
+            };
+
+            // Show loader
             const box = document.getElementById('HCB_comment_box');
-            box.innerHTML = '<div class="p-8 text-center text-[var(--md-sys-color-on-surface-variant)] animate-pulse">Cargando discusiones...</div>';
+            box.innerHTML = '<div class="py-12 flex justify-center"><div class="w-8 h-8 border-t-2 border-black dark:border-white rounded-full animate-spin"></div></div>';
+
+            // Remove old script
             const oldScript = document.getElementById('hcb-script');
             if (oldScript) oldScript.remove();
+
+            // Inject new script
             var s = document.createElement("script");
             s.setAttribute("type", "text/javascript");
             s.setAttribute("id", "hcb-script");
-            s.setAttribute("src", "https://www.htmlcommentbox.com/jread?page=" + encodeURIComponent(window.hcb_user.PAGE).replace("+", "%2B") + "&mod=%241%24wq1rdBcg%24436UmqC2OsQ48Vr%2FhM7NG0&opts=16798&num=10&ts=" + Date.now());
+            s.setAttribute("src", "https://www.htmlcommentbox.com/jread?page=" + encodeURIComponent(window.hcb_user.PAGE).replace("+", "%2B") + "&mod=%241%24wq1rdBcg%24436UmqC2OsQ48Vr%2FhM7NG0&opts=16798&num=15&ts=" + Date.now());
             document.getElementsByTagName("head")[0].appendChild(s);
         }
 
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('left-sidebar');
-            const overlay = document.getElementById('mobile-menu-overlay');
-            const isClosed = sidebar.classList.contains('hidden') || sidebar.classList.contains('-translate-x-full');
-            
-            if (isClosed) {
-                sidebar.classList.remove('hidden');
-                setTimeout(() => {
-                    sidebar.classList.remove('-translate-x-full');
-                    sidebar.classList.add('translate-x-0');
-                }, 10);
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
-                overlay.classList.add('opacity-100', 'cursor-pointer');
-            } else {
-                sidebar.classList.remove('translate-x-0');
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.remove('opacity-100', 'cursor-pointer');
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => { sidebar.classList.add('hidden'); }, 300);
-            }
+        // --- MOBILE MENU ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
         }
 
+        // --- INIT ---
         window.addEventListener('DOMContentLoaded', () => {
-            updateFavicon();
             let hash = window.location.hash.substring(1);
             if (!channelsData[hash]) hash = 'global';
             switchChannel(hash);
         });
-
-        // Escuchar cambios de tema del sistema en tiempo real
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
     </script>
 </body>
+
 </html>
