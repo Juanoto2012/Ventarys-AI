@@ -1141,7 +1141,7 @@
         }
         let currentUser = null, isGuest = false, msgStats = { date: new Date().toDateString(), count: 0 };
         let currentImageModelId = 'flux';
-        let currentAudioModelId = 'mimo-v2.5-tts';
+        let currentAudioModelId = 'aria';
         let masterKey = null;
         const PROVIDERS = {
             llm7: { name: "Ventarys AI", url: "https://ventarys-api.hf.space/v1/chat/completions", models: ["google/gemma-4-E2B-it", "Qwen/Qwen3-4B-Instruct-2507", "HuggingFaceTB/SmolLM3-3B"], defaultModel: "google/gemma-4-E2B-it", requiresKey: false },
@@ -1640,47 +1640,14 @@
             const select = document.getElementById('audio-model-select');
             const loadingEl = document.getElementById('audio-model-loading');
             const errorEl = document.getElementById('audio-model-error');
-            if (!apiKeys['aqua']) {
-                loadingEl.classList.add('hidden');
-                loadingEl.classList.remove('flex');
-                select.style.display = 'block';
-                select.innerHTML = '<option value="mimo-v2.5-tts">Mimo TTS (Requiere Aqua Key)</option>';
-                return;
-            }
-            loadingEl.classList.remove('hidden');
-            loadingEl.classList.add('flex');
-            select.style.display = 'none';
-            errorEl.style.display = 'none';
-            try {
-                const resp = await fetch('https://api.aquadevs.com/v1/models', { headers: { 'Authorization': `Bearer ${apiKeys['aqua']}` } });
-                if (!resp.ok) throw new Error();
-                const data = await resp.json();
-                if (!data.data || !Array.isArray(data.data)) throw new Error("Formato");
-                const audioModels = data.data.filter(m => m.type === 'audio' || (m.id && m.id.includes('tts')));
-                select.innerHTML = '';
-                if (audioModels.length === 0) {
-                    audioModels.push({ id: 'mimo-v2.5-tts', name: 'mimo-v2.5-tts' });
-                }
-                audioModels.forEach((m, i) => {
-                    const opt = document.createElement('option');
-                    opt.value = m.id;
-                    opt.textContent = m.name || m.id;
-                    if (m.id === currentAudioModelId || (i === 0 && !audioModels.find(am => am.id === currentAudioModelId))) {
-                        opt.selected = true;
-                    }
-                    select.appendChild(opt);
-                });
-                currentAudioModelId = select.value;
-                AppStorage.setItem('byok_audio_model', currentAudioModelId);
-                loadingEl.classList.add('hidden');
-                loadingEl.classList.remove('flex');
-                select.style.display = 'block';
-            } catch (err) {
-                loadingEl.classList.add('hidden');
-                loadingEl.classList.remove('flex');
-                errorEl.style.display = 'block';
-                errorEl.textContent = "Error al cargar modelos de audio.";
-            }
+
+            // Configuramos directamente la API Keyless de Unturf
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            select.style.display = 'block';
+            select.innerHTML = '<option value="aria">Aria (Unturf Keyless TTS)</option>';
+            currentAudioModelId = 'aria';
+            AppStorage.setItem('byok_audio_model', currentAudioModelId);
         }
         function saveImageModel() {
             currentImageModelId = document.getElementById('image-model-select').value;
@@ -1755,7 +1722,7 @@
             checkDailyLimitReset();
             updateMsgCounterUI();
             currentImageModelId = AppStorage.getItem('byok_image_model') || 'flux';
-            currentAudioModelId = AppStorage.getItem('byok_audio_model') || 'mimo-v2.5-tts';
+            currentAudioModelId = AppStorage.getItem('byok_audio_model') || 'aria';
             initSettingsUI();
             fetchAllModels();
             updateChatHistory();
@@ -2039,11 +2006,13 @@
                 return url;
             }
         }
+
         window.toggleReadAloud = async function (btn) {
             const iconSpan = btn.querySelector('.material-symbols-rounded');
             const textSpan = btn.querySelector('.btn-text');
             const msgContainer = btn.closest('.group');
             const proseDiv = msgContainer.querySelector('.msg-content') || msgContainer.querySelector('.prose');
+
             if (btn.audioElement && !btn.audioElement.paused) {
                 btn.audioElement.pause();
                 btn.audioElement.currentTime = 0;
@@ -2051,6 +2020,7 @@
                 textSpan.textContent = 'Leer';
                 return;
             }
+
             if (btn.isPlaying) {
                 btn.isPlaying = false;
                 window.speechSynthesis.cancel();
@@ -2058,70 +2028,77 @@
                 textSpan.textContent = 'Leer';
                 return;
             }
+
             let text = proseDiv.innerText || proseDiv.textContent;
             text = text.replace(/\[GENERATE_IMAGE:.*?\]/g, '').replace(/\[SEARCH\]:.*?/g, '').replace(/\[READ_URL\]:.*?/g, '').trim();
             if (!text) return;
-            if (apiKeys['aqua']) {
-                iconSpan.textContent = 'sync';
-                iconSpan.classList.add('animate-spin');
-                textSpan.textContent = 'Cargando...';
-                try {
-                    const response = await fetch('https://api.aquadevs.com/v1/audio/speech', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${apiKeys['aqua']}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: currentAudioModelId || 'mimo-v2.5-tts',
-                            input: text,
-                            audio: { voice: 'mimo_default' }
-                        })
-                    });
-                    if (!response.ok) throw new Error("Error API Aqua TTS");
-                    const data = await response.json();
-                    if (data.success && data.url) {
-                        if (!btn.audioElement) {
-                            btn.audioElement = new Audio(data.url);
-                            btn.audioElement.onended = () => {
-                                iconSpan.textContent = 'volume_up';
-                                textSpan.textContent = 'Leer';
-                            };
-                            btn.audioElement.onerror = () => {
-                                iconSpan.textContent = 'volume_up';
-                                textSpan.textContent = 'Leer';
-                                notify("Error reproduciendo el audio", "error");
-                            };
-                        } else {
-                            btn.audioElement.src = data.url;
-                        }
-                        iconSpan.classList.remove('animate-spin');
-                        iconSpan.textContent = 'stop';
-                        textSpan.textContent = 'Parar';
-                        await btn.audioElement.play();
-                        return;
-                    } else {
-                        throw new Error("Respuesta inválida de Aqua Audio");
-                    }
-                } catch (err) {
-                    iconSpan.classList.remove('animate-spin');
-                    notify("Fallo Aqua TTS, usando voz del sistema.", "error");
+
+            iconSpan.textContent = 'sync';
+            iconSpan.classList.add('animate-spin');
+            textSpan.textContent = 'Cargando...';
+
+            try {
+                // Unturf Keyless TTS API Integration
+                const response = await fetch('https://speech.ai.unturf.com/v1/audio/speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: text,
+                        voice: currentAudioModelId || 'aria'
+                    })
+                });
+
+                if (!response.ok) throw new Error("Error API Unturf TTS");
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                if (!btn.audioElement) {
+                    btn.audioElement = new Audio(audioUrl);
+                    btn.audioElement.onended = () => {
+                        iconSpan.textContent = 'volume_up';
+                        textSpan.textContent = 'Leer';
+                        URL.revokeObjectURL(btn.audioElement.src);
+                    };
+                    btn.audioElement.onerror = () => {
+                        iconSpan.textContent = 'volume_up';
+                        textSpan.textContent = 'Leer';
+                        notify("Error reproduciendo el audio", "error");
+                        URL.revokeObjectURL(btn.audioElement.src);
+                    };
+                } else {
+                    URL.revokeObjectURL(btn.audioElement.src);
+                    btn.audioElement.src = audioUrl;
                 }
+
+                iconSpan.classList.remove('animate-spin');
+                iconSpan.textContent = 'stop';
+                textSpan.textContent = 'Parar';
+                await btn.audioElement.play();
+                return;
+
+            } catch (err) {
+                iconSpan.classList.remove('animate-spin');
+                notify("Fallo Unturf TTS, usando voz del sistema.", "error");
+
+                // Fallback to system TTS voice
+                btn.isPlaying = true;
+                iconSpan.textContent = 'stop';
+                textSpan.textContent = 'Parar';
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.onend = utterance.onerror = function () {
+                    btn.isPlaying = false;
+                    iconSpan.textContent = 'volume_up';
+                    textSpan.textContent = 'Leer';
+                };
+                window.speechSynthesis.speak(utterance);
             }
-            btn.isPlaying = true;
-            iconSpan.textContent = 'stop';
-            iconSpan.classList.remove('animate-spin');
-            textSpan.textContent = 'Parar';
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES';
-            utterance.onend = utterance.onerror = function () {
-                btn.isPlaying = false;
-                iconSpan.textContent = 'volume_up';
-                textSpan.textContent = 'Leer';
-            };
-            window.speechSynthesis.speak(utterance);
         };
+
         function hydrateLocalImages(container) {
             const imgs = container.querySelectorAll('.lazy-local-img:not(.loaded)');
             imgs.forEach(async (img) => {
@@ -2671,7 +2648,6 @@
         document.addEventListener("DOMContentLoaded", () => { initApp(); });
     </script>
     <script src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447"
-        xintegrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ=="
         data-cf-beacon='{"version":"2024.11.0","token":"544bb4f5e1454c6594f43e6ca96398a7","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
         crossorigin="anonymous"></script>
 </body>
