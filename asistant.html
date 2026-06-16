@@ -720,6 +720,15 @@
                     <span class="font-medium text-sm">Nuevo chat</span>
                 </button>
             </div>
+            <div class="px-4 mt-1 mb-1">
+                <div class="relative flex items-center w-full">
+                    <span translate="no"
+                        class="material-symbols-rounded absolute left-3 text-muted text-[16px]">search</span>
+                    <input type="text" id="chat-search-input" placeholder="Buscar chats..."
+                        class="w-full bg-secondary border border-secondary text-adaptive text-xs rounded-lg pl-9 pr-3 py-2 outline-none focus:border-accent transition-colors"
+                        oninput="updateChatHistory(this.value)">
+                </div>
+            </div>
             <div id="chat-history" class="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-1 mt-2">
                 <div class="px-2 py-2 text-[10px] font-bold text-muted uppercase tracking-widest opacity-70 mb-2">
                     Historial</div>
@@ -1043,14 +1052,27 @@
                 class="hidden w-0 lg:w-1/2 flex-col h-full border-l border-secondary bg-main z-40 transition-all duration-300 relative">
                 <div
                     class="h-16 flex items-center justify-between px-6 border-b border-secondary bg-transparent flex-shrink-0">
-                    <div class="flex items-center gap-2 text-adaptive font-sans font-medium"><span translate="no"
-                            class="material-symbols-rounded text-accent text-[20px]">view_quilt</span> Ventarys IDX
-                        Preview</div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 text-adaptive font-sans font-medium"><span translate="no"
+                                class="material-symbols-rounded text-accent text-[20px]">view_quilt</span> Ventarys IDX
+                        </div>
+                        <div class="flex bg-secondary rounded-lg p-1">
+                            <button id="tab-btn-preview" onclick="switchAppletTab('preview')"
+                                class="px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Preview</button>
+                            <button id="tab-btn-code" onclick="switchAppletTab('code')"
+                                class="px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Código</button>
+                        </div>
+                    </div>
                     <button onclick="closeApplet()" class="text-muted hover:text-adaptive transition-colors"><span
                             translate="no" class="material-symbols-rounded text-[20px]">close</span></button>
                 </div>
-                <iframe id="applet-iframe" class="w-full flex-1 bg-white border-none"
-                    sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+                <div class="flex-1 relative w-full h-full flex flex-col">
+                    <iframe id="applet-iframe" class="absolute inset-0 w-full h-full bg-white border-none z-10"
+                        sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+                    <textarea id="applet-code-editor"
+                        class="absolute inset-0 w-full h-full bg-[#111] text-[#e4e4e7] p-4 font-mono text-sm resize-none outline-none border-none hidden custom-scrollbar"
+                        oninput="updateAppletPreview()" spellcheck="false"></textarea>
+                </div>
             </aside>
         </div>
         <div id="dialog-overlay" class="items-center justify-center p-4 fixed inset-0 hidden">
@@ -1741,9 +1763,7 @@
             updateFeatureChips();
             const pathParts = window.location.pathname.split('/');
             let urlChatId = null;
-            if (pathParts.length >= 4 && pathParts[1] === 'asistant' && pathParts[2] === 'c') {
-                urlChatId = pathParts[3];
-            } else if (pathParts.length >= 3 && pathParts[1] === 'c') {
+            if (pathParts.length >= 3 && pathParts[1] === 'c') {
                 urlChatId = pathParts[2];
             }
             if (urlChatId && allChats[urlChatId]) {
@@ -1758,9 +1778,7 @@
         window.addEventListener('popstate', (e) => {
             const pathParts = window.location.pathname.split('/');
             let urlChatId = null;
-            if (pathParts.length >= 4 && pathParts[1] === 'asistant' && pathParts[2] === 'c') {
-                urlChatId = pathParts[3];
-            } else if (pathParts.length >= 3 && pathParts[1] === 'c') {
+            if (pathParts.length >= 3 && pathParts[1] === 'c') {
                 urlChatId = pathParts[2];
             }
             if (urlChatId && allChats[urlChatId]) loadChat(urlChatId, true);
@@ -2166,7 +2184,7 @@
             if (!currentChatId) {
                 currentChatId = CryptoJS.lib.WordArray.random(16).toString();
                 allChats[currentChatId] = { title: text.substring(0, 30) || "Nuevo Chat", messages: [] };
-                try { window.history.pushState({ chatId: currentChatId }, '', '/asistant/c/' + currentChatId); } catch (e) { }
+                try { window.history.pushState({ chatId: currentChatId }, '', '/c/' + currentChatId); } catch (e) { }
             }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('messages-list').classList.remove('hidden');
@@ -2436,6 +2454,8 @@
                 appletPanel.classList.remove('w-0');
                 appletPanel.classList.add('flex');
                 document.getElementById('applet-iframe').srcdoc = code;
+                document.getElementById('applet-code-editor').value = code;
+                switchAppletTab('preview');
             } else {
                 const modal = document.getElementById('preview-modal');
                 const iframe = document.getElementById('preview-iframe');
@@ -2450,6 +2470,32 @@
             appletPanel.classList.add('w-0');
             appletPanel.classList.remove('flex');
             document.getElementById('applet-iframe').srcdoc = '';
+            document.getElementById('applet-code-editor').value = '';
+        };
+        window.switchAppletTab = function (tab) {
+            const btnPreview = document.getElementById('tab-btn-preview');
+            const btnCode = document.getElementById('tab-btn-code');
+            const iframe = document.getElementById('applet-iframe');
+            const editor = document.getElementById('applet-code-editor');
+            if (tab === 'preview') {
+                btnPreview.className = "px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+                btnCode.className = "px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+                iframe.classList.remove('hidden');
+                iframe.classList.add('z-10');
+                editor.classList.add('hidden');
+                editor.classList.remove('z-10');
+            } else {
+                btnCode.className = "px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+                btnPreview.className = "px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+                editor.classList.remove('hidden');
+                editor.classList.add('z-10');
+                iframe.classList.add('hidden');
+                iframe.classList.remove('z-10');
+            }
+        };
+        window.updateAppletPreview = function () {
+            const code = document.getElementById('applet-code-editor').value;
+            document.getElementById('applet-iframe').srcdoc = code;
         };
         function closePreviewModal() {
             const modal = document.getElementById('preview-modal');
@@ -2526,15 +2572,19 @@
             document.getElementById('welcome-screen').classList.remove('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
-            try { window.history.pushState(null, '', '/asistant/'); } catch (e) { }
+            try { window.history.pushState(null, '', '/'); } catch (e) { }
             closeSidebarMobile();
         }
-        function updateChatHistory() {
+        function updateChatHistory(filterText = '') {
             const container = document.getElementById('chat-history');
             const title = container.querySelector('.text-muted');
             container.innerHTML = '';
-            container.appendChild(title);
+            if (title) container.appendChild(title);
+            else container.innerHTML = '<div class="px-2 py-2 text-[10px] font-bold text-muted uppercase tracking-widest opacity-70 mb-2">Historial</div>';
+
+            const lowerFilter = filterText.toLowerCase();
             Object.entries(allChats).reverse().forEach(([id, chat]) => {
+                if (filterText && !chat.title.toLowerCase().includes(lowerFilter)) return;
                 container.innerHTML += `<div class="group relative flex items-center justify-between px-2 py-1.5 hover:bg-secondary rounded-lg border border-transparent transition-colors"><div onclick="loadChat('${id}')" class="flex items-center gap-2 cursor-pointer flex-1 min-w-0 px-1 py-1"><span class="material-symbols-rounded text-muted text-[16px]">chat_bubble</span><span class="truncate text-sm font-medium opacity-80 group-hover:opacity-100 text-adaptive">${escapeHTML(chat.title)}</span></div><button onclick="toggleChatMenu(event, '${id}')" class="p-1 rounded text-muted hover:text-adaptive hover:bg-tertiary opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-colors"><span class="material-symbols-rounded text-[18px]">more_vert</span></button><div id="chat-menu-${id}" class="hidden absolute right-2 top-8 bg-main border border-secondary rounded-lg shadow-xl z-50 w-36 p-1 flex flex-col"><button onclick="renameChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">edit</span> Renombrar</button><button onclick="exportChatMD('${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">download</span> Exportar</button><button onclick="deleteChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-red-500 hover:bg-red-500/10 rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px]">delete</span> Eliminar</button></div></div>`;
             });
         }
@@ -2575,7 +2625,7 @@
             if (!allChats[id]) return;
             currentChatId = id;
             AppStorage.setItem('current_chat_id', id);
-            if (!noPush) { try { window.history.pushState({ chatId: id }, '', '/asistant/c/' + id); } catch (e) { } }
+            if (!noPush) { try { window.history.pushState({ chatId: id }, '', '/c/' + id); } catch (e) { } }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
@@ -2627,7 +2677,7 @@
                 isDanger: true,
                 onConfirm: async () => {
                     await AppStorage.clearAll();
-                    try { window.history.pushState(null, '', '/asistant/'); } catch (e) { }
+                    try { window.history.pushState(null, '', '/'); } catch (e) { }
                     location.reload();
                 }
             });
