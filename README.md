@@ -1,51 +1,60 @@
 # Ventarys AI 🚀
 
-> **Ecosistema minimalista para IA privada: chat, generación de código y automatización autónoma.**
+> **Minimalist Ecosystem for Private AI: Chat, Code Generation, and Autonomous Automation.**
 
-Ventarys AI es una plataforma ligera construida con **HTML5, CSS3 y JavaScript puro**. Diseñada para desarrolladores que buscan potencia sin dependencias pesadas, permitiendo ejecutar flujos de trabajo de IA de forma local y segura.
-
----
-
-## ✨ Características Principales
-
-- **Privacidad Total:** Los datos se procesan en tu entorno local.
-- **Generación de Código:** Optimizado para asistir en el desarrollo y refactorización.
-- **IDE Autónomo (Ventarys IDX):** Un entorno integrado para trabajar con agentes de IA.
-- **Arquitectura Vanilla:** Sin frameworks (React/Vue), lo que garantiza máxima velocidad y portabilidad.
-- **Interfaz Minimalista:** Enfocada en la productividad y el bajo consumo de recursos.
-
-## 🚀 Inicio Rápido
-
-### Requisitos Previos
-- Un navegador web moderno (Chrome, Firefox, Edge, Brave).
-- Un servidor local (opcional, como *Live Server* de VS Code) para evitar problemas de CORS al cargar módulos.
-
-### Instalación y Uso
-1. **Clona el repositorio:**
-   ```bash
-   git clone https://github.com
-   cd ventarys-ai
-   ```
-2. **Ejecución:**
-   Simplemente abre el archivo `index.html` en tu navegador o levanta un servidor local:
-   ```bash
-   # Si usas Python
-   python -m http.server 8000
-   ```
-
-## 🛠️ Cómo Funciona
-Ventarys AI utiliza una arquitectura de agentes basada en JavaScript que interactúa con APIs de modelos locales (como **Ollama**) o servicios externos. Al ser JS puro, la integración es directa y transparente.
-
-## 🤝 Contribuir
-¡Las contribuciones son bienvenidas! 
-1. Haz un **Fork** del proyecto.
-2. Crea una rama para tu característica (`git checkout -b feature/MejorasIA`).
-3. Envía un **Pull Request**.
+Ventarys AI is a lightweight platform built with **HTML5, CSS3, and pure JavaScript**. Designed for developers seeking power without heavy dependencies, it allows them to run AI securely.
 
 ---
 
-## 📄 Licencia
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+## ✨ Key Features
+
+- **Total Privacy:** Data is processed in your local environment.
+
+- **Code Generation:** Optimized to assist in development and refactoring.
+
+- **Standalone IDE (Ventarys IDX):** An integrated environment for working with AI agents.
+
+- **Vanilla Architecture:** No frameworks (React/Vue), ensuring maximum speed and portability.
+
+- **Minimalist Interface:** Focused on productivity and low resource consumption.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- A modern web browser (Chrome, Firefox, Edge, Brave).
+
+- A local server (optional, such as VS Code's *Live Server*) to avoid CORS issues when loading modules.
+
+### Installation and Usage
+1. **Clone the repository:**
+```bash
+git clone https://github.com
+cd ventarys-ai
+```
+2. **Run:**
+Simply open the `index.html` file in your browser or start a local server:
+```bash
+# If you're using Python
+
+python -m http.server 8000
+```
+
+## 🛠️ How it Works
+Ventarys AI uses a JavaScript-based agent architecture that interacts with local model APIs (such as **Ollama**) or external services. Being pure JS, the integration is straightforward and transparent.
+
+## 🤝 Contribute
+Contributions are welcome!
+
+1. Fork the project.
+
+2. Create a branch for your feature (`git checkout -b feature/AIImprovements`).
+
+3. Submit a pull request.
 
 ---
-[🌐 Sitio Web Oficial](https://ventarys.net) | [💬 Foro de la Comunidad](https://ventarys.net/forum)
+
+## 📄 License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+[🌐 Official Website](https://ventarys.net) | [💬 Community Forum](https://ventarys.net/forum)
