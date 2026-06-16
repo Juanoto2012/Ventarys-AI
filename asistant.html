@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <title>Ventarys AI - Chat Autónomo Seguro</title>
-    <link rel="icon" href="logo.png">
+    <link rel="icon" href="/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://esm.run/@material/web/all.js"></script>
     <link rel="stylesheet"
@@ -673,7 +673,7 @@
                 class="solid-bg rounded-[16px] p-10 max-w-md w-full shadow-2xl flex flex-col gap-6 items-center border border-secondary text-center relative overflow-hidden">
                 <div
                     class="w-16 h-16 bg-tertiary rounded-full flex items-center justify-center border border-secondary mb-2">
-                    <img src="logo.png" alt="Logo" class="w-8 h-8 logo-white"
+                    <img src="/logo.png" alt="Logo" class="w-8 h-8 logo-white"
                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='">
                 </div>
                 <div>
@@ -704,7 +704,7 @@
             <div class="p-6 flex flex-col gap-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <img src="logo.png" alt="Logo" class="w-6 h-6 logo-white"
+                        <img src="/logo.png" alt="Logo" class="w-6 h-6 logo-white"
                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='">
                         <span class="text-adaptive font-sans font-semibold text-xl tracking-tight">Ventarys</span>
                     </div>
@@ -782,7 +782,7 @@
                         class="w-full max-w-2xl mx-auto px-6 py-16 flex flex-col items-center fade-in mt-10">
                         <div
                             class="w-24 h-24 bg-transparent rounded-full flex items-center justify-center border border-secondary mb-10 shadow-[0_0_40px_rgba(255,255,255,0.05)] dark:shadow-none">
-                            <img src="logo.png" alt="Logo" class="w-12 h-12 logo-white"
+                            <img src="/logo.png" alt="Logo" class="w-12 h-12 logo-white"
                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='">
                         </div>
                         <h1
@@ -1740,13 +1740,14 @@
             initSpeechRecognition();
             updateFeatureChips();
             const pathParts = window.location.pathname.split('/');
-            if (pathParts.length >= 3 && pathParts[1] === 'c') {
-                const urlChatId = pathParts[2];
-                if (allChats[urlChatId]) {
-                    loadChat(urlChatId, true);
-                } else {
-                    createNewChatUIOnly();
-                }
+            let urlChatId = null;
+            if (pathParts.length >= 4 && pathParts[1] === 'asistant' && pathParts[2] === 'c') {
+                urlChatId = pathParts[3];
+            } else if (pathParts.length >= 3 && pathParts[1] === 'c') {
+                urlChatId = pathParts[2];
+            }
+            if (urlChatId && allChats[urlChatId]) {
+                loadChat(urlChatId, true);
             } else if (currentChatId && allChats[currentChatId]) {
                 loadChat(currentChatId, true);
             } else {
@@ -1756,10 +1757,14 @@
         }
         window.addEventListener('popstate', (e) => {
             const pathParts = window.location.pathname.split('/');
-            if (pathParts.length >= 3 && pathParts[1] === 'c') {
-                const urlChatId = pathParts[2];
-                if (allChats[urlChatId]) loadChat(urlChatId, true);
-            } else {
+            let urlChatId = null;
+            if (pathParts.length >= 4 && pathParts[1] === 'asistant' && pathParts[2] === 'c') {
+                urlChatId = pathParts[3];
+            } else if (pathParts.length >= 3 && pathParts[1] === 'c') {
+                urlChatId = pathParts[2];
+            }
+            if (urlChatId && allChats[urlChatId]) loadChat(urlChatId, true);
+            else {
                 createNewChatUIOnly();
             }
         });
@@ -1867,7 +1872,7 @@
                     }
                     link.href = canvas.toDataURL('image/png');
                 };
-                img.src = 'logo.png';
+                img.src = '/logo.png';
             } catch (e) { }
         }
         function toggleSidebar() {
@@ -2161,7 +2166,7 @@
             if (!currentChatId) {
                 currentChatId = CryptoJS.lib.WordArray.random(16).toString();
                 allChats[currentChatId] = { title: text.substring(0, 30) || "Nuevo Chat", messages: [] };
-                try { window.history.pushState({ chatId: currentChatId }, '', '/c/' + currentChatId); } catch (e) { }
+                try { window.history.pushState({ chatId: currentChatId }, '', '/asistant/c/' + currentChatId); } catch (e) { }
             }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('messages-list').classList.remove('hidden');
@@ -2375,7 +2380,7 @@
                 div.innerHTML = `<div class="bg-message-user px-5 py-4 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm text-adaptive border border-secondary selectable-text">${filesHtml}<div class="text-[15px] font-light leading-relaxed">${contentHtml}</div></div>`;
             } else {
                 const titleHeader = customHeaderTitle || 'Ventarys AI';
-                div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="logo.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-wrap gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div><div class="msg-actions absolute -bottom-8 left-0 flex items-center gap-2 mt-2 opacity-0 transition-opacity"><button onclick="toggleReadAloud(this)" class="text-[11px] font-medium flex items-center gap-1 text-muted hover:text-adaptive bg-secondary px-2 py-1 rounded border border-secondary transition-colors"><span translate="no" class="material-symbols-rounded notranslate text-[14px]">volume_up</span> <span class="btn-text">Leer</span></button></div></div>`;
+                div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="/logo.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-wrap gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div><div class="msg-actions absolute -bottom-8 left-0 flex items-center gap-2 mt-2 opacity-0 transition-opacity"><button onclick="toggleReadAloud(this)" class="text-[11px] font-medium flex items-center gap-1 text-muted hover:text-adaptive bg-secondary px-2 py-1 rounded border border-secondary transition-colors"><span translate="no" class="material-symbols-rounded notranslate text-[14px]">volume_up</span> <span class="btn-text">Leer</span></button></div></div>`;
             }
             list.appendChild(div);
             scrollToBottom();
@@ -2521,7 +2526,7 @@
             document.getElementById('welcome-screen').classList.remove('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
-            try { window.history.pushState(null, '', '/'); } catch (e) { }
+            try { window.history.pushState(null, '', '/asistant/'); } catch (e) { }
             closeSidebarMobile();
         }
         function updateChatHistory() {
@@ -2570,7 +2575,7 @@
             if (!allChats[id]) return;
             currentChatId = id;
             AppStorage.setItem('current_chat_id', id);
-            if (!noPush) { try { window.history.pushState({ chatId: id }, '', '/c/' + id); } catch (e) { } }
+            if (!noPush) { try { window.history.pushState({ chatId: id }, '', '/asistant/c/' + id); } catch (e) { } }
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.add('hidden');
@@ -2622,7 +2627,7 @@
                 isDanger: true,
                 onConfirm: async () => {
                     await AppStorage.clearAll();
-                    try { window.history.pushState(null, '', '/'); } catch (e) { }
+                    try { window.history.pushState(null, '', '/asistant/'); } catch (e) { }
                     location.reload();
                 }
             });
