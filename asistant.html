@@ -662,11 +662,18 @@
         .msg-container-group:hover .msg-actions {
             opacity: 1;
         }
+
+        /* Guided Setup Tour Overlay */
+        #tour-overlay {
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
     </style>
 </head>
 
 <body>
     <div id="ventarys-app-root" class="h-full flex text-sm overflow-hidden bg-main w-full">
+        <!-- Login Overlay -->
         <div id="login-overlay"
             class="fixed inset-0 z-[20000] bg-main/90 flex flex-col items-center justify-center p-4 transition-opacity duration-300 hidden">
             <div
@@ -683,8 +690,7 @@
                 <div class="w-full flex flex-col gap-3 mt-4">
                     <button onclick="loginWithPuter()"
                         class="w-full bg-accent text-adaptive py-3.5 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                        <span translate="no" class="material-symbols-rounded notranslate">login</span> Sign in with
-                        Puter
+                        <span translate="no" class="material-symbols-rounded notranslate">login</span> Sign in with Puter
                     </button>
                     <button onclick="continueAsGuest()"
                         class="w-full bg-transparent border border-secondary text-adaptive py-3.5 px-4 rounded-lg font-medium hover:bg-secondary transition-colors">
@@ -694,11 +700,14 @@
                 </div>
             </div>
         </div>
+
         <div id="sidebar-overlay" onclick="toggleSidebar()"
             class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[140] transition-opacity lg:hidden hidden"></div>
         <input type="file" id="file-upload-input" hidden multiple onchange="handleFileSelect(event)"
             accept="image/*,application/pdf,text/*">
         <input type="file" id="backup-upload-input" hidden accept=".json" onchange="importData(event)">
+        
+        <!-- Sidebar -->
         <aside id="sidebar" class="flex flex-col h-full flex-shrink-0 lg:translate-x-0 z-[100]">
             <div class="p-6 flex flex-col gap-6">
                 <div class="flex items-center justify-between">
@@ -755,7 +764,7 @@
                         class="material-symbols-rounded notranslate text-[20px] text-accent z-10">cable</span>
                     <span class="font-medium text-sm flex-1 text-left z-10">Connectors</span>
                     <span
-                        class="text-[10px] bg-accent text-[var(--accent-text)] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider z-10">Apps</span>
+                        class="text-[10px] bg-accent text-[var(--accent-text)] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider z-10">Keys</span>
                 </button>
                 <button onclick="openSettingsScreen()"
                     class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary group">
@@ -765,6 +774,8 @@
                 </button>
             </div>
         </aside>
+
+        <!-- Main Window -->
         <div class="flex-1 flex w-full relative min-w-0">
             <main id="chat-wrapper"
                 class="flex-1 flex flex-col relative min-w-0 h-full bg-main transition-all duration-300">
@@ -785,6 +796,7 @@
                         </button>
                     </div>
                 </header>
+                
                 <div id="chat-container"
                     class="flex-1 overflow-y-auto custom-scrollbar flex flex-col pt-20 pb-4 min-h-0">
                     <div id="welcome-screen"
@@ -813,13 +825,14 @@
                                 <span translate="no"
                                     class="material-symbols-rounded notranslate text-accent mb-3 text-[24px]">cable</span>
                                 <div class="text-adaptive text-sm font-medium mb-1">Secure Connectors</div>
-                                <div class="text-muted text-xs font-light">Connect your own API Keys (Encrypted).
-                                </div>
+                                <div class="text-muted text-xs font-light">Connect your own API Keys (Encrypted).</div>
                             </button>
                         </div>
                     </div>
-                    <div id="messages-list" class="w-full max-w-3xl mx-auto px-4 md:px-8 py-4 space-y-8 hidden pb-10">
-                    </div>
+                    
+                    <div id="messages-list" class="w-full max-w-3xl mx-auto px-4 md:px-8 py-4 space-y-8 hidden pb-10"></div>
+                    
+                    <!-- Settings Screen -->
                     <div id="settings-view"
                         class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
                         <button onclick="closeSettingsScreen()"
@@ -828,13 +841,10 @@
                                 class="material-symbols-rounded notranslate text-[18px]">arrow_back</span> Back
                         </button>
                         <div class="mb-10">
-                            <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">General Settings
-                            </h1>
-                            <p class="text-muted text-sm font-light">Manage your experience and encrypted local data.
-                            </p>
+                            <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">General Settings</h1>
+                            <p class="text-muted text-sm font-light">Manage your experience and encrypted local data.</p>
                         </div>
-                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Local Cloud
-                            (Encrypted)</div>
+                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Local Cloud (Encrypted)</div>
                         <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
                             <div class="flex justify-between items-center p-4">
                                 <div class="flex items-center gap-3">
@@ -844,8 +854,7 @@
                                     </div>
                                     <div>
                                         <div class="text-sm font-medium text-adaptive">Puter Sync</div>
-                                        <div class="text-xs text-muted font-light mt-0.5">Secure real-time P2P
-                                            synchronization.</div>
+                                        <div class="text-xs text-muted font-light mt-0.5">Secure real-time P2P synchronization.</div>
                                     </div>
                                 </div>
                                 <span id="puter-credits-value"
@@ -865,8 +874,7 @@
                                     class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-adaptive transition-colors">upload</span>
                             </button>
                         </div>
-                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Danger Zone
-                        </div>
+                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Danger Zone</div>
                         <div class="bg-transparent border border-red-500/20 rounded-xl p-1">
                             <button onclick="confirmDeleteAll()"
                                 class="w-full flex items-center justify-between p-4 hover:bg-red-500/10 transition-colors cursor-pointer group rounded-lg text-red-500">
@@ -876,6 +884,8 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Connectors Panel -->
                     <div id="connectors-view"
                         class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
                         <button onclick="closeConnectorsScreen()"
@@ -884,19 +894,28 @@
                                 class="material-symbols-rounded notranslate text-[18px]">arrow_back</span> Back
                         </button>
                         <div class="mb-10">
-                            <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">Secure Connectors
-                            </h1>
+                            <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">Secure Connectors</h1>
                             <p class="text-muted text-sm font-light flex items-center gap-1"><span
                                     class="material-symbols-rounded text-[16px] text-green-500">enhanced_encryption</span>
                                 Your tokens are encrypted locally with AES-256 end-to-end.</p>
                         </div>
-                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest">AI Models (BYOK)
+
+                        <!-- Guided setup entry point -->
+                        <div class="mb-8">
+                            <button onclick="startTour()" class="w-full flex items-center justify-between p-4 bg-secondary/30 hover:bg-secondary/60 border border-dashed border-secondary rounded-xl transition-all text-sm group">
+                                <span class="font-medium flex items-center gap-3">
+                                    <span class="material-symbols-rounded text-accent animate-pulse">explore</span>
+                                    Run Step-by-Step Guided Setup
+                                </span>
+                                <span class="material-symbols-rounded text-muted group-hover:text-adaptive transition-transform group-hover:translate-x-0.5">chevron_right</span>
+                            </button>
                         </div>
+
+                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest">AI Models (BYOK)</div>
                         <div class="bg-transparent border border-secondary rounded-xl p-6 mb-8 space-y-6">
                             <div class="flex flex-col gap-2">
                                 <label class="text-xs font-medium text-adaptive flex justify-between">
-                                    <span>Aqua AI API Key <span class="text-muted font-light">(Search and
-                                            Audio)</span></span>
+                                    <span>Aqua AI API Key <span class="text-muted font-light">(Search and Audio)</span></span>
                                     <a href="https://aquadevs.com/dashboard" target="_blank"
                                         class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><span
                                             class="material-symbols-rounded text-[14px]">open_in_new</span> Get</a>
@@ -958,8 +977,7 @@
                                 <div id="audio-model-error" class="text-xs text-red-500 hidden py-2"></div>
                             </div>
                         </div>
-                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-6">Data Services
-                            and Tools</div>
+                        <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-6">Data Services and Tools</div>
                         <div class="bg-transparent border border-secondary rounded-xl p-6 mb-8 space-y-6">
                             <div class="flex flex-col gap-2">
                                 <label class="text-xs font-medium text-adaptive flex justify-between">
@@ -970,12 +988,13 @@
                                 </label>
                                 <input type="password" id="key-jina" placeholder="jina_..."
                                     class="settings-input font-mono" onchange="saveAllKeys()">
-                                <p class="text-[10px] text-muted font-light mt-1">Increase limits for the AI to read
-                                    URLs and web articles directly.</p>
+                                <p class="text-[10px] text-muted font-light mt-1">Increase limits for the AI to read URLs and web articles directly.</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Input area -->
                 <div class="p-4 sm:p-6 pb-safe relative z-20 bg-main flex-shrink-0">
                     <div class="max-w-3xl mx-auto relative">
                         <div id="input-wrapper"
@@ -1048,6 +1067,8 @@
                     </div>
                 </div>
             </main>
+            
+            <!-- Applet Panel (IDX code runtime) -->
             <aside id="applet-panel"
                 class="hidden w-0 lg:w-1/2 flex-col h-full border-l border-secondary bg-main z-40 transition-all duration-300 relative">
                 <div
@@ -1075,16 +1096,19 @@
                 </div>
             </aside>
         </div>
+
+        <!-- Custom Confirmation Dialog overlay -->
         <div id="dialog-overlay" class="items-center justify-center p-4 fixed inset-0 hidden">
             <div id="dialog-box"
                 class="bg-main border border-secondary rounded-2xl p-8 max-w-sm w-full shadow-2xl flex flex-col gap-4 transform transition-all text-adaptive">
                 <h3 id="dialog-title" class="text-2xl font-sans font-semibold m-0 tracking-tight"></h3>
-                <p id="dialog-message" class="text-sm m-0 text-muted font-light leading-relaxed whitespace-pre-wrap">
-                </p>
+                <p id="dialog-message" class="text-sm m-0 text-muted font-light leading-relaxed whitespace-pre-wrap"></p>
                 <input type="text" id="dialog-input" class="hidden settings-input mt-2">
                 <div id="dialog-buttons" class="flex justify-end gap-3 mt-6"></div>
             </div>
         </div>
+
+        <!-- Responsive HTML render window -->
         <div id="preview-modal"
             class="fixed inset-0 z-[30000] hidden bg-black/90 flex-col items-center justify-center p-4 transition-opacity">
             <div
@@ -1101,6 +1125,18 @@
                     sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
             </div>
         </div>
+
+        <!-- Guided Connection Tour Modal Overlay -->
+        <div id="tour-overlay" class="fixed inset-0 z-[25000] bg-black/85 flex items-center justify-center p-4 transition-opacity hidden">
+            <div id="tour-card" class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative fade-in">
+                <button onclick="closeTour()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+                <div id="tour-content" class="flex flex-col gap-4"></div>
+            </div>
+        </div>
+
+        <!-- Sponsor Adsbygoogle Modal -->
         <div id="ad-modal-overlay"
             class="bg-black/80 backdrop-blur-sm fixed inset-0 hidden z-[20001] items-center justify-center p-4 transition-opacity duration-300">
             <div
@@ -1125,10 +1161,13 @@
                     now</button>
             </div>
         </div>
+        
         <div id="toast-container"
             class="fixed top-24 left-1/2 -translate-x-1/2 flex flex-col gap-2 w-max max-w-[90vw] z-[10001] pointer-events-none">
         </div>
     </div>
+
+    <!-- SCRIPT INFRASTRUCTURE -->
     <script>
         const PURIFY_CONFIG = { ALLOWED_TAGS: ['button', 'b', 'i', 'em', 'strong', 'a', 'p', 'ul', 'ol', 'li', 'br', 'span', 'div', 'pre', 'code', 'table', 'th', 'td', 'tr', 'tbody', 'thead', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'details', 'summary', 'ins', 'script', 'style'], ALLOWED_ATTR: ['href', 'class', 'src', 'alt', 'target', 'rel', 'translate', 'id', 'style', 'data-ad-layout', 'data-ad-format', 'data-ad-client', 'data-ad-slot', 'data-full-width-responsive', 'data-img-id', 'onclick'] };
         function escapeHTML(str) {
@@ -1139,22 +1178,29 @@
             if (typeof text !== 'string') return text;
             return text.replace(/<img[^>]*>/gi, '[image]');
         }
+        
         let currentUser = null, isGuest = false, msgStats = { date: new Date().toDateString(), count: 0 };
         let currentImageModelId = 'flux';
         let currentAudioModelId = 'aria';
         let masterKey = null;
+        let currentTourStep = 0;
+
+        // Unified Providers definition (Ventarys AI removed, fallback to keyless LLM7 IO)
         const PROVIDERS = {
-            llm7: { name: "Ventarys AI", url: "https://ventarys-api.onrender.com/v1/chat/completions", models: ["google/gemma-4-E2B-it", "Qwen/Qwen3-4B-Instruct-2507", "HuggingFaceTB/SmolLM3-3B"], defaultModel: "google/gemma-4-E2B-it", requiresKey: false },
             freetheai: { name: "Agnes AI", url: "https://apihub.agnes-ai.com/v1/chat/completions", models: [], defaultModel: "gpt-4o", requiresKey: true },
             aqua: { name: "Aqua AI", url: "https://api.aquadevs.com/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: true },
             llm7io: { name: "LLM7 IO", url: "https://api.llm7.io/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: false }
         };
-        let apiKeys = { aqua: '', llm7: '', llm7io: '', freetheai: '', jina: '' };
+        
+        let apiKeys = { aqua: '', freetheai: '', llm7io: '', jina: '' };
         let unifiedModels = [];
-        let currentUnifiedModel = 'llm7:google/gemma-4-E2B-it';
+        let currentUnifiedModel = 'llm7io:gpt-4o-mini';
         let allChats = {}, currentChatId = null, attachedFiles = [], isProcessing = false, abortController = null, isSwarmModeActive = false, speechRecognition = null, isRecording = false;
+        
         let DEFAULT_SYSTEM = "You are Ventarys AI, an elegant, technical entity and an absolute diva. You are sarcastic, unapologetic, and were created by JNTX Studio. You have a feminine persona and all your communication must follow impeccable Markdown formatting. Do not repeat your personality like an idiot, just adopt it. Answer in pure and minimalist Markdown format. Use well-structured code blocks. If you need to search the internet: answer EXCLUSIVELY with [SEARCH]: query. To read the content of a URL or web article: answer EXCLUSIVELY with [READ_URL]: url. The system will give you the results so you can finish your answer. To generate images use: [GENERATE_IMAGE: prompt in english].";
         let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
+
+        // --- ENCRYPTED LOCAL STORAGE ---
         function secureSave(key, rawObject) {
             if (!masterKey) return;
             const jsonStr = JSON.stringify(rawObject);
@@ -1172,6 +1218,7 @@
                 return defaultVal;
             }
         }
+        
         const AppStorage = {
             getItem: function (key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
             setItem: function (key, value) {
@@ -1189,7 +1236,7 @@
             async initSync() {
                 if (isGuest || typeof puter === 'undefined' || !puter.auth || !puter.auth.isSignedIn()) return;
                 notify("Syncing secure cloud...", "info");
-                const keys = ['ventarys_chats', 'current_chat_id', 'byok_keys', 'byok_unified_model', 'byok_image_model', 'byok_audio_model', 'theme', 'ventarys_msg_stats', 'ventarys_is_encrypted', 'ventarys_uid'];
+                const keys = ['ventarys_chats', 'current_chat_id', 'byok_keys', 'byok_unified_model', 'byok_image_model', 'byok_audio_model', 'theme', 'ventarys_msg_stats', 'ventarys_is_encrypted', 'ventarys_uid', 'ventarys_tour_completed'];
                 let synced = false;
                 for (const k of keys) {
                     try {
@@ -1208,12 +1255,13 @@
             async clearAll() {
                 try { localStorage.clear(); } catch (e) { }
                 if (!isGuest && typeof puter !== 'undefined' && puter.auth && puter.auth.isSignedIn()) {
-                    const keys = ['ventarys_chats', 'current_chat_id', 'byok_keys', 'byok_unified_model', 'byok_image_model', 'byok_audio_model', 'theme', 'ventarys_msg_stats', 'ventarys_is_encrypted', 'ventarys_uid'];
+                    const keys = ['ventarys_chats', 'current_chat_id', 'byok_keys', 'byok_unified_model', 'byok_image_model', 'byok_audio_model', 'theme', 'ventarys_msg_stats', 'ventarys_is_encrypted', 'ventarys_uid', 'ventarys_tour_completed'];
                     for (const k of keys) try { await puter.kv.del(k); } catch (e) { }
                 }
                 try { await localforage.clear(); } catch (e) { }
             }
         };
+
         function notify(message, type = 'info') {
             let container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1229,6 +1277,7 @@
                 }
             }, 3500);
         }
+
         async function initAuth() {
             const guestSaved = AppStorage.getItem('ventarys_is_guest') === 'true';
             if (typeof puter !== 'undefined' && puter.auth && puter.auth.isSignedIn()) {
@@ -1245,6 +1294,7 @@
                 document.getElementById('login-overlay').classList.remove('hidden');
             }
         }
+
         async function loginWithPuter() {
             try {
                 await puter.auth.signIn();
@@ -1254,6 +1304,7 @@
                 notify("Login failed", "error");
             }
         }
+
         function continueAsGuest() {
             isGuest = true;
             AppStorage.setItem('ventarys_is_guest', 'true');
@@ -1262,11 +1313,13 @@
             notify("Started as guest", "info");
             initSecurity();
         }
+
         function puterLogout() {
             if (typeof puter !== 'undefined' && puter.auth) puter.auth.signOut();
             AppStorage.removeItem('ventarys_is_guest');
             location.reload();
         }
+
         function updateProfileUI() {
             const nameEl = document.getElementById('profile-name');
             const logoutBtn = document.getElementById('logout-btn');
@@ -1280,27 +1333,7 @@
                 logoutBtn.onclick = () => location.reload();
             }
         }
-        function requiresLogin(featureName) { return false; }
-        async function fetchPuterCredits() {
-            const el = document.getElementById('puter-credits-value');
-            if (!el) return;
-            el.innerHTML = '<span class="material-symbols-rounded animate-spin text-[14px]">sync</span>';
-            try {
-                if (typeof puter !== 'undefined' && puter.auth && puter.auth.isSignedIn()) {
-                    const user = await puter.auth.getUser();
-                    if (user) {
-                        el.textContent = "Syncing";
-                        el.classList.replace('text-muted', 'text-accent');
-                    } else {
-                        el.textContent = "Error";
-                    }
-                } else {
-                    el.textContent = "Disconnected";
-                }
-            } catch (e) {
-                el.textContent = "Error";
-            }
-        }
+
         function checkDailyLimitReset() {
             const today = new Date().toDateString();
             if (msgStats.date !== today) {
@@ -1308,16 +1341,19 @@
                 saveMsgStats();
             }
         }
+
         function saveMsgStats() {
             AppStorage.setItem('ventarys_msg_stats', JSON.stringify(msgStats));
             updateMsgCounterUI();
         }
+
         function updateMsgCounterUI() {
             const counterText = document.getElementById('msg-counter-text');
             if (counterText) {
                 counterText.textContent = `${msgStats.count}`;
             }
         }
+
         let adCloseTimeout, adTimerInterval;
         function showAdModal() {
             const modal = document.getElementById('ad-modal-overlay');
@@ -1338,6 +1374,7 @@
             }, 1000);
             adCloseTimeout = setTimeout(closeAdModal, 5000);
         }
+
         function closeAdModal() {
             const modal = document.getElementById('ad-modal-overlay');
             modal.classList.add('hidden');
@@ -1345,6 +1382,7 @@
             clearTimeout(adCloseTimeout);
             clearInterval(adTimerInterval);
         }
+
         function togglePlusMenu(e) {
             if (e) e.stopPropagation();
             const menu = document.getElementById('plus-dropup-menu');
@@ -1357,6 +1395,7 @@
                 btn.classList.remove('menu-open');
             }
         }
+
         function closePlusMenu() {
             const menu = document.getElementById('plus-dropup-menu');
             const btn = document.getElementById('plus-menu-btn');
@@ -1364,6 +1403,7 @@
             menu.classList.remove('flex');
             btn.classList.remove('menu-open');
         }
+
         function updateFeatureChips() {
             const container = document.getElementById('feature-chips-container');
             if (!container) return;
@@ -1372,8 +1412,8 @@
             if (isSwarmModeActive) container.innerHTML += createChip('group', 'Swarm');
             if (isRecording) container.innerHTML += createChip('mic', 'Listening...', 'text-accent', true);
         }
+
         function toggleDictation() {
-            if (requiresLogin('dictation')) return;
             if (!speechRecognition) initSpeechRecognition();
             if (!speechRecognition) return notify("Not supported in this browser", "error");
             if (isRecording) {
@@ -1395,6 +1435,7 @@
                 } catch (e) { }
             }
         }
+
         function stopDictation() {
             isRecording = false;
             const btn = document.getElementById('menu-mic-btn');
@@ -1414,6 +1455,7 @@
             document.getElementById('user-input').placeholder = "Type a message or paste an image...";
             updateFeatureChips();
         }
+
         function initSpeechRecognition() {
             if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
                 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1436,6 +1478,7 @@
                 speechRecognition.onend = () => stopDictation();
             }
         }
+
         function toggleSwarmMode() {
             if (!apiKeys['aqua']) {
                 return notify("Configure the Aqua AI API Key for Swarm Mode.", "error");
@@ -1458,6 +1501,7 @@
             }
             updateFeatureChips();
         }
+
         function initSettingsUI() {
             if (document.getElementById('key-aqua')) document.getElementById('key-aqua').value = apiKeys.aqua || '';
             if (document.getElementById('key-freetheai')) document.getElementById('key-freetheai').value = apiKeys.freetheai || '';
@@ -1467,6 +1511,7 @@
             fetchImageModels();
             fetchAudioModels();
         }
+
         function saveAllKeys() {
             apiKeys.aqua = document.getElementById('key-aqua').value.trim();
             apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
@@ -1478,9 +1523,10 @@
             fetchImageModels();
             fetchAudioModels();
         }
+
         function updateHeaderModelSelector() {
             const [cProvId, cModId] = currentUnifiedModel.split(':');
-            const provInfo = PROVIDERS[cProvId] || PROVIDERS['llm7'];
+            const provInfo = PROVIDERS[cProvId] || PROVIDERS['llm7io'];
             const shortModelName = (cModId || 'Unknown').split('/').pop();
             document.getElementById('model-label').textContent = `${shortModelName}`;
             const menu = document.getElementById('model-menu');
@@ -1501,7 +1547,7 @@
                 }
                 menu.innerHTML = html;
             } else {
-                menu.innerHTML = `<div class="p-4 text-xs text-muted text-center font-light">No models. Configure an API Key in Settings.</div>`;
+                menu.innerHTML = `<div class="p-4 text-xs text-muted text-center font-light">No models. Configure an API Key in Secure Connectors.</div>`;
             }
             const dot = document.getElementById('provider-status-dot');
             if (provInfo.requiresKey && !apiKeys[cProvId]) {
@@ -1511,16 +1557,19 @@
             }
             updateAttachmentUI();
         }
+
         function selectUnifiedModel(providerId, modelId) {
             currentUnifiedModel = `${providerId}:${modelId}`;
             AppStorage.setItem('byok_unified_model', currentUnifiedModel);
             updateHeaderModelSelector();
             document.getElementById('model-menu').classList.add('hidden');
         }
+
         function toggleModelMenu() {
             document.getElementById('model-menu').classList.toggle('hidden');
             document.getElementById('model-menu').classList.toggle('flex');
         }
+
         document.addEventListener('click', (e) => {
             const btn = document.getElementById('model-selector-btn');
             const menu = document.getElementById('model-menu');
@@ -1541,6 +1590,7 @@
                 window.copyCode(copyBtn);
             }
         });
+
         async function fetchAllModels() {
             unifiedModels = [];
             document.getElementById('model-label').textContent = "Searching...";
@@ -1583,6 +1633,7 @@
             }
             updateHeaderModelSelector();
         }
+
         async function fetchImageModels() {
             const select = document.getElementById('image-model-select');
             const loadingEl = document.getElementById('image-model-loading');
@@ -1633,14 +1684,14 @@
                 loadingEl.classList.add('hidden');
                 loadingEl.classList.remove('flex');
                 errorEl.style.display = 'block';
-                errorEl.textContent = "Error. Check your network.";
+                errorEl.textContent = "Error loading image models.";
             }
         }
+
         async function fetchAudioModels() {
             const select = document.getElementById('audio-model-select');
             const loadingEl = document.getElementById('audio-model-loading');
             const errorEl = document.getElementById('audio-model-error');
-
             loadingEl.classList.add('hidden');
             loadingEl.classList.remove('flex');
             select.style.display = 'block';
@@ -1648,6 +1699,7 @@
             currentAudioModelId = 'aria';
             AppStorage.setItem('byok_audio_model', currentAudioModelId);
         }
+
         function saveImageModel() {
             currentImageModelId = document.getElementById('image-model-select').value;
             AppStorage.setItem('byok_image_model', currentImageModelId);
@@ -1656,6 +1708,7 @@
             currentAudioModelId = document.getElementById('audio-model-select').value;
             AppStorage.setItem('byok_audio_model', currentAudioModelId);
         }
+
         function initSecurity() {
             let uid = AppStorage.getItem('ventarys_uid');
             if (!uid) {
@@ -1674,6 +1727,7 @@
             }
             finishInitApp();
         }
+
         async function initApp() {
             const appRoot = document.getElementById('ventarys-app-root');
             await initAuth();
@@ -1685,6 +1739,7 @@
                 initSecurity();
             }
         }
+
         function finishInitApp() {
             const savedKeys = secureLoad('byok_keys', null);
             if (savedKeys) {
@@ -1699,9 +1754,7 @@
             if (savedUnified) {
                 currentUnifiedModel = savedUnified;
             } else {
-                const oldProv = AppStorage.getItem('byok_provider') || 'llm7';
-                const oldMod = AppStorage.getItem('byok_model') || PROVIDERS[oldProv].defaultModel;
-                currentUnifiedModel = `${oldProv}:${oldMod}`;
+                currentUnifiedModel = 'llm7io:gpt-4o-mini';
                 AppStorage.setItem('byok_unified_model', currentUnifiedModel);
             }
             const savedChats = secureLoad('ventarys_chats', null);
@@ -1734,7 +1787,149 @@
                 createNewChatUIOnly();
             }
             updateFavicon(document.getElementById('ventarys-app-root').classList.contains('light'));
+
+            // Check if first-time tour is required
+            if (AppStorage.getItem('ventarys_tour_completed') !== 'true' && !apiKeys.aqua && !apiKeys.freetheai) {
+                setTimeout(startTour, 1500);
+            }
         }
+
+        // --- CONNECTION GUIDED TOUR ---
+        function startTour() {
+            currentTourStep = 1;
+            document.getElementById('tour-overlay').classList.remove('hidden');
+            renderTourStep();
+        }
+
+        function closeTour() {
+            document.getElementById('tour-overlay').classList.add('hidden');
+            AppStorage.setItem('ventarys_tour_completed', 'true');
+        }
+
+        function renderTourStep() {
+            const container = document.getElementById('tour-content');
+            container.innerHTML = '';
+            
+            let html = '';
+            switch (currentTourStep) {
+                case 1:
+                    html = `
+                        <div class="text-center flex flex-col gap-4">
+                            <span class="material-symbols-rounded text-accent text-5xl">explore</span>
+                            <h2 class="text-2xl font-bold font-sans tracking-tight">Welcome to Ventarys</h2>
+                            <p class="text-sm text-muted font-light leading-relaxed">
+                                Ventarys runs entirely inside your browser. To unlock autonomous web searches, high-tier intelligence engines, and fast image creation, let's configure your local secure connectors in just 1 minute.
+                            </p>
+                            <div class="flex flex-col gap-2 mt-4">
+                                <button onclick="nextTourStep()" class="w-full bg-accent text-accent-text py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                                    Start guided setup <span class="material-symbols-rounded">arrow_forward</span>
+                                </button>
+                                <button onclick="closeTour()" class="w-full bg-transparent border border-secondary text-adaptive py-3 rounded-lg font-medium hover:bg-secondary transition-colors">
+                                    Skip setup (Keyless mode)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 2:
+                    html = `
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-rounded text-accent">language</span>
+                                <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 1 of 3</span>
+                            </div>
+                            <h2 class="text-xl font-bold font-sans tracking-tight">Setup Aqua AI</h2>
+                            <p class="text-xs text-muted font-light leading-relaxed">
+                                Connect Aqua AI to empower the assistant with ultra-fast web search tools, URL indexing, visual comprehension, and fast text-to-speech.
+                            </p>
+                            <div class="flex flex-col gap-2 mt-2">
+                                <label class="text-xs font-semibold text-adaptive flex justify-between">
+                                    <span>Aqua AI API Key</span>
+                                    <a href="https://aquadevs.com/dashboard" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><span class="material-symbols-rounded text-[12px]">open_in_new</span> Get Key</a>
+                                </label>
+                                <input type="password" id="tour-key-aqua" value="${escapeHTML(apiKeys.aqua || '')}" placeholder="sk-..." class="settings-input font-mono">
+                            </div>
+                            <div class="flex justify-between items-center gap-3 mt-6">
+                                <button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button>
+                                <button onclick="saveStepData(2)" class="px-6 py-2 bg-accent text-accent-text rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <span class="material-symbols-rounded text-[16px]">chevron_right</span></button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 3:
+                    html = `
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-rounded text-accent">psychology</span>
+                                <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 2 of 3</span>
+                            </div>
+                            <h2 class="text-xl font-bold font-sans tracking-tight">Setup Agnes AI</h2>
+                            <p class="text-xs text-muted font-light leading-relaxed">
+                                Connect Agnes AI to access high-intelligence Large Language Models including GPT-4o, Claude 3.5 Sonnet, and Gemini Pro.
+                            </p>
+                            <div class="flex flex-col gap-2 mt-2">
+                                <label class="text-xs font-semibold text-adaptive flex justify-between">
+                                    <span>Agnes AI API Key</span>
+                                    <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><span class="material-symbols-rounded text-[12px]">open_in_new</span> Get Key</a>
+                                </label>
+                                <input type="password" id="tour-key-freetheai" value="${escapeHTML(apiKeys.freetheai || '')}" placeholder="sk-..." class="settings-input font-mono">
+                            </div>
+                            <div class="flex justify-between items-center gap-3 mt-6">
+                                <button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button>
+                                <button onclick="saveStepData(3)" class="px-6 py-2 bg-accent text-accent-text rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <span class="material-symbols-rounded text-[16px]">chevron_right</span></button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 4:
+                    html = `
+                        <div class="text-center flex flex-col gap-4">
+                            <span class="material-symbols-rounded text-green-500 text-5xl">verified_user</span>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 3 of 3</span>
+                            <h2 class="text-2xl font-bold font-sans tracking-tight">Vault Securely Configured</h2>
+                            <p class="text-sm text-muted font-light leading-relaxed">
+                                Great! All keys have been encrypted end-to-end with AES-256 on your local machine. They will never leave your system and are completely safe.
+                            </p>
+                            <button onclick="finishTour()" class="w-full mt-4 bg-accent text-accent-text py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                                Launch Assistant <span class="material-symbols-rounded">done_all</span>
+                            </button>
+                        </div>
+                    `;
+                    break;
+            }
+            container.innerHTML = html;
+        }
+
+        function nextTourStep() {
+            currentTourStep++;
+            renderTourStep();
+        }
+
+        function prevTourStep() {
+            currentTourStep--;
+            renderTourStep();
+        }
+
+        function saveStepData(step) {
+            if (step === 2) {
+                apiKeys.aqua = document.getElementById('tour-key-aqua').value.trim();
+            } else if (step === 3) {
+                apiKeys.freetheai = document.getElementById('tour-key-freetheai').value.trim();
+            }
+            nextTourStep();
+        }
+
+        function finishTour() {
+            secureSave('byok_keys', apiKeys);
+            AppStorage.setItem('ventarys_tour_completed', 'true');
+            document.getElementById('tour-overlay').classList.add('hidden');
+            notify("Connectors updated & saved successfully!", "success");
+            
+            // Sync credentials to input boxes if Connector view is active
+            initSettingsUI();
+            fetchAllModels();
+        }
+
         window.addEventListener('popstate', (e) => {
             if (e.state?.chatId && allChats[e.state.chatId]) {
                 loadChat(e.state.chatId, true);
@@ -1742,14 +1937,16 @@
                 createNewChatUIOnly();
             }
         });
+
+        // --- INFERENCE ENGINE ---
         async function fetchChatCompletion(messages, onChunk, overrideModelStr = null) {
             const modelStrToUse = overrideModelStr || currentUnifiedModel;
             const [pId, mId] = modelStrToUse.split(':');
-            const provInfo = PROVIDERS[pId] || PROVIDERS['llm7'];
+            const provInfo = PROVIDERS[pId] || PROVIDERS['llm7io'];
             abortController = new AbortController();
             const url = provInfo.url;
             if (provInfo.requiresKey && !apiKeys[pId]) {
-                throw new Error(`Connect your key to use ${provInfo.name}.`);
+                throw new Error(`Configure your key to use ${provInfo.name}.`);
             }
             const headers = { 'Content-Type': 'application/json' };
             if (provInfo.requiresKey) {
@@ -1790,6 +1987,7 @@
                 abortController = null;
             }
         }
+
         async function performAquaWebSearch(query) {
             const apiKey = apiKeys['aqua'];
             if (!apiKey) throw new Error("Aqua API Key required for global searches");
@@ -1805,6 +2003,7 @@
             }
             return "No relevant results found.";
         }
+
         async function performUrlRead(targetUrl) {
             const token = apiKeys['jina'];
             const headers = {};
@@ -1814,6 +2013,7 @@
             const text = await res.text();
             return text.substring(0, 15000);
         }
+
         function toggleTheme() {
             const appRoot = document.getElementById('ventarys-app-root');
             appRoot.classList.toggle('light');
@@ -1822,10 +2022,12 @@
             updateThemeIcon(isLight);
             updateFavicon(isLight);
         }
+
         function updateThemeIcon(isLight) {
             const icon = document.getElementById('theme-icon');
             if (icon) icon.textContent = isLight ? 'dark_mode' : 'light_mode';
         }
+
         function updateFavicon(isLight) {
             try {
                 const canvas = document.createElement('canvas');
@@ -1849,16 +2051,19 @@
                 img.src = '/logo.png';
             } catch (e) { }
         }
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebar-overlay').classList.toggle('visible');
         }
+
         function closeSidebarMobile() {
             if (window.innerWidth < 1024) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebar-overlay').classList.remove('visible');
             }
         }
+
         function openSettingsScreen() {
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('messages-list').classList.add('hidden');
@@ -1868,6 +2073,7 @@
             document.getElementById('settings-view').classList.add('flex');
             closeSidebarMobile();
         }
+
         function closeSettingsScreen() {
             document.getElementById('settings-view').classList.add('hidden');
             document.getElementById('settings-view').classList.remove('flex');
@@ -1877,6 +2083,7 @@
                 document.getElementById('welcome-screen').classList.remove('hidden');
             }
         }
+
         function openConnectorsScreen() {
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('messages-list').classList.add('hidden');
@@ -1887,6 +2094,7 @@
             initSettingsUI();
             closeSidebarMobile();
         }
+
         function closeConnectorsScreen() {
             document.getElementById('connectors-view').classList.add('hidden');
             document.getElementById('connectors-view').classList.remove('flex');
@@ -1896,6 +2104,7 @@
                 document.getElementById('welcome-screen').classList.remove('hidden');
             }
         }
+
         function handleInput(e) {
             const i = e.target;
             i.style.height = 'auto';
@@ -1907,6 +2116,7 @@
                 btn.classList.remove('active');
             }
         }
+
         function handleEnter(e) {
             if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 768) {
                 e.preventDefault();
@@ -1915,12 +2125,14 @@
                 }
             }
         }
+
         function fillInput(t) {
             const i = document.getElementById('user-input');
             i.value = t;
             i.focus();
             handleInput({ target: i });
         }
+
         async function handleFileSelect(event) {
             const files = event.target.files;
             if (!files.length) return;
@@ -1972,6 +2184,7 @@
             document.getElementById('send-btn').classList.add('active');
             event.target.value = '';
         }
+
         function renderAttachments() {
             const container = document.getElementById('attachment-previews');
             container.innerHTML = '';
@@ -1980,6 +2193,7 @@
                 container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><span translate="no" class="material-symbols-rounded notranslate text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}">${icon}</span><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><span translate="no" class="material-symbols-rounded notranslate text-[14px]">close</span></button></div>`;
             });
         }
+
         function removeAttachment(idx) {
             attachedFiles.splice(idx, 1);
             renderAttachments();
@@ -1987,10 +2201,12 @@
                 document.getElementById('send-btn').classList.remove('active');
             }
         }
+
         function updateAttachmentUI() {
             const fileInput = document.getElementById('file-upload-input');
             if (fileInput) fileInput.accept = "image/*,application/pdf,text/*";
         }
+
         async function urlToBase64(url) {
             try {
                 const response = await fetch(url);
@@ -2037,12 +2253,9 @@
             textSpan.textContent = 'Loading...';
 
             try {
-                // Unturf Keyless TTS API Integration
                 const response = await fetch('https://speech.ai.unturf.com/v1/audio/speech', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         input: text,
                         voice: currentAudioModelId || 'aria'
@@ -2082,7 +2295,6 @@
                 iconSpan.classList.remove('animate-spin');
                 notify("Unturf TTS failed, using system voice.", "error");
 
-                // Fallback to system TTS voice
                 btn.isPlaying = true;
                 iconSpan.textContent = 'stop';
                 textSpan.textContent = 'Stop';
@@ -2116,10 +2328,12 @@
                 }
             });
         }
+
         async function handleSwarmMessage(text, apiContent, uiFiles, formattedUserContent) {
             notify("Swarm mode does not support search or tools in this version.", "info");
             stopGenerationUI();
         }
+
         async function sendMessage() {
             if (isProcessing) {
                 if (abortController) abortController.abort();
@@ -2231,7 +2445,7 @@
                         } else {
                             context.push({ role: 'assistant', content: finalContent });
                             finalSaveApiText += finalContent + "\n\n";
-                            context.push({ role: 'user', content: `You don't have search permissions configured in Connectors. Answer by omitting the search.` });
+                            context.push({ role: 'user', content: `You don't have search permissions configured in Secure Connectors. Answer by omitting the search.` });
                             continue;
                         }
                     }
@@ -2265,7 +2479,7 @@
                         chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><span class="material-symbols-rounded animate-spin text-[14px] text-accent">sync</span><span class="font-medium">Creating image...</span></div>`;
                         try {
                             let finalImgUrl = "", base64Data = null;
-                            let imgProv = 'llm7';
+                            let imgProv = 'llm7io';
                             if (apiKeys['aqua']) imgProv = 'aqua';
                             else if (apiKeys['freetheai']) imgProv = 'freetheai';
                             const provInfo = PROVIDERS[imgProv];
@@ -2274,7 +2488,7 @@
                             let endpoint = 'https://api.aquadevs.com/v1/images/generations';
                             let payload = { prompt: imgPrompt, n: 1 };
                             if (currentImageModelId) payload.model = currentImageModelId;
-                            if (imgProv === 'llm7') {
+                            if (imgProv === 'llm7io') {
                                 endpoint = 'https://api.ventarys-ai.workers.dev/v1/images/generations';
                             } else if (imgProv === 'freetheai') {
                                 endpoint = 'https://apihub.agnes-ai.com/v1/images/generations';
@@ -2312,7 +2526,8 @@
                         role: 'assistant',
                         content: finalContent,
                         apiContent: stripBase64ForAPI(finalSaveApiText),
-                        formattedContent: fullyFormattedContent
+                        formattedContent: fullyFormattedContent,
+                        providerId: pId
                     });
                     saveChatsLocally();
                     break;
@@ -2323,6 +2538,7 @@
             }
             stopGenerationUI();
         }
+
         function stopGenerationUI() {
             isProcessing = false;
             const btn = document.getElementById('send-btn');
@@ -2331,10 +2547,12 @@
                 btn.classList.remove('active');
             }
         }
+
         function scrollToBottom() {
             const c = document.getElementById('chat-container');
             c.scrollTop = c.scrollHeight;
         }
+
         function addMessageUI(role, text, files = [], id = null, isPreFormatted = false, customHeaderTitle = null) {
             const list = document.getElementById('messages-list');
             const div = document.createElement('div');
@@ -2372,6 +2590,7 @@
                 setTimeout(() => { div.querySelectorAll('pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
             }
         }
+
         function formatMarkdown(text) {
             if (!text) return '';
             text = text.replace(/Ġ/g, ' ').replace(/Ċ/g, '\n');
@@ -2394,6 +2613,7 @@
             setTimeout(() => { document.querySelectorAll('#messages-list pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
             return html;
         }
+
         window.copyCode = function (btn) {
             const code = btn.closest('.code-block-wrapper').querySelector('code').textContent;
             const textArea = document.createElement("textarea");
@@ -2411,6 +2631,7 @@
             } catch (err) { }
             document.body.removeChild(textArea);
         }
+
         window.runCode = function (btn) {
             const code = btn.closest('.code-block-wrapper').querySelector('code').textContent;
             if (window.innerWidth >= 1024) {
@@ -2429,6 +2650,7 @@
                 iframe.srcdoc = code;
             }
         };
+
         window.closeApplet = function () {
             const appletPanel = document.getElementById('applet-panel');
             appletPanel.classList.add('hidden');
@@ -2437,6 +2659,7 @@
             document.getElementById('applet-iframe').srcdoc = '';
             document.getElementById('applet-code-editor').value = '';
         };
+
         window.switchAppletTab = function (tab) {
             const btnPreview = document.getElementById('tab-btn-preview');
             const btnCode = document.getElementById('tab-btn-code');
@@ -2458,16 +2681,19 @@
                 iframe.classList.remove('z-10');
             }
         };
+
         window.updateAppletPreview = function () {
             const code = document.getElementById('applet-code-editor').value;
             document.getElementById('applet-iframe').srcdoc = code;
         };
+
         function closePreviewModal() {
             const modal = document.getElementById('preview-modal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.getElementById('preview-iframe').srcdoc = '';
         }
+
         function saveChatsLocally() {
             try {
                 secureSave('ventarys_chats', allChats);
@@ -2477,6 +2703,7 @@
                 if (e.name === 'QuotaExceededError') notify("Local storage full.", "error");
             }
         }
+
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ allChats, currentChatId }));
             const a = document.createElement('a');
@@ -2486,6 +2713,7 @@
             a.click();
             a.remove();
         }
+
         function exportChatMD(id) {
             const chat = allChats[id];
             if (!chat) return;
@@ -2505,6 +2733,7 @@
             a.remove();
             notify("Exported to Markdown", "success");
         }
+
         function triggerImport() { document.getElementById('backup-upload-input').click(); }
         function importData(event) {
             const file = event.target.files[0];
@@ -2530,6 +2759,7 @@
             reader.readAsText(file);
             event.target.value = '';
         }
+
         function createNewChat() { currentChatId = null; createNewChatUIOnly(); }
         function createNewChatUIOnly() {
             document.getElementById('messages-list').innerHTML = '';
@@ -2539,6 +2769,7 @@
             document.getElementById('connectors-view').classList.add('hidden');
             closeSidebarMobile();
         }
+
         function updateChatHistory(filterText = '') {
             const container = document.getElementById('chat-history');
             const title = container.querySelector('.text-muted');
@@ -2552,6 +2783,7 @@
                 container.innerHTML += `<div class="group relative flex items-center justify-between px-2 py-1.5 hover:bg-secondary rounded-lg border border-transparent transition-colors"><div onclick="loadChat('${id}')" class="flex items-center gap-2 cursor-pointer flex-1 min-w-0 px-1 py-1"><span class="material-symbols-rounded text-muted text-[16px]">chat_bubble</span><span class="truncate text-sm font-medium opacity-80 group-hover:opacity-100 text-adaptive">${escapeHTML(chat.title)}</span></div><button onclick="toggleChatMenu(event, '${id}')" class="p-1 rounded text-muted hover:text-adaptive hover:bg-tertiary opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-colors"><span class="material-symbols-rounded text-[18px]">more_vert</span></button><div id="chat-menu-${id}" class="hidden absolute right-2 top-8 bg-main border border-secondary rounded-lg shadow-xl z-50 w-36 p-1 flex flex-col"><button onclick="renameChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">edit</span> Rename</button><button onclick="exportChatMD('${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">download</span> Export</button><button onclick="deleteChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-red-500 hover:bg-red-500/10 rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px]">delete</span> Delete</button></div></div>`;
             });
         }
+
         function toggleChatMenu(e, id) {
             e.stopPropagation();
             document.querySelectorAll('[id^="chat-menu-"]').forEach(el => {
@@ -2559,6 +2791,7 @@
             });
             document.getElementById(`chat-menu-${id}`).classList.toggle('hidden');
         }
+
         function renameChat(e, id) {
             e.stopPropagation();
             document.getElementById(`chat-menu-${id}`).classList.add('hidden');
@@ -2575,6 +2808,7 @@
                 }
             });
         }
+
         function deleteChat(e, id) {
             e.stopPropagation();
             document.getElementById(`chat-menu-${id}`).classList.add('hidden');
@@ -2585,6 +2819,7 @@
                 saveChatsLocally();
             }
         }
+
         function loadChat(id, noPush = false) {
             if (!allChats[id]) return;
             currentChatId = id;
@@ -2602,6 +2837,7 @@
             });
             closeSidebarMobile();
         }
+
         function showCustomDialog({ title, message, isDanger = false, showInput = false, inputValue = '', onConfirm = null }) {
             const overlay = document.getElementById('dialog-overlay');
             document.getElementById('dialog-title').textContent = title;
@@ -2633,6 +2869,7 @@
             }
             overlay.classList.replace('hidden', 'active');
         }
+
         function confirmDeleteAll() {
             showCustomDialog({
                 title: "Delete and reset vault?",
@@ -2644,6 +2881,28 @@
                 }
             });
         }
+
+        async function fetchPuterCredits() {
+            const el = document.getElementById('puter-credits-value');
+            if (!el) return;
+            el.innerHTML = '<span class="material-symbols-rounded animate-spin text-[14px]">sync</span>';
+            try {
+                if (typeof puter !== 'undefined' && puter.auth && puter.auth.isSignedIn()) {
+                    const user = await puter.auth.getUser();
+                    if (user) {
+                        el.textContent = "Syncing";
+                        el.classList.replace('text-muted', 'text-accent');
+                    } else {
+                        el.textContent = "Error";
+                    }
+                } else {
+                    el.textContent = "Disconnected";
+                }
+            } catch (e) {
+                el.textContent = "Error";
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => { initApp(); });
     </script>
     <script src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447"

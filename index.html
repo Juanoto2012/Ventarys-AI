@@ -272,10 +272,7 @@
                 <a href="#ecosystem"
                     class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Ecosystem</a>
                 <a href="#ventarys-idx"
-                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">IDX
-                    Editor</a>
-                <a href="#api"
-                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">API</a>
+                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">IDX Editor</a>
             </div>
 
             <div class="flex items-center gap-4 translate-yes">
@@ -298,8 +295,6 @@
                     onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ecosystem</a>
                 <a href="#ventarys-idx" class="font-medium text-gray-800 dark:text-gray-200"
                     onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ventarys IDX</a>
-                <a href="#api" class="font-medium text-gray-800 dark:text-gray-200"
-                    onclick="document.getElementById('mobile-menu').classList.add('hidden')">API Developers</a>
 
                 <md-filled-button href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="w-full">View
                     on GitHub</md-filled-button>
@@ -367,8 +362,7 @@
                 <div class="lg:col-span-5 reveal">
                     <div
                         class="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase mb-6 text-gray-400">
-                        <md-icon class="text-[16px] notranslate" translate="no">terminal</md-icon> Autonomous
-                        Environment
+                        <md-icon class="text-[16px] notranslate" translate="no">terminal</md-icon> Autonomous Environment
                     </div>
                     <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">Ventarys IDX</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-lg mb-10 font-light leading-relaxed">
@@ -428,8 +422,7 @@
                         <div class="mt-8 pt-6 text-center">
                             <a href="https://github.com/Juanoto2012/Ventarys-IDX" target="_blank"
                                 class="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest">
-                                <md-icon class="text-[14px] notranslate" translate="no">open_in_new</md-icon> Source
-                                Code
+                                <md-icon class="text-[14px] notranslate" translate="no">open_in_new</md-icon> Source Code
                             </a>
                         </div>
                     </div>
@@ -541,85 +534,6 @@
                 <!-- Loader -->
                 <div class="col-span-1 md:col-span-3 flex justify-center py-12">
                     <div class="loader"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- [API SECTION - STATS] -->
-    <section id="api-stats"
-        class="py-32 border-b border-gray-100 dark:border-gray-900 bg-[#f8f9fa] dark:bg-[#050505] z-10 relative translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div
-                class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-gray-800 dark:divide-gray-200">
-                <div class="reveal p-6">
-                    <p class="text-gray-400 dark:text-gray-500 text-xs font-mono tracking-widest uppercase mb-4">Daily
-                        Users</p>
-                    <p class="text-5xl font-sans font-light tracking-tight">+1,200</p>
-                </div>
-                <div class="reveal p-6" style="transition-delay: 100ms;">
-                    <p class="text-gray-400 dark:text-gray-500 text-xs font-mono tracking-widest uppercase mb-4">Tokens
-                        per Minute</p>
-                    <p class="text-5xl font-sans font-light tracking-tight">500</p>
-                </div>
-                <div class="reveal p-6" style="transition-delay: 200ms;">
-                    <p
-                        class="text-gray-400 dark:text-gray-500 text-xs font-mono tracking-widest uppercase mb-4 flex items-center justify-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        Tokens Served (Month)
-                    </p>
-                    <p id="realtime-tokens" class="text-5xl font-sans font-light tracking-tight font-mono">18,532,108
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- [API SECTION - DEVELOPERS] -->
-    <section id="api"
-        class="py-32 border-y border-gray-100 dark:border-gray-900 bg-[#f8f9fa] dark:bg-[#050505] z-10 relative translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div class="reveal order-2 lg:order-1">
-                    <div class="bg-[#111] dark:bg-[#000] border border-gray-800 rounded-lg p-2 shadow-2xl translate-no">
-                        <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
-                            <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
-                            <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
-                            <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
-                            <span
-                                class="ml-4 text-[10px] text-gray-500 font-mono tracking-widest uppercase">Endpoint</span>
-                        </div>
-                        <div class="p-6 text-[13px] font-mono overflow-x-auto text-gray-300 leading-loose">
-                            <pre><span class="text-blue-400">curl</span> https://ventarys-api.onrender.com/v1/chat/completions \
-  <span class="text-gray-500">-H</span> <span class="text-green-400">"Content-Type: application/json"</span> \
-  <span class="text-gray-500">-d</span> <span class="text-yellow-300">'{
-    "model": "gemini-3",
-    "messages": [
-      { "role": "user", "content": "Hello" }
-    ]
-  }'</span></pre>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reveal order-1 lg:order-2">
-                    <div
-                        class="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase mb-6 text-gray-500">
-                        <md-icon class="text-[16px] notranslate" translate="no">data_object</md-icon> For Developers
-                    </div>
-                    <h2 class="text-4xl font-sans font-semibold tracking-tight mb-8">Ventarys API</h2>
-                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-10 font-light leading-relaxed">
-                        Integrate our optimized models directly into your applications. A robust endpoint, compatible
-                        with the OpenAI standard, designed for fast streaming and low latency.
-                    </p>
-                    <div class="flex items-center gap-6">
-                        <md-outlined-button href="/asistant.html" target="_blank" class="h-12 px-6">
-                            Generate Token
-                        </md-outlined-button>
-                        <a href="#"
-                            class="text-sm font-medium text-gray-500 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest text-[11px]">Read
-                            Documentation</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -757,8 +671,6 @@
                     <a href="#ventarys-idx"
                         class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys
                         IDX</a>
-                    <a href="#api"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">API</a>
                 </div>
 
                 <div class="flex flex-col gap-4">
