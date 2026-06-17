@@ -1144,7 +1144,7 @@
         let currentAudioModelId = 'aria';
         let masterKey = null;
         const PROVIDERS = {
-            llm7: { name: "Ventarys AI", url: "https://ventarys-api.hf.space/v1/chat/completions", models: ["google/gemma-4-E2B-it", "Qwen/Qwen3-4B-Instruct-2507", "HuggingFaceTB/SmolLM3-3B"], defaultModel: "google/gemma-4-E2B-it", requiresKey: false },
+            llm7: { name: "Ventarys AI", url: "https://ventarys-api.onrender.com/v1/chat/completions", models: ["google/gemma-4-E2B-it", "Qwen/Qwen3-4B-Instruct-2507", "HuggingFaceTB/SmolLM3-3B"], defaultModel: "google/gemma-4-E2B-it", requiresKey: false },
             freetheai: { name: "Agnes AI", url: "https://apihub.agnes-ai.com/v1/chat/completions", models: [], defaultModel: "gpt-4o", requiresKey: true },
             aqua: { name: "Aqua AI", url: "https://api.aquadevs.com/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: true },
             llm7io: { name: "LLM7 IO", url: "https://api.llm7.io/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: false }
@@ -1596,7 +1596,7 @@
                 endpoint = 'https://apihub.agnes-ai.com/v1/models';
                 headers['Authorization'] = `Bearer ${apiKeys['freetheai']}`;
             } else {
-                endpoint = 'https://ventarys-api.hf.space/v1/models';
+                endpoint = 'https://ventarys-api.onrender.com/v1/models';
             }
             loadingEl.classList.remove('hidden');
             loadingEl.classList.add('flex');
