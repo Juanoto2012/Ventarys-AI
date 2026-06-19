@@ -1680,7 +1680,7 @@
 
             if (text.length > 200) text = text.substring(0, 199); // Google Translate Limit buffer safety
             let lang = currentVoiceLang.split('-')[0];
-            let url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${lang}&q=${encodeURIComponent(text)}`;
+            let url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=es&q=${encodeURIComponent(text)}`;
 
             currentAudioElement = new Audio(url);
             currentAudioElement.onended = () => {
