@@ -105,57 +105,18 @@
             font-family: 'Outfit', sans-serif !important;
         }
 
-        #ventarys-app-root .bg-main {
-            background-color: var(--bg-main)
-        }
-
-        #ventarys-app-root .bg-sidebar {
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color)
-        }
-
-        #ventarys-app-root .bg-secondary {
-            background-color: var(--bg-secondary)
-        }
-
-        #ventarys-app-root .bg-tertiary {
-            background-color: var(--bg-tertiary)
-        }
-
-        #ventarys-app-root .bg-message-user {
-            background-color: var(--bg-message-user);
-            color: var(--text-primary)
-        }
-
-        #ventarys-app-root .text-adaptive {
-            color: var(--text-primary)
-        }
-
-        #ventarys-app-root .text-muted {
-            color: var(--text-secondary)
-        }
-
-        #ventarys-app-root .border-custom {
-            border-color: var(--border-color)
-        }
-
-        #ventarys-app-root .solid-bg {
-            background-color: var(--bg-secondary) !important;
-            opacity: 1 !important
-        }
-
-        #ventarys-app-root .text-accent {
-            color: var(--accent-main) !important
-        }
-
-        #ventarys-app-root .border-accent {
-            border-color: var(--accent-main) !important
-        }
-
-        #ventarys-app-root .bg-accent {
-            background-color: var(--accent-main) !important;
-            color: var(--accent-text) !important
-        }
+        #ventarys-app-root .bg-main { background-color: var(--bg-main) }
+        #ventarys-app-root .bg-sidebar { background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color) }
+        #ventarys-app-root .bg-secondary { background-color: var(--bg-secondary) }
+        #ventarys-app-root .bg-tertiary { background-color: var(--bg-tertiary) }
+        #ventarys-app-root .bg-message-user { background-color: var(--bg-message-user); color: var(--text-primary) }
+        #ventarys-app-root .text-adaptive { color: var(--text-primary) }
+        #ventarys-app-root .text-muted { color: var(--text-secondary) }
+        #ventarys-app-root .border-custom { border-color: var(--border-color) }
+        #ventarys-app-root .solid-bg { background-color: var(--bg-secondary) !important; opacity: 1 !important }
+        #ventarys-app-root .text-accent { color: var(--accent-main) !important }
+        #ventarys-app-root .border-accent { border-color: var(--accent-main) !important }
+        #ventarys-app-root .bg-accent { background-color: var(--accent-main) !important; color: var(--accent-text) !important }
 
         #ventarys-app-root #sidebar {
             transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -179,60 +140,25 @@
             box-shadow: 0 4px 20px -2px var(--accent-glow);
         }
 
-        #ventarys-app-root #user-input {
-            background-color: transparent;
-            color: var(--input-text)
-        }
+        #ventarys-app-root #user-input { background-color: transparent; color: var(--input-text) }
+        #ventarys-app-root #user-input::placeholder { color: var(--input-placeholder) }
 
-        #ventarys-app-root #user-input::placeholder {
-            color: var(--input-placeholder)
-        }
-
-        #ventarys-app-root .logo-white {
-            filter: brightness(0) invert(1);
-            opacity: .9;
-            transition: all .3s ease
-        }
-
-        #ventarys-app-root.light .logo-white {
-            filter: brightness(0) invert(0);
-            opacity: .9
-        }
+        #ventarys-app-root .logo-white { filter: brightness(0) invert(1); opacity: .9; transition: all .3s ease }
+        #ventarys-app-root.light .logo-white { filter: brightness(0) invert(0); opacity: .9 }
 
         #ventarys-app-root .material-symbols-rounded {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
             font-size: 20px;
             vertical-align: middle
         }
+        #ventarys-app-root .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400 }
 
-        #ventarys-app-root .icon-filled {
-            font-variation-settings: 'FILL' 1, 'wght' 400
-        }
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px }
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-track { background: transparent }
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 4px }
 
-        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-            height: 4px
-        }
-
-        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent
-        }
-
-        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: var(--scrollbar-thumb);
-            border-radius: 4px
-        }
-
-        #ventarys-app-root .prose {
-            color: var(--text-primary);
-            font-weight: 300;
-        }
-
-        #ventarys-app-root .prose p {
-            margin-bottom: 1em;
-            line-height: 1.7
-        }
-
+        #ventarys-app-root .prose { color: var(--text-primary); font-weight: 300; }
+        #ventarys-app-root .prose p { margin-bottom: 1em; line-height: 1.7 }
         #ventarys-app-root .prose code:not(pre code) {
             font-family: 'JetBrains Mono', monospace;
             background: var(--code-bg);
@@ -243,7 +169,6 @@
             border: 1px solid var(--border-secondary);
             font-weight: 400
         }
-
         #ventarys-app-root .prose pre {
             background: var(--code-bg);
             color: var(--code-text);
@@ -254,418 +179,194 @@
             border: 1px solid var(--border-secondary);
             font-size: 0.9em
         }
+        #ventarys-app-root .hljs { background-color: transparent !important; color: var(--text-primary) !important; padding: 0 !important; font-family: 'JetBrains Mono', monospace }
+        #ventarys-app-root .prose h1, .prose h2, .prose h3 { font-family: 'Outfit', sans-serif; margin-top: 1.5em; margin-bottom: .6em; }
+        #ventarys-app-root .prose h1 { font-weight: 600; font-size: 1.6em; }
+        #ventarys-app-root .prose h2 { font-weight: 500; font-size: 1.4em; border-bottom: 1px solid var(--border-secondary); padding-bottom: .3em; }
+        #ventarys-app-root .prose h3 { font-weight: 500; font-size: 1.2em; }
+        #ventarys-app-root .prose ul { list-style-type: none; padding-left: 1em; margin-bottom: 1em; border-left: 1px solid var(--border-secondary); }
+        #ventarys-app-root .prose ul li::before { content: "• "; color: var(--accent-main); font-weight: bold; }
+        #ventarys-app-root .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em }
+        #ventarys-app-root .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1em; overflow-x: auto; display: block; border-radius: 6px; border: 1px solid var(--border-secondary) }
+        #ventarys-app-root .prose th, #ventarys-app-root .prose td { border-bottom: 1px solid var(--border-secondary); padding: 12px 16px; text-align: left }
+        #ventarys-app-root .prose th { background-color: var(--bg-tertiary); font-weight: 500 }
+        #ventarys-app-root .prose blockquote { border-left: 2px solid var(--accent-main); padding-left: 1em; margin: 1em 0; color: var(--text-secondary); font-style: italic; background: var(--bg-tertiary); padding: 1rem; border-radius: 0 4px 4px 0 }
+        #ventarys-app-root .prose strong { font-weight: 600; color: var(--text-primary); }
+        #ventarys-app-root .prose a { color: var(--accent-main); text-decoration: underline; text-underline-offset: 4px; font-weight: 500; }
+        #ventarys-app-root .prose, #ventarys-app-root .prose * { user-select: text !important; -webkit-user-select: text !important }
+        #ventarys-app-root .selectable-text, #ventarys-app-root .selectable-text * { user-select: text !important; -webkit-user-select: text !important }
+        #ventarys-app-root input, #ventarys-app-root textarea { user-select: text !important; -webkit-user-select: text !important }
 
-        #ventarys-app-root .hljs {
-            background-color: transparent !important;
-            color: var(--text-primary) !important;
-            padding: 0 !important;
-            font-family: 'JetBrains Mono', monospace
-        }
+        .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)) }
 
-        #ventarys-app-root .prose h1 {
-            margin-top: 1.5em;
-            margin-bottom: .6em;
-            font-weight: 600;
-            font-size: 1.6em;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        #ventarys-app-root .prose h2 {
-            margin-top: 1.5em;
-            margin-bottom: .6em;
-            font-weight: 500;
-            font-size: 1.4em;
-            border-bottom: 1px solid var(--border-secondary);
-            padding-bottom: .3em;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        #ventarys-app-root .prose h3 {
-            margin-top: 1.5em;
-            margin-bottom: .6em;
-            font-weight: 500;
-            font-size: 1.2em;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        #ventarys-app-root .prose ul {
-            list-style-type: none;
-            padding-left: 1em;
-            margin-bottom: 1em;
-            border-left: 1px solid var(--border-secondary);
-        }
-
-        #ventarys-app-root .prose ul li::before {
-            content: "• ";
-            color: var(--accent-main);
-            font-weight: bold;
-        }
-
-        #ventarys-app-root .prose ol {
-            list-style-type: decimal;
-            padding-left: 1.5em;
-            margin-bottom: 1em
-        }
-
-        #ventarys-app-root .prose table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1em;
-            overflow-x: auto;
-            display: block;
-            border-radius: 6px;
-            border: 1px solid var(--border-secondary)
-        }
-
-        #ventarys-app-root .prose th,
-        #ventarys-app-root .prose td {
-            border-bottom: 1px solid var(--border-secondary);
-            padding: 12px 16px;
-            text-align: left
-        }
-
-        #ventarys-app-root .prose th {
-            background-color: var(--bg-tertiary);
-            font-weight: 500
-        }
-
-        #ventarys-app-root .prose blockquote {
-            border-left: 2px solid var(--accent-main);
-            padding-left: 1em;
-            margin: 1em 0;
-            color: var(--text-secondary);
-            font-style: italic;
-            background: var(--bg-tertiary);
-            padding: 1rem;
-            border-radius: 0 4px 4px 0
-        }
-
-        #ventarys-app-root .prose strong {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        #ventarys-app-root .prose a {
-            color: var(--accent-main);
-            text-decoration: underline;
-            text-underline-offset: 4px;
-            font-weight: 500;
-        }
-
-        #ventarys-app-root .prose,
-        #ventarys-app-root .prose * {
-            user-select: text !important;
-            -webkit-user-select: text !important
-        }
-
-        #ventarys-app-root .selectable-text,
-        #ventarys-app-root .selectable-text * {
-            user-select: text !important;
-            -webkit-user-select: text !important
-        }
-
-        #ventarys-app-root input,
-        #ventarys-app-root textarea {
-            user-select: text !important;
-            -webkit-user-select: text !important
-        }
-
-        .pb-safe {
-            padding-bottom: max(1rem, env(safe-area-inset-bottom))
-        }
-
-        #ventarys-app-root .code-block-wrapper {
-            position: relative;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-secondary);
-            background-color: var(--code-bg);
-            overflow: hidden
-        }
-
-        #ventarys-app-root .code-actions {
-            position: absolute;
-            top: .5rem;
-            right: .5rem;
-            display: flex;
-            gap: 6px;
-            z-index: 10
-        }
-
-        #ventarys-app-root .action-btn {
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-secondary);
-            color: var(--text-secondary);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            opacity: 0;
-            transition: all .2s
-        }
-
-        #ventarys-app-root .code-block-wrapper:hover .action-btn {
-            opacity: 1
-        }
-
-        #ventarys-app-root .action-btn:hover {
-            background-color: var(--accent-main);
-            border-color: var(--accent-main);
-            color: var(--accent-text)
-        }
+        #ventarys-app-root .code-block-wrapper { position: relative; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--border-secondary); background-color: var(--code-bg); overflow: hidden }
+        #ventarys-app-root .code-actions { position: absolute; top: .5rem; right: .5rem; display: flex; gap: 6px; z-index: 10 }
+        #ventarys-app-root .action-btn { background-color: var(--bg-tertiary); border: 1px solid var(--border-secondary); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-family: 'Inter', sans-serif; cursor: pointer; display: flex; align-items: center; gap: 4px; opacity: 0; transition: all .2s }
+        #ventarys-app-root .code-block-wrapper:hover .action-btn { opacity: 1 }
+        #ventarys-app-root .action-btn:hover { background-color: var(--accent-main); border-color: var(--accent-main); color: var(--accent-text) }
 
         @media (max-width:1024px) {
-            #ventarys-app-root #sidebar {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                z-index: 150;
-                transform: translateX(-100%);
-                box-shadow: 20px 0 50px rgba(0, 0, 0, 0.2)
-            }
-
-            #ventarys-app-root #sidebar.open {
-                transform: translateX(0)
-            }
-
-            #ventarys-app-root #sidebar-overlay.visible {
-                display: block;
-                z-index: 140
-            }
-
-            #ventarys-app-root .action-btn {
-                opacity: 1
-            }
+            #ventarys-app-root #sidebar { position: absolute; top: 0; bottom: 0; left: 0; z-index: 150; transform: translateX(-100%); box-shadow: 20px 0 50px rgba(0, 0, 0, 0.2) }
+            #ventarys-app-root #sidebar.open { transform: translateX(0) }
+            #ventarys-app-root #sidebar-overlay.visible { display: block; z-index: 140 }
+            #ventarys-app-root .action-btn { opacity: 1 }
         }
 
-        #ventarys-app-root .fade-in {
-            animation: fadeIn .4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(10px)
+        #ventarys-app-root .fade-in { animation: fadeIn .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(10px) }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0) } }
+
+        #ventarys-app-root #plus-menu-btn .material-symbols-rounded { transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1) }
+        #ventarys-app-root #plus-menu-btn.menu-open .material-symbols-rounded { transform: rotate(45deg) }
+
+        #ventarys-app-root .btn-send { background-color: var(--accent-main); color: var(--accent-text); border-radius: 50% !important; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); opacity: .5; pointer-events: none; }
+        #ventarys-app-root .btn-send.active { cursor: pointer; opacity: 1; pointer-events: auto }
+        #ventarys-app-root .btn-send.active:hover { opacity: .9; transform: scale(1.05) }
+
+        .dot-typing { display: flex; align-items: center; gap: 4px; height: 24px; padding-left: 2px }
+        .dot-typing .dot { width: 4px; height: 4px; background-color: var(--text-secondary); border-radius: 50%; animation: dotTyping 1.4s infinite ease-in-out both }
+        .dot-typing .dot:nth-child(1) { animation-delay: -.32s }
+        .dot-typing .dot:nth-child(2) { animation-delay: -.16s }
+        @keyframes dotTyping { 0%, 80%, 100% { transform: scale(0); opacity: .3 } 40% { transform: scale(1); opacity: 1 } }
+
+        .settings-input { width: 100%; border: 1px solid var(--border-secondary); background-color: transparent; color: var(--text-primary); padding: 12px 16px; border-radius: 8px; font-size: 14px; transition: border-color .3s; outline: none }
+        .settings-input:focus { border-color: var(--accent-main) }
+        .settings-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='gray' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em }
+
+        #dialog-overlay { z-index: 10000 !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px) }
+        #dialog-overlay.active { display: flex }
+        #dialog-box { background-color: var(--bg-secondary); border: 1px solid var(--border-secondary); color: var(--text-primary); border-radius: 12px; padding: 2rem; max-width: 24rem; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) }
+
+        .toast-item { pointer-events: auto; transition: all .4s cubic-bezier(0.16, 1, 0.3, 1) }
+        @keyframes toastSlideIn { from { opacity: 0; transform: translateY(-20px) } to { opacity: 1; transform: translateY(0) } }
+        .toast-enter { animation: toastSlideIn .4s cubic-bezier(0.16, 1, 0.3, 1) forwards }
+        .toast-exit { opacity: 0 !important; transform: translateY(-10px) !important }
+
+        .spinning { animation: spin 1s linear infinite }
+        @keyframes spin { 100% { transform: rotate(360deg) } }
+
+        .model-dot { display: inline-block; width: 6px; height: 6px; background-color: var(--accent-main); border-radius: 50%; box-shadow: 0 0 8px var(--accent-glow) }
+        .agent-block { animation: fadeIn .4s ease-out forwards }
+        details { outline: none }
+        details>summary { list-style: none }
+        details>summary::-webkit-details-marker { display: none }
+        #login-overlay { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px) }
+        .status-dot-active { background-color: var(--accent-main); box-shadow: 0 0 8px var(--accent-glow) }
+        .status-dot-inactive { background-color: var(--text-secondary) }
+        #preview-modal { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px) }
+        .msg-container-group:hover .msg-actions { opacity: 1; }
+        #tour-overlay { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+
+        /* --- LIVE MODE UI STYLES --- */
+        #live-mode-overlay {
+            z-index: 50000;
+            background-color: var(--bg-main);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: opacity 0.4s ease, visibility 0.4s;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        #ventarys-app-root #plus-menu-btn .material-symbols-rounded {
-            transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1)
-        }
-
-        #ventarys-app-root #plus-menu-btn.menu-open .material-symbols-rounded {
-            transform: rotate(45deg)
-        }
-
-        #ventarys-app-root .btn-send {
-            background-color: var(--accent-main);
-            color: var(--accent-text);
-            border-radius: 50% !important;
-            width: 36px;
-            height: 36px;
+        .live-orb-container {
+            position: relative;
+            width: 240px;
+            height: 240px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all .3s cubic-bezier(0.16, 1, 0.3, 1);
-            opacity: .5;
-            pointer-events: none;
         }
 
-        #ventarys-app-root .btn-send.active {
-            cursor: pointer;
-            opacity: 1;
-            pointer-events: auto
-        }
-
-        #ventarys-app-root .btn-send.active:hover {
-            opacity: .9;
-            transform: scale(1.05)
-        }
-
-        .dot-typing {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            height: 24px;
-            padding-left: 2px
-        }
-
-        .dot-typing .dot {
-            width: 4px;
-            height: 4px;
-            background-color: var(--text-secondary);
+        .live-orb {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            animation: dotTyping 1.4s infinite ease-in-out both
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.5);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
         }
 
-        .dot-typing .dot:nth-child(1) {
-            animation-delay: -.32s
+        .light .live-orb {
+             background: linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.02));
+             box-shadow: inset 0 0 20px rgba(0,0,0,0.02), 0 0 30px rgba(0,0,0,0.1);
         }
 
-        .dot-typing .dot:nth-child(2) {
-            animation-delay: -.16s
+        /* Listening State */
+        .live-state-listening .live-orb {
+            animation: orb-pulse-listen 2s infinite ease-in-out;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.4);
         }
 
-        @keyframes dotTyping {
-
-            0%,
-            80%,
-            100% {
-                transform: scale(0);
-                opacity: .3
-            }
-
-            40% {
-                transform: scale(1);
-                opacity: 1
-            }
-        }
-
-        .settings-input {
-            width: 100%;
-            border: 1px solid var(--border-secondary);
-            background-color: transparent;
-            color: var(--text-primary);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color .3s;
-            outline: none
-        }
-
-        .settings-input:focus {
-            border-color: var(--accent-main)
-        }
-
-        .settings-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='gray' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em
-        }
-
-        #dialog-overlay {
-            z-index: 10000 !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px)
-        }
-
-        #dialog-overlay.active {
-            display: flex
-        }
-
-        #dialog-box {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-secondary);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 24rem;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2)
-        }
-
-        .toast-item {
-            pointer-events: auto;
-            transition: all .4s cubic-bezier(0.16, 1, 0.3, 1)
-        }
-
-        @keyframes toastSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        .toast-enter {
-            animation: toastSlideIn .4s cubic-bezier(0.16, 1, 0.3, 1) forwards
-        }
-
-        .toast-exit {
-            opacity: 0 !important;
-            transform: translateY(-10px) !important
-        }
-
-        .spinning {
-            animation: spin 1s linear infinite
-        }
-
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg)
-            }
-        }
-
-        .model-dot {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-main);
+        /* Thinking State */
+        .live-state-thinking .live-orb {
+            animation: orb-spin-think 3s infinite linear;
+            background: conic-gradient(from 0deg, transparent, var(--accent-main), transparent);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-glow)
+            box-shadow: none;
+            width: 150px;
+            height: 150px;
+            -webkit-mask-image: radial-gradient(circle, transparent 65px, black 66px);
+            mask-image: radial-gradient(circle, transparent 65px, black 66px);
         }
 
-        .agent-block {
-            animation: fadeIn .4s ease-out forwards
+        /* Speaking State */
+        .live-state-speaking .live-orb {
+            animation: orb-pulse-speak 0.8s infinite alternate ease-in-out;
+            background: var(--accent-main);
+            box-shadow: 0 0 80px var(--accent-glow);
         }
 
-        details {
-            outline: none
+        @keyframes orb-pulse-listen {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 80px rgba(139, 92, 246, 0.6); }
+            100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        details>summary {
-            list-style: none
+        @keyframes orb-spin-think {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        details>summary::-webkit-details-marker {
-            display: none
+        @keyframes orb-pulse-speak {
+            from { transform: scale(1); opacity: 0.9; }
+            to { transform: scale(1.15); opacity: 1; box-shadow: 0 0 100px var(--accent-glow); }
         }
 
-        #login-overlay {
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px)
+        .live-waves {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid var(--accent-main);
+            opacity: 0;
+            z-index: 1;
         }
 
-        .status-dot-active {
-            background-color: var(--accent-main);
-            box-shadow: 0 0 8px var(--accent-glow)
+        .live-state-listening .live-waves {
+            animation: wave-ripple 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .status-dot-inactive {
-            background-color: var(--text-secondary)
+        @keyframes wave-ripple {
+            0% { transform: scale(0.5); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
 
-        #preview-modal {
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px)
+        #live-btn {
+            background: linear-gradient(45deg, #e8f0fd, #3e3d41);
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+            color: white;
+            border: none;
         }
 
-        .msg-container-group:hover .msg-actions {
-            opacity: 1;
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        #tour-overlay {
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+        #live-subtitle {
+            min-height: 3rem;
+            transition: opacity 0.3s;
         }
     </style>
 </head>
@@ -787,6 +488,12 @@
                         </button>
                     </div>
                     <div class="pointer-events-auto flex items-center gap-3">
+                        <!-- Live Mode Trigger Button -->
+                        <button id="live-btn" onclick="startLiveMode()"
+                            class="px-4 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold uppercase tracking-wider shadow-lg hover:opacity-90 transition-opacity backdrop-blur-md">
+                            <span translate="no" class="material-symbols-rounded text-[16px]">graphic_eq</span>
+                            Live
+                        </button>
                         <button onclick="toggleTheme()"
                             class="p-2.5 text-muted hover:text-adaptive transition-colors rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-md border border-secondary"
                             title="Change Theme">
@@ -1105,6 +812,42 @@
             </aside>
         </div>
 
+        <!-- LIVE MODE OVERLAY -->
+        <div id="live-mode-overlay" class="fixed inset-0 hidden flex-col items-center justify-between py-12 px-6">
+            <header class="w-full flex justify-between items-center z-10">
+                <div class="flex items-center gap-2">
+                    <img src="/logo.png" alt="Logo" class="w-6 h-6 logo-white">
+                    <span class="text-adaptive font-sans font-semibold text-lg">Ventarys Live</span>
+                </div>
+                <button onclick="stopLiveMode()" class="bg-secondary/50 hover:bg-secondary p-3 rounded-full transition-colors border border-secondary text-adaptive">
+                    <span class="material-symbols-rounded text-[24px]">close</span>
+                </button>
+            </header>
+
+            <div class="flex-1 flex flex-col items-center justify-center w-full max-w-2xl relative z-10">
+                <!-- Status indicator -->
+                <div id="live-status-text" class="text-xs font-bold uppercase tracking-widest text-muted mb-12 h-4 transition-opacity">LISTENING...</div>
+
+                <!-- Pulsating Orb -->
+                <div class="live-orb-container live-state-listening" id="live-orb-wrapper">
+                    <div class="live-waves"></div>
+                    <div class="live-orb"></div>
+                </div>
+
+                <!-- Live Subtitles -->
+                <div id="live-subtitle" class="mt-16 text-center text-xl md:text-2xl font-light text-adaptive w-full px-4 overflow-hidden text-ellipsis line-clamp-3"></div>
+            </div>
+
+            <footer class="w-full flex justify-center gap-6 z-10">
+                <button id="live-mic-btn" onclick="toggleLiveMic()" class="w-16 h-16 rounded-full bg-secondary/50 hover:bg-secondary border border-secondary flex items-center justify-center transition-colors text-adaptive">
+                    <span class="material-symbols-rounded text-[28px]" id="live-mic-icon">mic</span>
+                </button>
+                <button onclick="stopLiveMode()" class="w-16 h-16 rounded-full bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 flex items-center justify-center transition-colors text-red-500">
+                    <span class="material-symbols-rounded text-[28px]">call_end</span>
+                </button>
+            </footer>
+        </div>
+
         <!-- Custom Confirmation Dialog overlay -->
         <div id="dialog-overlay" class="items-center justify-center p-4 fixed inset-0 hidden">
             <div id="dialog-box"
@@ -1207,10 +950,19 @@
         let currentUnifiedModel = 'localnode:local-model';
         let allChats = {}, currentChatId = null, attachedFiles = [], isProcessing = false, abortController = null, isSwarmModeActive = false, speechRecognition = null, isRecording = false;
         
+        // --- LIVE MODE STATE ---
+        let isLiveMode = false;
+        let liveAudioElement = null;
+        let liveMicMuted = false;
+        
         let DEFAULT_SYSTEM = "You are Ventarys AI, an elegant, technical entity and an absolute diva. You are sarcastic, unapologetic, and were created by JNTX Studio. You have a feminine persona and all your communication must follow impeccable Markdown formatting. Do not repeat your personality like an idiot, just adopt it. Answer in pure and minimalist Markdown format. Use well-structured code blocks. If you need to search the internet: answer EXCLUSIVELY with [SEARCH]: query. To read the content of a URL or web article: answer EXCLUSIVELY with [READ_URL]: url. The system will give you the results so you can finish your answer. To generate images use: [GENERATE_IMAGE: prompt in english].";
+        
+        // System prompt modification specifically for voice
+        let LIVE_MODE_SYSTEM_INSTRUCTION = " You are currently in an active VOICE conversation. Keep your responses short, conversational, and completely free of markdown formatting like asterisks or complex code blocks. Talk naturally.";
+        
         let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
 
-        // Validation rule helper (Adjusted for general keys including Cohere)
+        // Validation rule helper
         function validateApiKey(key) {
             if (!key) return false;
             return (key.startsWith('sk-') && key.length >= 25) || (key.length >= 20);
@@ -1426,12 +1178,87 @@
             container.innerHTML = '';
             const createChip = (icon, text, iconColorClass = 'text-accent', pulse = false) => `<div class="flex items-center gap-1.5 bg-secondary px-2.5 py-1 rounded-full text-[10px] font-medium text-adaptive shadow-sm animate-[fadeIn_0.2s_ease-out]"><span translate="no" class="material-symbols-rounded notranslate text-[14px] ${iconColorClass} ${pulse ? 'animate-pulse' : ''}">${icon}</span><span class="hidden sm:inline">${text}</span></div>`;
             if (isSwarmModeActive) container.innerHTML += createChip('group', 'Swarm');
-            if (isRecording) container.innerHTML += createChip('mic', 'Listening...', 'text-accent', pulse = true);
+            if (isRecording && !isLiveMode) container.innerHTML += createChip('mic', 'Listening...', 'text-accent', pulse = true);
+        }
+
+        // --- SPEECH RECOGNITION (DICTATION & LIVE MODE) ---
+        function initSpeechRecognition() {
+            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                speechRecognition = new SpeechRec();
+                speechRecognition.continuous = false; // Important for natural conversational turns
+                speechRecognition.interimResults = true;
+                speechRecognition.lang = 'en-US';
+                
+                speechRecognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    if (isLiveMode) {
+                        const subEl = document.getElementById('live-subtitle');
+                        if (interimTranscript) {
+                            subEl.innerHTML = `<span class="opacity-70">${interimTranscript}</span>`;
+                        }
+                        if (finalTranscript) {
+                            subEl.textContent = finalTranscript;
+                            // Trigger thinking immediately on final result
+                            processLiveTurn(finalTranscript);
+                        }
+                    } else {
+                        // Regular Dictation logic
+                        const input = document.getElementById('user-input');
+                        if (finalTranscript) {
+                            input.value += (input.value ? ' ' : '') + finalTranscript;
+                            handleInput({ target: input });
+                        }
+                    }
+                };
+
+                speechRecognition.onerror = (e) => {
+                    console.error("Speech Rec Error:", e.error);
+                    if (isLiveMode) {
+                        if(e.error === 'no-speech') {
+                             // Ignore, just restart if not muted
+                             if(!liveMicMuted && isRecording) {
+                                 try { speechRecognition.start(); } catch(err){}
+                             }
+                        } else {
+                            setLiveState('listening');
+                            document.getElementById('live-subtitle').textContent = "I didn't catch that.";
+                        }
+                    } else {
+                        stopDictation();
+                    }
+                };
+                
+                speechRecognition.onend = () => {
+                    if (isLiveMode) {
+                        // If we are still in listening state and mic isn't muted, keep listening
+                        if (!liveMicMuted && document.getElementById('live-orb-wrapper').classList.contains('live-state-listening')) {
+                            try { speechRecognition.start(); } catch(e) {}
+                        } else {
+                            isRecording = false;
+                        }
+                    } else {
+                        stopDictation();
+                    }
+                };
+            }
         }
 
         function toggleDictation() {
+            if (isLiveMode) return; // Disable standard dictation if in live mode
             if (!speechRecognition) initSpeechRecognition();
             if (!speechRecognition) return notify("Not supported in this browser", "error");
+            
             if (isRecording) {
                 speechRecognition.stop();
             } else {
@@ -1472,28 +1299,273 @@
             updateFeatureChips();
         }
 
-        function initSpeechRecognition() {
-            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-                speechRecognition = new SpeechRec();
-                speechRecognition.continuous = false;
-                speechRecognition.interimResults = true;
-                speechRecognition.lang = 'en-US';
-                speechRecognition.onresult = (event) => {
-                    let finalTranscript = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
-                    }
-                    const input = document.getElementById('user-input');
-                    if (finalTranscript) {
-                        input.value += (input.value ? ' ' : '') + finalTranscript;
-                        handleInput({ target: input });
-                    }
-                };
-                speechRecognition.onerror = () => stopDictation();
-                speechRecognition.onend = () => stopDictation();
+
+        // --- LIVE MODE IMPLEMENTATION ---
+
+        function startLiveMode() {
+            if (!speechRecognition) initSpeechRecognition();
+            if (!speechRecognition) {
+                notify("Live Voice Mode requires a supported browser (Chrome/Edge/Safari).", "error");
+                return;
+            }
+
+            // Ensure a chat exists
+            if (!currentChatId) {
+                currentChatId = CryptoJS.lib.WordArray.random(16).toString();
+                allChats[currentChatId] = { title: "Voice Conversation", messages: [] };
+            }
+
+            isLiveMode = true;
+            liveMicMuted = false;
+            
+            // Show Overlay
+            const overlay = document.getElementById('live-mode-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
+            document.getElementById('live-subtitle').innerHTML = "";
+            document.getElementById('live-mic-icon').textContent = 'mic';
+            document.getElementById('live-mic-btn').classList.remove('bg-red-500/20', 'text-red-500');
+
+            setLiveState('listening');
+        }
+
+        function stopLiveMode() {
+            isLiveMode = false;
+            isRecording = false;
+            if (speechRecognition) speechRecognition.stop();
+            if (liveAudioElement) {
+                liveAudioElement.pause();
+                liveAudioElement.currentTime = 0;
+            }
+            if (abortController) abortController.abort();
+            
+            const overlay = document.getElementById('live-mode-overlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            
+            // Re-render main chat just in case
+            if(currentChatId && allChats[currentChatId]) {
+                 loadChat(currentChatId, true);
+                 document.getElementById('messages-list').classList.remove('hidden');
+                 document.getElementById('welcome-screen').classList.add('hidden');
             }
         }
+
+        function toggleLiveMic() {
+            liveMicMuted = !liveMicMuted;
+            const btn = document.getElementById('live-mic-btn');
+            const icon = document.getElementById('live-mic-icon');
+            
+            if (liveMicMuted) {
+                icon.textContent = 'mic_off';
+                btn.classList.add('bg-red-500/20', 'text-red-500', 'border-red-500/50');
+                if(isRecording) speechRecognition.stop();
+                setLiveState('idle'); // Stop pulsing
+                document.getElementById('live-subtitle').textContent = "Microphone muted.";
+            } else {
+                icon.textContent = 'mic';
+                btn.classList.remove('bg-red-500/20', 'text-red-500', 'border-red-500/50');
+                setLiveState('listening');
+            }
+        }
+
+        function setLiveState(state) {
+            if (!isLiveMode) return;
+            
+            const wrapper = document.getElementById('live-orb-wrapper');
+            const statusText = document.getElementById('live-status-text');
+            
+            wrapper.classList.remove('live-state-listening', 'live-state-thinking', 'live-state-speaking');
+            
+            if (state === 'listening') {
+                if(!liveMicMuted) {
+                    wrapper.classList.add('live-state-listening');
+                    statusText.textContent = "LISTENING...";
+                    statusText.style.opacity = '1';
+                    if(!isRecording) {
+                        try {
+                            speechRecognition.start();
+                            isRecording = true;
+                        } catch(e){}
+                    }
+                }
+            } else if (state === 'thinking') {
+                wrapper.classList.add('live-state-thinking');
+                statusText.textContent = "THINKING...";
+                statusText.style.opacity = '1';
+                if(isRecording) {
+                    speechRecognition.stop();
+                    isRecording = false;
+                }
+            } else if (state === 'speaking') {
+                wrapper.classList.add('live-state-speaking');
+                statusText.textContent = "";
+                statusText.style.opacity = '0';
+                if(isRecording) {
+                    speechRecognition.stop();
+                    isRecording = false;
+                }
+            } else if (state === 'idle') {
+                 statusText.textContent = "MUTED";
+                 statusText.style.opacity = '0.5';
+            }
+        }
+
+        async function processLiveTurn(userText) {
+            if (!userText.trim()) return;
+
+            setLiveState('thinking');
+            
+            // 1. Add User Message to History Silently
+            const formattedUserContent = escapeHTML(userText).replace(/\n/g, '<br>');
+            allChats[currentChatId].messages.push({ 
+                role: 'user', 
+                content: userText, 
+                apiContent: userText, 
+                formattedContent: formattedUserContent 
+            });
+            saveChatsLocally();
+
+            // 2. Build Context for API (Inject Voice Instruction)
+            let context = [{ role: 'system', content: SYSTEM_MESSAGE.content + LIVE_MODE_SYSTEM_INSTRUCTION }];
+            for (let i = 0; i < allChats[currentChatId].messages.length; i++) {
+                const m = allChats[currentChatId].messages[i];
+                context.push({ role: m.role, content: typeof m.apiContent === 'string' ? m.apiContent : m.content });
+            }
+
+            // 3. Fetch Completion
+            let aiTextResponse = "";
+            try {
+                // If Swarm is active, use it, otherwise use normal fetch
+                if (isSwarmModeActive) {
+                     document.getElementById('live-subtitle').textContent = "(Swarm AI processing...)";
+                     aiTextResponse = await processSwarmLiveLogic(context);
+                } else {
+                    await fetchChatCompletion(context, (chunk) => {
+                        aiTextResponse = chunk;
+                        // Don't update subtitle here to avoid flickering, wait for final text
+                    });
+                }
+
+                // Ensure we haven't exited live mode during the network call
+                if(!isLiveMode) return;
+                
+                // Clean AI text for speech (remove markdown, URLs, etc)
+                let cleanTextForSpeech = aiTextResponse.replace(/\*+/g, '') // remove bold/italics
+                                                     .replace(/```[\s\S]*?```/g, ' [Code Block] ') // hide code
+                                                     .replace(/\[.*?\]\(.*?\)/g, ' [Link] ') // hide markdown links
+                                                     .replace(/\[SEARCH\]:.*?(\n|$)/g, '')
+                                                     .replace(/\[READ_URL\]:.*?(\n|$)/g, '')
+                                                     .replace(/\[GENERATE_IMAGE:.*?\]/g, '')
+                                                     .trim();
+
+                // Save AI message to history
+                allChats[currentChatId].messages.push({
+                    role: 'assistant',
+                    content: aiTextResponse,
+                    apiContent: aiTextResponse,
+                    formattedContent: formatMarkdown(aiTextResponse),
+                    providerId: currentUnifiedModel.split(':')[0]
+                });
+                saveChatsLocally();
+
+                if(cleanTextForSpeech) {
+                     document.getElementById('live-subtitle').textContent = cleanTextForSpeech;
+                     await playLiveAudio(cleanTextForSpeech);
+                } else {
+                     setLiveState('listening');
+                }
+
+            } catch (err) {
+                if(!isLiveMode) return;
+                document.getElementById('live-subtitle').textContent = "Error connecting to AI.";
+                setTimeout(() => setLiveState('listening'), 2000);
+            }
+        }
+
+        // Helper for Swarm in Live Mode
+        async function processSwarmLiveLogic(context) {
+             const activeProviders = Object.entries(PROVIDERS).filter(([pId, pInfo]) => {
+                if (pId === 'localnode') return !!(localNodeSettings.url && localNodeSettings.model);
+                return !!apiKeys[pId];
+            });
+            if (activeProviders.length < 1) throw new Error("No providers");
+            
+            let swarmResults = {};
+            const promises = activeProviders.map(async ([pId, pInfo]) => {
+                const modelToUse = `${pId}:${pInfo.defaultModel}`;
+                try {
+                    await fetchChatCompletion(context, (chunk) => { swarmResults[pId] = chunk; }, modelToUse);
+                } catch (err) {
+                    swarmResults[pId] = "";
+                }
+            });
+            await Promise.allSettled(promises);
+            
+            // Just return the first non-empty result for voice, combined is too confusing to read aloud
+            for (const [pId, pInfo] of activeProviders) {
+                if(swarmResults[pId]) return swarmResults[pId];
+            }
+            return "I couldn't get a response.";
+        }
+
+        async function playLiveAudio(text) {
+            setLiveState('speaking');
+            
+            try {
+                // Use Unturf API primarily
+                const response = await fetch('https://speech.ai.unturf.com/v1/audio/speech', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        input: text,
+                        voice: currentAudioModelId || 'aria'
+                    })
+                });
+
+                if (!response.ok) throw new Error("TTS API Error");
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                if (liveAudioElement) {
+                    liveAudioElement.pause();
+                    URL.revokeObjectURL(liveAudioElement.src);
+                }
+                
+                liveAudioElement = new Audio(audioUrl);
+                
+                liveAudioElement.onended = () => {
+                    URL.revokeObjectURL(liveAudioElement.src);
+                    if(isLiveMode && !liveMicMuted) {
+                        document.getElementById('live-subtitle').textContent = "";
+                        setLiveState('listening');
+                    }
+                };
+                
+                liveAudioElement.onerror = () => {
+                    throw new Error("Audio playback failed");
+                };
+
+                await liveAudioElement.play();
+
+            } catch (err) {
+                // Fallback to browser TTS if Unturf fails
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.onend = utterance.onerror = function () {
+                    if(isLiveMode && !liveMicMuted) {
+                        document.getElementById('live-subtitle').textContent = "";
+                        setLiveState('listening');
+                    }
+                };
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        // --- END LIVE MODE ---
+
 
         function toggleSwarmMode() {
             const activeCount = Object.entries(PROVIDERS).filter(([pId, pInfo]) => {
