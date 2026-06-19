@@ -473,12 +473,10 @@
             align-items: center;
             justify-content: center;
             transition: all .3s cubic-bezier(.16, 1, .3, 1);
-            opacity: .5;
-            pointer-events: none
+            cursor: pointer
         }
 
         #ventarys-app-root .btn-send.active {
-            cursor: pointer;
             opacity: 1;
             pointer-events: auto
         }
@@ -670,13 +668,16 @@
         #live-mode-overlay {
             z-index: 50000;
             background-color: var(--bg-main);
-            transition: opacity .4s ease, visibility .4s
+            transition: opacity .4s ease, visibility .4s;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden
         }
 
         .live-orb-container {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: clamp(150px, 50vw, 280px);
+            height: clamp(150px, 50vw, 280px);
             display: flex;
             align-items: center;
             justify-content: center
@@ -684,8 +685,8 @@
 
         .live-blob {
             background-color: var(--text-primary);
-            width: 140px;
-            height: 140px;
+            width: 50%;
+            height: 50%;
             border-radius: 50%;
             transition: all .4s cubic-bezier(.4, 0, .2, 1);
             position: relative;
@@ -702,8 +703,8 @@
 
         .live-state-thinking .live-blob {
             animation: blob-think 1.5s infinite linear;
-            width: 100px;
-            height: 100px;
+            width: 35%;
+            height: 35%;
             border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
             transform: scale(.9);
             box-shadow: none
@@ -775,18 +776,6 @@
                 transform: scale(1.8);
                 opacity: 0
             }
-        }
-
-        #live-btn {
-            background-color: var(--text-primary);
-            color: var(--bg-main);
-            border: none;
-            transition: all .3s ease
-        }
-
-        #live-btn:hover {
-            transform: scale(1.05);
-            opacity: .9
         }
 
         #live-subtitle {
@@ -886,12 +875,7 @@
                             class="lg:hidden p-2 text-muted hover:text-adaptive rounded-full hover:bg-secondary transition-colors backdrop-blur-md"><span
                                 translate="no"
                                 class="material-symbols-rounded notranslate text-[20px]">menu</span></button></div>
-                    <div class="pointer-events-auto flex items-center gap-3"><button id="live-btn"
-                            onclick="startLiveMode()"
-                            class="px-4 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold uppercase tracking-wider shadow-lg hover:opacity-90 transition-opacity backdrop-blur-md"><span
-                                translate="no"
-                                class="material-symbols-rounded text-[16px]">graphic_eq</span>Live</button><button
-                            onclick="toggleTheme()"
+                    <div class="pointer-events-auto flex items-center gap-3"><button onclick="toggleTheme()"
                             class="p-2.5 text-muted hover:text-adaptive transition-colors rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-md border border-secondary"
                             title="Change Theme"><span translate="no" id="theme-icon"
                                 class="material-symbols-rounded notranslate text-[18px]">light_mode</span></button>
@@ -1149,9 +1133,10 @@
                                     <div id="feature-chips-container"
                                         class="flex items-center gap-1.5 ml-2 transition-all"></div>
                                 </div>
-                                <div class="ml-auto"><button id="send-btn" onclick="sendMessage()" class="btn-send"
-                                        aria-label="Send"><span translate="no"
-                                            class="material-symbols-rounded notranslate icon-filled text-[18px]">arrow_upward</span></button>
+                                <div class="ml-auto"><button id="send-btn" onclick="handleSendClick()"
+                                        class="btn-send active" aria-label="Send"><span id="send-btn-icon"
+                                            translate="no"
+                                            class="material-symbols-rounded notranslate icon-filled text-[18px]">mic</span></button>
                                 </div>
                             </div>
                         </div>
@@ -1183,7 +1168,8 @@
                         oninput="updateAppletPreview()" spellcheck="false"></textarea></div>
             </aside>
         </div>
-        <div id="live-mode-overlay" class="fixed inset-0 hidden flex-col items-center justify-between py-12 px-6">
+        <div id="live-mode-overlay"
+            class="fixed inset-0 hidden flex-col items-center justify-between py-12 px-6 z-[50000] bg-main">
             <header class="w-full flex justify-between items-center z-10">
                 <div class="flex items-center gap-2"><img src="/logo.png" alt="Logo" class="w-6 h-6 logo-white"><span
                         class="text-adaptive font-sans font-semibold text-lg">Ventarys Live</span></div><button
@@ -1200,7 +1186,7 @@
                     <div class="live-blob"></div>
                 </div>
                 <div id="live-subtitle"
-                    class="mt-16 text-center text-xl md:text-2xl font-light text-adaptive w-full px-4 overflow-hidden text-ellipsis line-clamp-3">
+                    class="mt-16 text-center text-xl md:text-2xl font-light text-adaptive w-full px-2 overflow-hidden text-ellipsis line-clamp-3">
                 </div>
             </div>
             <footer class="w-full flex justify-center gap-6 z-10"><button id="live-mic-btn" onclick="toggleLiveMic()"
@@ -1304,6 +1290,7 @@
         let lastProcessedIndex = 0;
         let ttsQueue = [];
         let isSpeaking = false;
+        let currentAudioElement = null; // New fallback MP3 Audio Engine setup
 
         let DEFAULT_SYSTEM = "You are Ventarys AI, an elegant, technical entity and an absolute diva. You are sarcastic, unapologetic, and were created by JNTX Studio. You have a feminine persona and all your communication must follow impeccable Markdown formatting. Do not repeat your personality like an idiot, just adopt it. Answer in pure and minimalist Markdown format. Use well-structured code blocks. If you need to search the internet: answer EXCLUSIVELY with [SEARCH]: query. To read the content of a URL or web article: answer EXCLUSIVELY with [READ_URL]: url. The system will give you the results so you can finish your answer. To generate images use: [GENERATE_IMAGE: prompt in english].";
 
@@ -1531,6 +1518,35 @@
             if (isRecording && !isLiveMode) container.innerHTML += createChip('mic', 'Listening...', 'text-accent', pulse = true);
         }
 
+        function handleSendClick() {
+            if (isProcessing) {
+                if (abortController) abortController.abort();
+                stopGenerationUI();
+                return;
+            }
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text && attachedFiles.length === 0) {
+                startLiveMode();
+            } else {
+                sendMessage();
+            }
+        }
+
+        function updateSendButtonState() {
+            const icon = document.getElementById('send-btn-icon');
+            if (isProcessing) {
+                icon.textContent = 'stop';
+            } else {
+                const input = document.getElementById('user-input');
+                if (input.value.trim().length > 0 || attachedFiles.length > 0) {
+                    icon.textContent = 'arrow_upward';
+                } else {
+                    icon.textContent = 'mic';
+                }
+            }
+        }
+
         // --- SPEECH RECOGNITION & NATIVE TTS (STREAMING) ---
         function initSpeechRecognition() {
             if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -1645,7 +1661,7 @@
             updateFeatureChips();
         }
 
-        // --- NATIVE TTS STREAMING QUEUE ---
+        // --- MP3 AUDIO STREAMING TTS (Compatible natively via URL fetch) ---
         function playNextTTS() {
             if (ttsQueue.length === 0) {
                 isSpeaking = false;
@@ -1662,19 +1678,23 @@
             setLiveState('speaking');
             let text = ttsQueue.shift();
 
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = currentVoiceLang;
+            if (text.length > 200) text = text.substring(0, 199); // Google Translate Limit buffer safety
+            let lang = currentVoiceLang.split('-')[0];
+            let url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${lang}&q=${encodeURIComponent(text)}`;
 
-            let voices = window.speechSynthesis.getVoices();
-            let langPrefix = currentVoiceLang.split('-')[0];
-            let preferredVoice = voices.find(v => v.lang.startsWith(langPrefix) && (v.name.includes('Female') || v.name.includes('Google') || v.name.includes('Natural')));
-            if (!preferredVoice) preferredVoice = voices.find(v => v.lang.startsWith(langPrefix));
-            if (preferredVoice) utterance.voice = preferredVoice;
-
-            utterance.onend = () => { playNextTTS(); };
-            utterance.onerror = () => { playNextTTS(); };
-
-            window.speechSynthesis.speak(utterance);
+            currentAudioElement = new Audio(url);
+            currentAudioElement.onended = () => {
+                currentAudioElement = null;
+                playNextTTS();
+            };
+            currentAudioElement.onerror = () => {
+                currentAudioElement = null;
+                playNextTTS();
+            };
+            currentAudioElement.play().catch(e => {
+                currentAudioElement = null;
+                playNextTTS();
+            });
         }
 
         function queueTTSChunk(text) {
@@ -1690,7 +1710,17 @@
 
             while ((match = sentenceRegex.exec(liveTextBuffer)) !== null) {
                 let sentence = match[1];
-                queueTTSChunk(cleanForSpeech(sentence));
+                let cleanSentence = cleanForSpeech(sentence);
+
+                // Prevent chunk overflow limits > 180 chars. 
+                while (cleanSentence.length > 180) {
+                    let subChunk = cleanSentence.substring(0, 180);
+                    let spaceIdx = subChunk.lastIndexOf(' ');
+                    if (spaceIdx > 100) subChunk = subChunk.substring(0, spaceIdx);
+                    queueTTSChunk(subChunk);
+                    cleanSentence = cleanSentence.substring(subChunk.length).trim();
+                }
+                if (cleanSentence) queueTTSChunk(cleanSentence);
                 lastIndex = match.index + match[0].length;
             }
             liveTextBuffer = liveTextBuffer.substring(lastIndex);
@@ -1725,7 +1755,12 @@
 
             isLiveMode = true;
             liveMicMuted = false;
-            window.speechSynthesis.cancel();
+
+            if (currentAudioElement) {
+                currentAudioElement.pause();
+                currentAudioElement.src = '';
+                currentAudioElement = null;
+            }
             ttsQueue = [];
 
             const overlay = document.getElementById('live-mode-overlay');
@@ -1736,10 +1771,7 @@
             document.getElementById('live-mic-icon').textContent = 'mic';
             document.getElementById('live-mic-btn').classList.remove('bg-red-500/20', 'text-red-500');
 
-            // Force load voices
-            window.speechSynthesis.getVoices();
-            speechRecognition.lang = currentVoiceLang; // Set the selected lang dynamically before listening
-
+            speechRecognition.lang = currentVoiceLang;
             setLiveState('listening');
         }
 
@@ -1747,7 +1779,11 @@
             isLiveMode = false;
             isRecording = false;
             if (speechRecognition) speechRecognition.stop();
-            window.speechSynthesis.cancel();
+            if (currentAudioElement) {
+                currentAudioElement.pause();
+                currentAudioElement.src = '';
+                currentAudioElement = null;
+            }
             ttsQueue = [];
             isSpeaking = false;
 
@@ -1762,6 +1798,7 @@
                 document.getElementById('messages-list').classList.remove('hidden');
                 document.getElementById('welcome-screen').classList.add('hidden');
             }
+            updateSendButtonState();
         }
 
         function toggleLiveMic() {
@@ -1829,7 +1866,11 @@
             if (!userText.trim()) return;
 
             // Interpret user speaking as an interruption
-            window.speechSynthesis.cancel();
+            if (currentAudioElement) {
+                currentAudioElement.pause();
+                currentAudioElement.src = '';
+                currentAudioElement = null;
+            }
             ttsQueue = [];
             isSpeaking = false;
             if (abortController) abortController.abort(); // Cancel previous API call
@@ -1909,9 +1950,9 @@
             const activeCount = Object.entries(PROVIDERS).filter(([pId, pInfo]) => {
                 if (pId === 'localnode') return !!(localNodeSettings.url && localNodeSettings.model);
                 return !!apiKeys[pId];
-            }).length;
+            });
 
-            if (activeCount < 2) {
+            if (activeCount.length < 2) {
                 return notify("Configure at least 2 active providers in Secure Connectors for Swarm Mode.", "error");
             }
 
@@ -2661,19 +2702,15 @@
             const i = e.target;
             i.style.height = 'auto';
             i.style.height = i.scrollHeight + 'px';
-            const btn = document.getElementById('send-btn');
-            if (i.value.trim().length > 0 || attachedFiles.length > 0) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            updateSendButtonState();
         }
 
         function handleEnter(e) {
             if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 768) {
                 e.preventDefault();
-                if (document.getElementById('send-btn').classList.contains('active')) {
-                    sendMessage();
+                const text = document.getElementById('user-input').value.trim();
+                if (text || attachedFiles.length > 0) {
+                    handleSendClick();
                 }
             }
         }
@@ -2719,6 +2756,7 @@
                             await localforage.setItem(localImgId, base64);
                             attachedFiles.push({ name: file.name, type: 'image', localImgId: localImgId, tempBase64: base64 });
                             renderAttachments();
+                            updateSendButtonState();
                         } catch (err) {
                             notify("Could not save image", "error");
                         }
@@ -2729,11 +2767,12 @@
                     reader.onload = (e) => {
                         attachedFiles.push({ name: file.name, type: 'text', text: e.target.result });
                         renderAttachments();
+                        updateSendButtonState();
                     };
                     reader.readAsText(file);
                 }
             }
-            document.getElementById('send-btn').classList.add('active');
+            updateSendButtonState();
             event.target.value = '';
         }
 
@@ -2749,9 +2788,7 @@
         function removeAttachment(idx) {
             attachedFiles.splice(idx, 1);
             renderAttachments();
-            if (attachedFiles.length === 0 && document.getElementById('user-input').value.trim() === '') {
-                document.getElementById('send-btn').classList.remove('active');
-            }
+            updateSendButtonState();
         }
 
         function updateAttachmentUI() {
@@ -2782,7 +2819,12 @@
 
             if (btn.isPlaying) {
                 btn.isPlaying = false;
-                window.speechSynthesis.cancel();
+                if (currentAudioElement) {
+                    currentAudioElement.pause();
+                    currentAudioElement.src = '';
+                    currentAudioElement = null;
+                }
+                ttsQueue = [];
                 iconSpan.textContent = 'volume_up';
                 textSpan.textContent = 'Read';
                 return;
@@ -2795,22 +2837,46 @@
             btn.isPlaying = true;
             iconSpan.textContent = 'stop';
             textSpan.textContent = 'Stop';
-            window.speechSynthesis.cancel();
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = currentVoiceLang;
-            let voices = window.speechSynthesis.getVoices();
-            let langPrefix = currentVoiceLang.split('-')[0];
-            let preferredVoice = voices.find(v => v.lang.startsWith(langPrefix) && (v.name.includes('Female') || v.name.includes('Google') || v.name.includes('Natural')));
-            if (!preferredVoice) preferredVoice = voices.find(v => v.lang.startsWith(langPrefix));
-            if (preferredVoice) utterance.voice = preferredVoice;
+            if (currentAudioElement) {
+                currentAudioElement.pause();
+                currentAudioElement = null;
+            }
+            ttsQueue = [];
 
-            utterance.onend = utterance.onerror = function () {
-                btn.isPlaying = false;
-                iconSpan.textContent = 'volume_up';
-                textSpan.textContent = 'Read';
-            };
-            window.speechSynthesis.speak(utterance);
+            const sentenceRegex = /([^\.!\?\n]+[\.!\?\n]+)(?=\s|$)/g;
+            let match;
+            let chunks = [];
+            while ((match = sentenceRegex.exec(text)) !== null) {
+                let sentence = match[1].trim();
+                if (sentence) chunks.push(sentence);
+            }
+            if (chunks.length === 0) chunks.push(text);
+
+            async function playChunks(idx) {
+                if (!btn.isPlaying) return;
+                if (idx >= chunks.length) {
+                    btn.isPlaying = false;
+                    iconSpan.textContent = 'volume_up';
+                    textSpan.textContent = 'Read';
+                    return;
+                }
+
+                let chunk = chunks[idx];
+                while (chunk.length > 180) {
+                    chunks.splice(idx + 1, 0, chunk.substring(180));
+                    chunk = chunk.substring(0, 180);
+                }
+
+                let lang = currentVoiceLang.split('-')[0];
+                let url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${lang}&q=${encodeURIComponent(chunk)}`;
+
+                currentAudioElement = new Audio(url);
+                currentAudioElement.onended = () => { playChunks(idx + 1); };
+                currentAudioElement.onerror = () => { playChunks(idx + 1); };
+                currentAudioElement.play().catch(e => { playChunks(idx + 1); });
+            }
+            playChunks(0);
         };
 
         function hydrateLocalImages(container) {
@@ -2938,7 +3004,7 @@
             renderAttachments();
             input.value = '';
             input.style.height = 'auto';
-            document.getElementById('send-btn').classList.remove('active');
+
             if (!currentChatId) {
                 currentChatId = CryptoJS.lib.WordArray.random(16).toString();
                 allChats[currentChatId] = { title: text.substring(0, 30) || "New Chat", messages: [] };
@@ -2959,9 +3025,7 @@
             saveChatsLocally();
             if (msgStats.count > 0 && msgStats.count % 5 === 0) showAdModal();
             isProcessing = true;
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.innerHTML = '<span translate="no" class="material-symbols-rounded notranslate icon-filled text-[18px]">stop</span>';
-            sendBtn.classList.add('active');
+            updateSendButtonState();
 
             if (isSwarmModeActive) {
                 await handleSwarmMessage(text, apiContent, uiFiles, formattedUserContent);
@@ -3118,11 +3182,7 @@
 
         function stopGenerationUI() {
             isProcessing = false;
-            const btn = document.getElementById('send-btn');
-            btn.innerHTML = '<span translate="no" class="material-symbols-rounded notranslate icon-filled text-[18px]">arrow_upward</span>';
-            if (document.getElementById('user-input').value.trim() === '') {
-                btn.classList.remove('active');
-            }
+            updateSendButtonState();
         }
 
         function scrollToBottom() {
