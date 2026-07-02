@@ -2355,17 +2355,13 @@ async function sendMessage() {
                     // Ya no se convierte a Base64 ni se comprime, usamos el URL directo (o base64 si el API lo retornó)
                     const finalImageSrc = base64Data ? base64Data : finalImgUrl;
 
-                    // Nuevo bloque de imagen con alerta de 24 horas y manejo de expiración
-                    finalContent = `<div class="relative mt-3 mb-2 max-w-md w-full">
-    <img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)">
-    <div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit">
-        <span class="material-symbols-rounded text-[14px]">warning</span> Las imágenes expiran en 24 horas. Descárguela de inmediato.
-    </div>
-</div>`;
+                    // Nuevo bloque de imagen con alerta de 24 horas y manejo de expiración, en una sola línea para evitar codeblocks de Markdown
+                    const imgReplacement = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><span class="material-symbols-rounded text-[14px]">warning</span> Las imágenes expiran en 24 horas. Descárguela de inmediato.</div></div>`;
+                    finalContent = finalContent.replace(imageMatch[0], imgReplacement);
                         
                     chipsContainer.innerHTML = accumulatedSearchChipsHTML + `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3"><span class="material-symbols-rounded text-[14px] text-accent">image</span><span class="font-medium">Generated image</span></div>`;
                 } catch (imgErr) {
-                    finalContent = `<span class="text-muted"><span class="material-symbols-rounded align-middle text-[16px]">error</span> ${escapeHTML(imgErr.message)}</span>`;
+                    finalContent = finalContent.replace(imageMatch[0], `<span class="text-muted"><span class="material-symbols-rounded align-middle text-[16px]">error</span> ${escapeHTML(imgErr.message)}</span>`);
                     chipsContainer.innerHTML = accumulatedSearchChipsHTML;
                 }
             }
