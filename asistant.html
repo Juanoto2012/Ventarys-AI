@@ -179,7 +179,7 @@
                 </div>
                 <div class="flex justify-between items-center text-[11px] mt-1 hidden" id="sync-status-indicator">
                     <span class="text-muted flex items-center gap-1"><span class="material-symbols-rounded text-[12px] text-blue-500">sync</span>P2P Sync:</span>
-                    <span class="font-medium text-blue-500">Connected</span>
+                    <span id="sync-status-text" class="font-medium text-blue-500">Connected</span>
                 </div>
             </div>
             <button onclick="openConnectorsScreen()" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary border border-secondary shadow-sm group bg-main relative overflow-hidden">
@@ -250,7 +250,7 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-adaptive">WebRTC P2P Sync</div>
-                                    <div class="text-xs text-muted font-light mt-0.5">Secure automatic P2P synchronization via one scan.</div>
+                                    <div class="text-xs text-muted font-light mt-0.5">Secure automatic P2P synchronization via one scan. Auto-reconnect enabled.</div>
                                 </div>
                             </div>
                         </div>
@@ -263,6 +263,12 @@
                             <button onclick="p2pSync.startJoin()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-tertiary text-adaptive rounded-lg transition-colors text-sm group">
                                 <span translate="no" class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-accent transition-colors">center_focus_strong</span>
                                 <span class="font-medium">Scan Device</span>
+                            </button>
+                        </div>
+                        <div class="px-2 pb-2">
+                            <button onclick="p2pSync.resetAll()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors text-sm group">
+                                <span translate="no" class="material-symbols-rounded notranslate text-[18px]">sync_disabled</span>
+                                <span class="font-medium">Stop & Reset P2P Sync</span>
                             </button>
                         </div>
                     </div>
@@ -530,7 +536,7 @@ function secureLoad(key, defaultVal) {
 }
 
 // ==========================================
-// P2P SYNC IMPLEMENTATION (PeerJS + QR Auto + Pako Compression)
+// PERSISTENT P2P SYNC IMPLEMENTATION
 // ==========================================
 const AppStorage = {
     getItem: function (key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
@@ -548,40 +554,91 @@ const AppStorage = {
 
 const p2pSync = {
     peer: null,
-    dataChannel: null,
+    dataChannels: {},
     html5QrcodeScanner: null,
     role: null, // 'host' or 'join'
+    myPeerId: null,
+    targetPeerId: null,
     _currentScanCallback: null,
     _syncTimeout: null,
+    _reconnectTimers: {},
     
-    isConnected() {
-        return this.dataChannel && this.dataChannel.open;
+    initBackground() {
+        this.myPeerId = AppStorage.getItem('p2p_my_id');
+        if (!this.myPeerId) {
+            this.myPeerId = 'ventarys-' + crypto.randomUUID();
+            AppStorage.setItem('p2p_my_id', this.myPeerId);
+        }
+        this.role = AppStorage.getItem('p2p_role');
+        this.targetPeerId = AppStorage.getItem('p2p_target_id');
+
+        if (this.role) {
+            this.startPeerServer();
+        }
     },
 
-    closeConnection() {
-        if (this.dataChannel) {
-            this.dataChannel.close();
+    startPeerServer(onReady = null) {
+        if (this.peer && !this.peer.destroyed) {
+            if(onReady) onReady(this.myPeerId);
+            return;
         }
-        if (this.peer) {
-            this.peer.destroy();
-        }
-        this.dataChannel = null;
-        this.peer = null;
-        document.getElementById('sync-status-indicator').classList.add('hidden');
+        this.peer = new Peer(this.myPeerId);
+
+        this.peer.on('open', (id) => {
+            this.updateStatusIndicator();
+            if (this.role === 'join' && this.targetPeerId) {
+                this.connectToTarget(this.targetPeerId);
+            }
+            if(onReady) onReady(id);
+        });
+
+        this.peer.on('connection', (conn) => {
+            this.setupConnection(conn);
+        });
+
+        this.peer.on('disconnected', () => {
+            // Background reconnection to signaling server
+            setTimeout(() => { 
+                if (this.peer && !this.peer.destroyed) this.peer.reconnect(); 
+            }, 5000);
+        });
+
+        this.peer.on('error', (err) => {
+            console.warn("PeerJS error:", err.type);
+            if (err.type === 'peer-unavailable' && this.role === 'join') {
+                this.scheduleReconnect(this.targetPeerId);
+            }
+        });
+    },
+
+    connectToTarget(targetId) {
+        if (!this.peer || this.peer.destroyed) return;
+        const conn = this.peer.connect(targetId, { reliable: true });
+        this.setupConnection(conn);
+    },
+
+    scheduleReconnect(targetId) {
+        clearTimeout(this._reconnectTimers[targetId]);
+        this._reconnectTimers[targetId] = setTimeout(() => {
+            if (this.role === 'join' && targetId) {
+                this.connectToTarget(targetId);
+            }
+        }, 5000);
+        this.updateStatusIndicator();
     },
 
     setupConnection(conn) {
-        this.dataChannel = conn;
-        
         conn.on('open', () => {
-            notify("P2P Sync Connected successfully!", "success");
-            document.getElementById('sync-status-indicator').classList.remove('hidden');
+            clearTimeout(this._reconnectTimers[conn.peer]);
+            this.dataChannels[conn.peer] = conn;
+            this.updateStatusIndicator();
+            
+            notify("P2P Sync Connected: " + conn.peer.substring(0, 12) + "...", "success");
             this.closeOverlay();
             
             if (this.role === 'host') {
                 this.triggerSync();
             } else {
-                // Request full sync to be sure
                 setTimeout(() => this.broadcastUpdate('sync_request', 'ready'), 500);
             }
         });
@@ -589,13 +646,10 @@ const p2pSync = {
         conn.on('data', (data) => {
             try {
                 const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-                
-                // If it's a joiner requesting sync, broadcast full sync as host
                 if (parsed.type === 'UPDATE' && parsed.payload && parsed.payload.sync_request === 'ready') {
                     if (this.role === 'host') this.triggerSync();
                     return;
                 }
-                
                 this.handleIncomingData(parsed);
             } catch (e) {
                 console.error("Error processing P2P data", e);
@@ -603,26 +657,68 @@ const p2pSync = {
         });
 
         conn.on('close', () => {
-            notify("P2P Sync Disconnected.", "error");
-            document.getElementById('sync-status-indicator').classList.add('hidden');
-            this.closeConnection();
+            delete this.dataChannels[conn.peer];
+            this.updateStatusIndicator();
+            if (this.role === 'join') this.scheduleReconnect(conn.peer);
         });
         
-        conn.on('error', (err) => {
-            notify("P2P Connection Error", "error");
-            this.closeConnection();
+        conn.on('error', () => {
+            delete this.dataChannels[conn.peer];
+            this.updateStatusIndicator();
+            if (this.role === 'join') this.scheduleReconnect(conn.peer);
         });
+    },
+
+    updateStatusIndicator() {
+        const ind = document.getElementById('sync-status-indicator');
+        const txt = document.getElementById('sync-status-text');
+        if(!ind || !txt) return;
+
+        if (!this.role) {
+            ind.classList.add('hidden');
+            return;
+        }
+        
+        ind.classList.remove('hidden');
+        if (Object.keys(this.dataChannels).length > 0) {
+            txt.textContent = "Connected";
+            txt.className = "font-medium text-green-500";
+        } else {
+            txt.textContent = "Reconnecting...";
+            txt.className = "font-medium text-amber-500";
+        }
+    },
+
+    isConnected() {
+        return Object.keys(this.dataChannels).length > 0;
+    },
+    
+    resetAll() {
+        AppStorage.removeItem('p2p_role');
+        AppStorage.removeItem('p2p_target_id');
+        this.role = null;
+        this.targetPeerId = null;
+        
+        Object.values(this._reconnectTimers).forEach(clearTimeout);
+        this._reconnectTimers = {};
+        
+        Object.values(this.dataChannels).forEach(c => c.close());
+        this.dataChannels = {};
+        
+        if (this.peer) {
+            this.peer.destroy();
+            this.peer = null;
+        }
+        this.updateStatusIndicator();
+        notify("P2P Sync Disabled and Reset.", "info");
     },
 
     async startHost() {
         this.role = 'host';
-        this.closeConnection();
+        AppStorage.setItem('p2p_role', 'host');
         this.showOverlayLoading("Generating Sync Code...");
         
-        const hostId = 'ventarys-' + crypto.randomUUID();
-        this.peer = new Peer(hostId);
-
-        this.peer.on('open', (id) => {
+        this.startPeerServer((id) => {
             const content = document.getElementById('sync-content');
             content.innerHTML = `
                 <div class="flex items-center gap-2 mb-2 text-accent">
@@ -644,21 +740,9 @@ const p2pSync = {
                 level: 'M'
             });
         });
-
-        this.peer.on('connection', (conn) => {
-            this.showOverlayLoading("Device found! Synchronizing...");
-            this.setupConnection(conn);
-        });
-
-        this.peer.on('error', (err) => {
-            notify("P2P Error: " + err.message, "error");
-            this.closeOverlay();
-        });
     },
 
     async startJoin() {
-        this.role = 'join';
-        this.closeConnection();
         this.showOverlayLoading("Starting Scanner...");
 
         this.startScanner("Scan the Host's QR code to sync automatically.", async (decodedText) => {
@@ -670,17 +754,13 @@ const p2pSync = {
                 this.closeOverlay();
                 return;
             }
-
-            this.peer = new Peer();
-            this.peer.on('open', () => {
-                const conn = this.peer.connect(decodedText);
-                this.setupConnection(conn);
-            });
-
-            this.peer.on('error', (err) => {
-                notify("P2P Error: " + err.message, "error");
-                this.closeOverlay();
-            });
+            
+            this.role = 'join';
+            this.targetPeerId = decodedText;
+            AppStorage.setItem('p2p_role', 'join');
+            AppStorage.setItem('p2p_target_id', this.targetPeerId);
+            
+            this.startPeerServer();
         });
     },
 
@@ -780,7 +860,9 @@ const p2pSync = {
     broadcastUpdate(key, value) {
         if (!this.isConnected()) return;
         const msg = JSON.stringify({ type: 'UPDATE', payload: { [key]: value } });
-        this.dataChannel.send(msg);
+        Object.values(this.dataChannels).forEach(channel => {
+            if(channel.open) channel.send(msg);
+        });
     },
 
     triggerSync() {
@@ -788,13 +870,12 @@ const p2pSync = {
         clearTimeout(this._syncTimeout);
         this._syncTimeout = setTimeout(() => {
             this.broadcastFullSync();
-        }, 1500); // 1.5s debounce to avoid spamming
+        }, 1500); 
     },
 
     broadcastFullSync() {
         if (!this.isConnected()) return;
         
-        // 1. Recopilar datos descifrados desde la memoria principal
         const payload = {
             chats: allChats,
             apiKeys: apiKeys,
@@ -803,13 +884,12 @@ const p2pSync = {
             imageModel: currentImageModelId
         };
         
-        // 2. Convertir a string y comprimir con Pako para evitar romper WebRTC por límite de tamaño
         try {
             const payloadStr = JSON.stringify(payload);
             const compressed = pako.deflate(payloadStr);
-            
-            // WebRTC de PeerJS soporta transferencia directa de Uint8Array (ArrayBuffer)
-            this.dataChannel.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed });
+            Object.values(this.dataChannels).forEach(channel => {
+                if(channel.open) channel.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed });
+            });
         } catch(err) {
             console.error("Error al preparar paquete de sincronización:", err);
         }
@@ -818,11 +898,8 @@ const p2pSync = {
     handleIncomingData(data) {
         if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
             try {
-                // 1. Descomprimir los datos puros usando Pako
                 const decompressedStr = pako.inflate(data.payload, { to: 'string' });
                 const payloadObj = JSON.parse(decompressedStr);
-                
-                // 2. Mezclar datos descifrados de forma segura
                 this.mergeDecryptedPayload(payloadObj);
             } catch (err) {
                 console.error("Error al procesar payload sincronizado P2P:", err);
@@ -835,7 +912,6 @@ const p2pSync = {
         let requiresKeysUpdate = false;
         let requiresSettingsUpdate = false;
 
-        // 1. Combinar historiales de Chat (priorizando el que tenga más mensajes)
         if (payload.chats) {
             for (const [id, chat] of Object.entries(payload.chats)) {
                 if (!allChats[id]) {
@@ -848,7 +924,6 @@ const p2pSync = {
             }
         }
 
-        // 2. Combinar API Keys
         if (payload.apiKeys) {
             for (const [k, v] of Object.entries(payload.apiKeys)) {
                 if (v && v !== apiKeys[k]) {
@@ -858,7 +933,6 @@ const p2pSync = {
             }
         }
 
-        // 3. Combinar Configuración de Local Node
         if (payload.localNodeSettings) {
             if (JSON.stringify(payload.localNodeSettings) !== JSON.stringify(localNodeSettings)) {
                 localNodeSettings = { ...localNodeSettings, ...payload.localNodeSettings };
@@ -866,7 +940,6 @@ const p2pSync = {
             }
         }
 
-        // 4. Modelos Actuales
         if (payload.unifiedModel && payload.unifiedModel !== currentUnifiedModel) {
             currentUnifiedModel = payload.unifiedModel;
             AppStorage.setItem('byok_unified_model', currentUnifiedModel);
@@ -879,9 +952,7 @@ const p2pSync = {
             requiresSettingsUpdate = true;
         }
 
-        // --- Guardar y Actualizar Interfaz (Usando la llave local del dispositivo) ---
         if (requiresChatUpdate) {
-            // Guardamos usando "secureSave" (esto usa AES con la masterKey *local* del dispositivo actual)
             secureSave('ventarys_chats', allChats);
             updateChatHistory();
             if (currentChatId && allChats[currentChatId]) {
@@ -1286,6 +1357,9 @@ function finishInitApp(isSoftReload = false) {
     fetchAllModels();
     updateChatHistory();
     updateFeatureChips();
+    
+    // Resume P2P background listener/connector
+    p2pSync.initBackground();
     
     if (currentChatId && allChats[currentChatId]) {
         loadChat(currentChatId, true);
