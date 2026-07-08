@@ -18,6 +18,8 @@ Ventarys AI is a lightweight platform built with **HTML5, CSS3, and pure JavaScr
 
 - **Minimalist Interface:** Focused on productivity and low resource consumption.
 
+- **P2P Sync**: Sync your chats across devices without login!
+
 ## 🚀 Quick Start
 
 ### Prerequisites
