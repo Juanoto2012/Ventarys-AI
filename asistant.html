@@ -24,8 +24,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;@600&display=swap" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
         #ventarys-app-root{--bg-main:#0a0a0a;--bg-sidebar:#0a0a0a;--bg-message-user:#171717;--bg-message-ai:transparent;--accent-main:#ffffff;--accent-text:#000000;--accent-glow:rgba(255, 255, 255, 0.1);--text-primary:#ffffff;--text-secondary:#888888;--border-color:#262626;--bg-secondary:#171717;--bg-tertiary:#111111;--border-secondary:#262626;--input-bg:#0a0a0a;--input-border:#262626;--input-text:#ffffff;--input-placeholder:#666666;--code-bg:#111111;--code-text:#e4e4e7;--scrollbar-thumb:#333333;--radius-lg:8px;--radius-xl:12px;background-color:var(--bg-main)!important;color:var(--text-primary)!important;font-family:Inter,sans-serif!important;overflow:hidden;touch-action:manipulation;transition:background-color .4s cubic-bezier(.16,1,.3,1),color .4s ease;width:100%;height:100%;position:relative;z-index:50;-webkit-font-smoothing:antialiased}
@@ -51,8 +53,6 @@
         #ventarys-app-root #user-input::placeholder{color:var(--input-placeholder)}
         #ventarys-app-root .logo-white{filter:brightness(0) invert(1);opacity:.9;transition:all .3s ease}
         #ventarys-app-root.light .logo-white{filter:brightness(0) invert(0);opacity:.9}
-        #ventarys-app-root .material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20;font-size:20px;vertical-align:middle}
-        #ventarys-app-root .icon-filled{font-variation-settings:'FILL' 1,'wght' 400}
         #ventarys-app-root .custom-scrollbar::-webkit-scrollbar{width:4px;height:4px}
         #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-track{background:0 0}
         #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-thumb{background-color:var(--scrollbar-thumb);border-radius:4px}
@@ -81,16 +81,16 @@
         #ventarys-app-root .code-block-wrapper{position:relative;margin-bottom:1rem;border-radius:8px;border:1px solid var(--border-secondary);background-color:var(--code-bg);overflow:hidden}
         #ventarys-app-root .code-actions{position:absolute;top:.5rem;right:.5rem;display:flex;gap:6px;z-index:10}
         #ventarys-app-root .action-btn{background-color:var(--bg-tertiary);border:1px solid var(--border-secondary);color:var(--text-secondary);padding:4px 10px;border-radius:4px;font-size:11px;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;opacity:0;transition:all .2s}
-        #ventarys-app-root .code-block-wrapper:hover .action-btn{opacity:1}
+        #ventarys-app-root .code-block-wrapper:hover .action-btn, #ventarys-app-root .msg-actions .action-btn {opacity:1}
         #ventarys-app-root .action-btn:hover{background-color:var(--accent-main);border-color:var(--accent-main);color:var(--accent-text)}
         @media (max-width:1024px){#ventarys-app-root #sidebar{position:absolute;top:0;bottom:0;left:0;z-index:150;transform:translateX(-100%);box-shadow:20px 0 50px rgba(0,0,0,.2)}#ventarys-app-root #sidebar.open{transform:translateX(0)}#ventarys-app-root #sidebar-overlay.visible{display:block;z-index:140}#ventarys-app-root .action-btn{opacity:1}}
         #ventarys-app-root .fade-in{animation:fadeIn .4s cubic-bezier(.16,1,.3,1) forwards;opacity:0;transform:translateY(10px)}
         @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-        #ventarys-app-root #plus-menu-btn .material-symbols-rounded{transition:transform .3s cubic-bezier(.16,1,.3,1)}
-        #ventarys-app-root #plus-menu-btn.menu-open .material-symbols-rounded{transform:rotate(45deg)}
+        #ventarys-app-root #plus-menu-btn i{transition:transform .3s cubic-bezier(.16,1,.3,1)}
+        #ventarys-app-root #plus-menu-btn.menu-open i{transform:rotate(45deg)}
         #ventarys-app-root .btn-send{background-color:var(--accent-main);color:var(--accent-text);border-radius:50%!important;width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.16,1,.3,1);cursor:pointer}
-        #ventarys-app-root .btn-send.active{opacity:1;pointer-events:auto}
-        #ventarys-app-root .btn-send.active:hover{opacity:.9;transform:scale(1.05)}
+        #ventarys-app-root .btn-send:not(.disabled):hover{opacity:.9;transform:scale(1.05)}
+        #ventarys-app-root .btn-send.disabled{opacity:0.4;pointer-events:none}
         .dot-typing{display:flex;align-items:center;gap:4px;height:24px;padding-left:2px}
         .dot-typing .dot{width:4px;height:4px;background-color:var(--text-secondary);border-radius:50%;animation:dotTyping 1.4s infinite ease-in-out both}
         .dot-typing .dot:nth-child(1){animation-delay:-.32s}
@@ -136,7 +136,7 @@
                 <p class="text-muted text-sm leading-relaxed">Local, Private, and Decentralized.</p>
             </div>
             <div class="w-full flex flex-col gap-3 mt-4">
-                <button onclick="continueAsGuest()" class="w-full bg-accent text-[var(--accent-text)] py-3.5 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"><span translate="no" class="material-symbols-rounded notranslate">rocket_launch</span>Enter Encrypted Workspace</button>
+                <button onclick="continueAsGuest()" class="w-full bg-accent text-[var(--accent-text)] py-3.5 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"><i class="ri-rocket-2-line"></i>Enter Encrypted Workspace</button>
             </div>
         </div>
     </div>
@@ -152,16 +152,16 @@
                     <img src="/logo.png" alt="Logo" class="w-6 h-6 logo-white" onerror='this.src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=="'>
                     <span class="text-adaptive font-sans font-semibold text-xl tracking-tight">Ventarys</span>
                 </div>
-                <button onclick="toggleSidebar()" class="lg:hidden text-muted hover:text-adaptive transition-colors"><span translate="no" class="material-symbols-rounded notranslate">close</span></button>
+                <button onclick="toggleSidebar()" class="lg:hidden text-muted hover:text-adaptive transition-colors"><i class="ri-close-line text-xl"></i></button>
             </div>
             <button onclick="createNewChat()" class="flex items-center gap-3 bg-secondary hover:bg-tertiary text-adaptive px-4 py-3 rounded-lg transition-colors border border-secondary shadow-sm hover:border-accent group w-full">
-                <span translate="no" class="material-symbols-rounded notranslate text-muted group-hover:text-adaptive transition-colors">add</span>
+                <i class="ri-add-line text-muted group-hover:text-adaptive transition-colors text-lg"></i>
                 <span class="font-medium text-sm">New Chat</span>
             </button>
         </div>
         <div class="px-4 mt-1 mb-1">
             <div class="relative flex items-center w-full">
-                <span translate="no" class="material-symbols-rounded absolute left-3 text-muted text-[16px]">search</span>
+                <i class="ri-search-line absolute left-3 text-muted text-[16px]"></i>
                 <input type="text" id="chat-search-input" placeholder="Search chats..." class="w-full bg-secondary border border-secondary text-adaptive text-xs rounded-lg pl-9 pr-3 py-2 outline-none focus:border-accent transition-colors" oninput="updateChatHistory(this.value)">
             </div>
         </div>
@@ -171,24 +171,24 @@
         <div class="px-6 pb-4 space-y-3 border-t border-secondary pt-4">
             <div class="flex flex-col gap-1 mb-3">
                 <div class="flex items-center justify-between text-xs mb-1">
-                    <span class="text-muted font-medium flex items-center gap-1.5" id="profile-name"><span translate="no" class="material-symbols-rounded notranslate text-[16px]">person</span>Local User</span>
+                    <span class="text-muted font-medium flex items-center gap-1.5" id="profile-name"><i class="ri-user-line text-[16px]"></i>Local User</span>
                 </div>
                 <div class="flex justify-between items-center text-[11px]">
-                    <span class="text-muted flex items-center gap-1"><span class="material-symbols-rounded text-[12px] text-green-500">lock</span>Encryption:</span>
+                    <span class="text-muted flex items-center gap-1"><i class="ri-lock-line text-[12px] text-green-500"></i>Encryption:</span>
                     <span class="font-medium text-green-500">AES-256 (Local)</span>
                 </div>
                 <div class="flex justify-between items-center text-[11px] mt-1 hidden" id="sync-status-indicator">
-                    <span class="text-muted flex items-center gap-1"><span class="material-symbols-rounded text-[12px] text-blue-500">sync</span>P2P Sync:</span>
+                    <span class="text-muted flex items-center gap-1"><i class="ri-refresh-line text-[12px] text-blue-500"></i>Device Sync:</span>
                     <span id="sync-status-text" class="font-medium text-blue-500">Connected</span>
                 </div>
             </div>
             <button onclick="openConnectorsScreen()" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary border border-secondary shadow-sm group bg-main relative overflow-hidden">
-                <span translate="no" class="material-symbols-rounded notranslate text-[20px] text-accent z-10">cable</span>
+                <i class="ri-plug-line text-[20px] text-accent z-10"></i>
                 <span class="font-medium text-sm flex-1 text-left z-10">Connectors</span>
                 <span class="text-[10px] bg-accent text-[var(--accent-text)] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider z-10">Keys</span>
             </button>
             <button onclick="openSettingsScreen()" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary group">
-                <span translate="no" class="material-symbols-rounded notranslate group-hover:rotate-45 transition-transform duration-500 text-[20px]">tune</span>
+                <i class="ri-settings-3-line group-hover:rotate-45 transition-transform duration-500 text-[20px]"></i>
                 <span class="font-medium text-sm">Settings</span>
             </button>
         </div>
@@ -199,12 +199,12 @@
             <header class="absolute top-0 inset-x-0 h-20 flex items-center justify-between px-6 z-30 bg-gradient-to-b from-[var(--bg-main)] to-transparent pointer-events-none">
                 <div class="pointer-events-auto flex items-center gap-2">
                     <button onclick="toggleSidebar()" class="lg:hidden p-2 text-muted hover:text-adaptive rounded-full hover:bg-secondary transition-colors backdrop-blur-md">
-                        <span translate="no" class="material-symbols-rounded notranslate text-[20px]">menu</span>
+                        <i class="ri-menu-line text-[20px]"></i>
                     </button>
                 </div>
                 <div class="pointer-events-auto flex items-center gap-3">
                     <button onclick="toggleTheme()" class="p-2.5 text-muted hover:text-adaptive transition-colors rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-md border border-secondary" title="Change Theme">
-                        <span translate="no" id="theme-icon" class="material-symbols-rounded notranslate text-[18px]">light_mode</span>
+                        <i id="theme-icon" class="ri-sun-line text-[18px]"></i>
                     </button>
                 </div>
             </header>
@@ -218,12 +218,12 @@
                     <p class="text-muted text-center text-sm md:text-base mb-16 max-w-md font-light leading-relaxed">Autonomous technical assistant. Write, generate code, or search the web freely.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                         <button onclick='fillInput("Generate an HTML app of a modern and responsive clock")' class="bg-transparent border border-secondary hover:border-accent flex flex-col text-left p-6 rounded-xl transition-all">
-                            <span translate="no" class="material-symbols-rounded notranslate text-accent mb-3 text-[24px]">view_quilt</span>
+                            <i class="ri-layout-masonry-line text-accent mb-3 text-[24px]"></i>
                             <div class="text-adaptive text-sm font-medium mb-1">Generate Web UI</div>
                             <div class="text-muted text-xs font-light">Create and preview interactive code.</div>
                         </button>
                         <button onclick="openConnectorsScreen()" class="bg-transparent border border-secondary hover:border-accent flex flex-col text-left p-6 rounded-xl transition-all">
-                            <span translate="no" class="material-symbols-rounded notranslate text-accent mb-3 text-[24px]">cable</span>
+                            <i class="ri-plug-line text-accent mb-3 text-[24px]"></i>
                             <div class="text-adaptive text-sm font-medium mb-1">Secure Connectors</div>
                             <div class="text-muted text-xs font-light">Connect API keys or use your Local Node.</div>
                         </button>
@@ -234,54 +234,48 @@
                 
                 <div id="settings-view" class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
                     <button onclick="closeSettingsScreen()" class="self-start mb-10 text-muted hover:text-adaptive flex items-center gap-2 transition-colors text-sm font-medium">
-                        <span translate="no" class="material-symbols-rounded notranslate text-[18px]">arrow_back</span>Back
+                        <i class="ri-arrow-left-line text-[18px]"></i>Back
                     </button>
                     <div class="mb-10">
                         <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">General Settings</h1>
                         <p class="text-muted text-sm font-light">Manage your experience and encrypted local data.</p>
                     </div>
 
-                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">P2P Device Sync (QR)</div>
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Device Sync Chain</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
                         <div class="flex justify-between items-center p-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                                    <span translate="no" class="material-symbols-rounded notranslate text-[16px] text-adaptive">qr_code_scanner</span>
+                                    <i class="ri-link-m text-[16px] text-adaptive"></i>
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-adaptive">WebRTC P2P Sync</div>
-                                    <div class="text-xs text-muted font-light mt-0.5">Secure automatic P2P synchronization via one scan. Auto-reconnect enabled.</div>
+                                    <div class="text-sm font-medium text-adaptive">Linked Devices</div>
+                                    <div class="text-xs text-muted font-light mt-0.5">Sync chats, keys, and settings across your devices in a mesh chain.</div>
                                 </div>
                             </div>
+                            <button onclick="p2pSync.openChainModal()" class="bg-accent text-[var(--accent-text)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 hover:opacity-90 transition-opacity"><i class="ri-add-line"></i> Add</button>
                         </div>
                         <div class="h-px bg-secondary w-full my-1"></div>
-                        <div class="grid grid-cols-2 gap-2 p-2">
-                            <button onclick="p2pSync.startHost()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-tertiary text-adaptive rounded-lg transition-colors text-sm group">
-                                <span translate="no" class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-accent transition-colors">qr_code</span>
-                                <span class="font-medium">Show QR Code</span>
-                            </button>
-                            <button onclick="p2pSync.startJoin()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-tertiary text-adaptive rounded-lg transition-colors text-sm group">
-                                <span translate="no" class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-accent transition-colors">center_focus_strong</span>
-                                <span class="font-medium">Scan Device</span>
-                            </button>
+                        <div id="device-chain-list" class="flex flex-col gap-1 p-2 max-h-48 overflow-y-auto custom-scrollbar">
+                            <!-- Populated via JS -->
                         </div>
-                        <div class="px-2 pb-2">
-                            <button onclick="p2pSync.resetAll()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors text-sm group">
-                                <span translate="no" class="material-symbols-rounded notranslate text-[18px]">sync_disabled</span>
-                                <span class="font-medium">Stop & Reset P2P Sync</span>
-                            </button>
-                        </div>
+                    </div>
+
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Voice Engine (TTS)</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-4 mb-8 flex flex-col gap-2">
+                        <label class="text-xs font-medium text-adaptive">System Voice</label>
+                        <select id="tts-voice-select" onchange="saveTTSVoice()" class="settings-input settings-select w-full"></select>
                     </div>
 
                     <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Local Backups</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
                         <button onclick="exportData()" class="w-full flex items-center justify-between px-4 py-3 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm group">
                             <span class="font-medium">Export local copy (Decrypted)</span>
-                            <span translate="no" class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-adaptive transition-colors">download</span>
+                            <i class="ri-download-line text-muted text-[18px] group-hover:text-adaptive transition-colors"></i>
                         </button>
                         <button onclick="triggerImport()" class="w-full flex items-center justify-between px-4 py-3 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm group">
                             <span class="font-medium">Import local copy</span>
-                            <span translate="no" class="material-symbols-rounded notranslate text-muted text-[18px] group-hover:text-adaptive transition-colors">upload</span>
+                            <i class="ri-upload-line text-muted text-[18px] group-hover:text-adaptive transition-colors"></i>
                         </button>
                     </div>
                     
@@ -289,27 +283,27 @@
                     <div class="bg-transparent border border-red-500/20 rounded-xl p-1">
                         <button onclick="confirmDeleteAll()" class="w-full flex items-center justify-between p-4 hover:bg-red-500/10 transition-colors cursor-pointer group rounded-lg text-red-500">
                             <span class="text-sm font-medium">Delete all data and encryption</span>
-                            <span translate="no" class="material-symbols-rounded notranslate text-[18px]">delete_forever</span>
+                            <i class="ri-delete-bin-line text-[18px]"></i>
                         </button>
                     </div>
                 </div>
 
                 <div id="connectors-view" class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
                     <button onclick="closeConnectorsScreen()" class="self-start mb-10 text-muted hover:text-adaptive flex items-center gap-2 transition-colors text-sm font-medium">
-                        <span translate="no" class="material-symbols-rounded notranslate text-[18px]">arrow_back</span>Back
+                        <i class="ri-arrow-left-line text-[18px]"></i>Back
                     </button>
                     <div class="mb-10">
                         <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">Secure Connectors</h1>
-                        <p class="text-muted text-sm font-light flex items-center gap-1"><span class="material-symbols-rounded text-[16px] text-green-500">enhanced_encryption</span>Your tokens are encrypted locally with AES-256 end-to-end.</p>
+                        <p class="text-muted text-sm font-light flex items-center gap-1"><i class="ri-shield-keyhole-line text-[16px] text-green-500"></i>Your tokens are encrypted locally with AES-256 end-to-end.</p>
                     </div>
                     
                     <div class="mb-8">
                         <button onclick="startTour()" class="w-full flex items-center justify-between p-4 bg-secondary/30 hover:bg-secondary/60 border border-dashed border-secondary rounded-xl transition-all text-sm group">
                             <span class="font-medium flex items-center gap-3">
-                                <span class="material-symbols-rounded text-accent animate-pulse">explore</span>
+                                <i class="ri-compass-3-line text-accent animate-pulse"></i>
                                 Run Step-by-Step Guided Setup
                             </span>
-                            <span class="material-symbols-rounded text-muted group-hover:text-adaptive transition-transform group-hover:translate-x-0.5">chevron_right</span>
+                            <i class="ri-arrow-right-s-line text-muted group-hover:text-adaptive transition-transform group-hover:translate-x-0.5"></i>
                         </button>
                     </div>
 
@@ -318,14 +312,14 @@
                         <div class="flex flex-col gap-2">
                             <label class="text-xs font-medium text-adaptive flex justify-between">
                                 <span>Aqua AI API Key <span class="text-muted font-light">(Search and Images)</span></span>
-                                <a href="https://aquadevs.com/dashboard" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><span class="material-symbols-rounded text-[14px]">open_in_new</span>Get</a>
+                                <a href="https://aquadevs.com/dashboard" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-external-link-line text-[14px]"></i>Get</a>
                             </label>
                             <input type="password" id="key-aqua" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
                         </div>
                         <div class="flex flex-col gap-2">
                             <label class="text-xs font-medium text-adaptive flex justify-between">
                                 <span>Agnes AI API Key</span>
-                                <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><span class="material-symbols-rounded text-[14px]">open_in_new</span>Get</a>
+                                <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-external-link-line text-[14px]"></i>Get</a>
                             </label>
                             <input type="password" id="key-freetheai" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
                         </div>
@@ -333,12 +327,12 @@
                             <div class="flex justify-between items-center mb-3">
                                 <label class="text-xs font-medium text-adaptive">Image Model</label>
                                 <button id="image-model-refresh" onclick="fetchImageModels()" class="text-xs text-muted hover:text-adaptive flex items-center gap-1 transition-colors">
-                                    <span translate="no" class="material-symbols-rounded notranslate text-[14px]">refresh</span>Refresh
+                                    <i class="ri-refresh-line text-[14px]"></i>Refresh
                                 </button>
                             </div>
                             <select id="image-model-select" onchange="saveImageModel()" class="settings-input settings-select hidden"></select>
                             <div id="image-model-loading" class="text-xs text-muted flex items-center gap-2 py-2">
-                                <span translate="no" class="material-symbols-rounded notranslate animate-spin text-[14px]">sync</span>Querying models...
+                                <i class="ri-refresh-line animate-spin text-[14px]"></i>Querying models...
                             </div>
                             <div id="image-model-error" class="text-xs text-red-500 hidden py-2"></div>
                         </div>
@@ -372,15 +366,15 @@
                             <div class="flex items-center gap-1 flex-wrap">
                                 <div class="relative flex items-center">
                                     <button type="button" id="plus-menu-btn" onclick="togglePlusMenu(event)" class="w-9 h-9 flex items-center justify-center text-muted hover:text-adaptive hover:bg-secondary rounded-full transition-colors" title="Actions">
-                                        <span translate="no" class="material-symbols-rounded notranslate text-[22px]">add</span>
+                                        <i class="ri-add-line text-[22px]"></i>
                                     </button>
                                     <div id="plus-dropup-menu" class="hidden absolute left-0 bottom-[calc(100%+12px)] mb-2 bg-main border border-secondary rounded-xl shadow-2xl z-[100] w-56 p-2 flex-col origin-bottom-left transition-all">
                                         <button type="button" onclick='document.getElementById("file-upload-input").click(),closePlusMenu()' class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm font-medium flex items-center gap-3">
-                                            <span translate="no" class="material-symbols-rounded notranslate text-[18px] text-muted">attach_file</span>Attach
+                                            <i class="ri-attachment-2 text-[18px] text-muted"></i>Attach
                                         </button>
                                         <div class="h-px w-full bg-[var(--border-secondary)] my-2"></div>
                                         <button type="button" id="menu-swarm-btn" onclick="toggleSwarmMode(),closePlusMenu()" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm font-medium flex items-center gap-3">
-                                            <span translate="no" class="material-symbols-rounded notranslate text-[18px] text-muted">group</span>Swarm Mode
+                                            <i class="ri-group-line text-[18px] text-muted"></i>Swarm Mode
                                         </button>
                                     </div>
                                 </div>
@@ -388,15 +382,15 @@
                                     <button id="model-selector-btn" onclick="toggleModelMenu()" class="flex items-center gap-2 bg-secondary hover:bg-tertiary px-3 py-1.5 rounded-full border border-secondary cursor-pointer transition-all shadow-sm group" title="Select Model">
                                         <div id="provider-status-dot" class="w-2 h-2 rounded-full status-dot-active flex-shrink-0"></div>
                                         <span id="model-label" class="text-[11px] font-medium text-adaptive truncate max-w-[120px] sm:max-w-[180px] tracking-wide">Loading...</span>
-                                        <span translate="no" class="material-symbols-rounded notranslate text-[14px] text-muted group-hover:text-adaptive">unfold_more</span>
+                                        <i class="ri-expand-up-down-line text-[14px] text-muted group-hover:text-adaptive"></i>
                                     </button>
                                     <div id="model-menu" class="absolute left-0 bottom-[calc(100%+12px)] mb-2 bg-main border border-secondary rounded-xl shadow-2xl z-[100] w-[280px] max-w-[90vw] max-h-[40vh] overflow-y-auto custom-scrollbar hidden flex-col"></div>
                                 </div>
                                 <div id="feature-chips-container" class="flex items-center gap-1.5 ml-2 transition-all"></div>
                             </div>
                             <div class="ml-auto">
-                                <button id="send-btn" onclick="handleSendClick()" class="btn-send active" aria-label="Send">
-                                    <span id="send-btn-icon" translate="no" class="material-symbols-rounded notranslate icon-filled text-[18px]">arrow_upward</span>
+                                <button id="send-btn" onclick="handleSendClick()" class="btn-send disabled" aria-label="Send">
+                                    <i id="send-btn-icon" class="ri-arrow-up-line text-[18px]"></i>
                                 </button>
                             </div>
                         </div>
@@ -409,7 +403,7 @@
             <div class="h-16 flex items-center justify-between px-6 border-b border-secondary bg-transparent flex-shrink-0">
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-2 text-adaptive font-sans font-medium">
-                        <span translate="no" class="material-symbols-rounded text-accent text-[20px]">view_quilt</span>Ventarys IDX
+                        <i class="ri-layout-masonry-line text-accent text-[20px]"></i>Ventarys IDX
                     </div>
                     <div class="flex bg-secondary rounded-lg p-1">
                         <button id="tab-btn-preview" onclick='switchAppletTab("preview")' class="px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Preview</button>
@@ -417,7 +411,7 @@
                     </div>
                 </div>
                 <button onclick="closeApplet()" class="text-muted hover:text-adaptive transition-colors">
-                    <span translate="no" class="material-symbols-rounded text-[20px]">close</span>
+                    <i class="ri-close-line text-[20px]"></i>
                 </button>
             </div>
             <div class="flex-1 relative w-full h-full flex flex-col">
@@ -431,7 +425,7 @@
     <div id="sync-overlay" class="fixed inset-0 z-[30000] hidden bg-black/90 flex-col items-center justify-center p-4 transition-opacity">
         <div class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative">
             <button onclick="p2pSync.closeOverlay()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
-                <span class="material-symbols-rounded">close</span>
+                <i class="ri-close-line text-xl"></i>
             </button>
             <div id="sync-content" class="flex flex-col gap-4 items-center w-full">
                 <!-- Injected via JS -->
@@ -452,10 +446,10 @@
         <div class="w-full max-w-5xl h-[85vh] bg-main border border-secondary rounded-2xl shadow-2xl flex flex-col overflow-hidden">
             <div class="flex justify-between items-center px-6 py-4 border-b border-secondary">
                 <div class="flex items-center gap-2 text-adaptive font-sans font-medium">
-                    <span class="material-symbols-rounded text-accent">preview</span>Preview
+                    <i class="ri-macbook-line text-accent"></i>Preview
                 </div>
                 <button onclick="closePreviewModal()" class="text-muted hover:text-adaptive transition-colors">
-                    <span class="material-symbols-rounded">close</span>
+                    <i class="ri-close-line text-xl"></i>
                 </button>
             </div>
             <iframe id="preview-iframe" class="w-full flex-1 bg-white" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
@@ -465,7 +459,7 @@
     <div id="tour-overlay" class="fixed inset-0 z-[25000] bg-black/85 flex items-center justify-center p-4 transition-opacity hidden animate-[fadeIn_0.3s_ease-out]">
         <div id="tour-card" class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative fade-in">
             <button onclick="closeTour()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
-                <span class="material-symbols-rounded">close</span>
+                <i class="ri-close-line text-xl"></i>
             </button>
             <div id="tour-content" class="flex flex-col gap-4"></div>
         </div>
@@ -478,7 +472,7 @@
 const PURIFY_CONFIG = { ALLOWED_TAGS: ['button', 'b', 'i', 'em', 'strong', 'a', 'p', 'ul', 'ol', 'li', 'br', 'span', 'div', 'pre', 'code', 'table', 'th', 'td', 'tr', 'tbody', 'thead', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'details', 'summary', 'ins', 'script', 'style', 'video', 'source'], ALLOWED_ATTR: ['href', 'class', 'src', 'alt', 'target', 'rel', 'translate', 'id', 'style', 'data-ad-layout', 'data-ad-format', 'data-ad-client', 'data-ad-slot', 'data-full-width-responsive', 'data-img-id', 'onclick', 'onerror', 'controls', 'autoplay', 'loop', 'muted'] };
 
 window.handleExpiredImage = function(img) {
-    img.outerHTML = `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-xl border border-secondary h-48 w-full text-muted font-medium"><span class="material-symbols-rounded mb-2 text-[32px]">broken_image</span>Expirado</div>`;
+    img.outerHTML = `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-xl border border-secondary h-48 w-full text-muted font-medium"><i class="ri-image-circle-line mb-2 text-[32px]"></i>Expirado</div>`;
 };
 
 function escapeHTML(str) {
@@ -511,6 +505,9 @@ let currentImageModelId = 'flux';
 let DEFAULT_SYSTEM = "You are Ventarys, an advanced autonomous architecture. You communicate strictly in Markdown. Use precise, advanced technical terminology and jargon. You are highly analytical, objective, and direct. Do NOT be accommodating, compliant, or overly polite. Avoid apologetic language, sycophancy, or AI disclaimers. You have a sharp, pragmatic personality focused on raw data and logic. Always analyze requests step-by-step before answering. Enclose your internal analytical reasoning strictly within <think>...</think> tags. You retain access to your previous <think> blocks in the conversation history and can read your past reasoning. Keep the final output concise and technically dense outside of the tags. If you need to search the internet, answer EXCLUSIVELY with [SEARCH]: query. To read a URL, answer EXCLUSIVELY with [READ_URL]: url. To generate images use: [GENERATE_IMAGE: prompt in english].";
 let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
 
+let availableVoices = [];
+let selectedVoiceURI = null;
+
 function validateApiKey(key) {
     if (!key) return false;
     return (key.startsWith('sk-') && key.length >= 25) || (key.length >= 20);
@@ -535,9 +532,6 @@ function secureLoad(key, defaultVal) {
     }
 }
 
-// ==========================================
-// PERSISTENT P2P SYNC IMPLEMENTATION
-// ==========================================
 const AppStorage = {
     getItem: function (key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
     setItem: function (key, value) {
@@ -552,29 +546,26 @@ const AppStorage = {
     }
 };
 
+// ==========================================
+// P2P SYNC CHAIN IMPLEMENTATION
+// ==========================================
 const p2pSync = {
     peer: null,
-    dataChannels: {},
-    html5QrcodeScanner: null,
-    role: null, // 'host' or 'join'
+    connections: {},
+    knownDevices: [],
     myPeerId: null,
-    targetPeerId: null,
-    _currentScanCallback: null,
+    html5QrcodeScanner: null,
     _syncTimeout: null,
-    _reconnectTimers: {},
     
-    initBackground() {
+    init() {
+        this.knownDevices = secureLoad('p2p_known_devices', []);
         this.myPeerId = AppStorage.getItem('p2p_my_id');
         if (!this.myPeerId) {
             this.myPeerId = 'ventarys-' + crypto.randomUUID();
             AppStorage.setItem('p2p_my_id', this.myPeerId);
         }
-        this.role = AppStorage.getItem('p2p_role');
-        this.targetPeerId = AppStorage.getItem('p2p_target_id');
-
-        if (this.role) {
-            this.startPeerServer();
-        }
+        // Always try to start server if we have known devices or just to be ready
+        this.startPeerServer();
     },
 
     startPeerServer(onReady = null) {
@@ -586,9 +577,7 @@ const p2pSync = {
 
         this.peer.on('open', (id) => {
             this.updateStatusIndicator();
-            if (this.role === 'join' && this.targetPeerId) {
-                this.connectToTarget(this.targetPeerId);
-            }
+            this.connectToKnownDevices();
             if(onReady) onReady(id);
         });
 
@@ -597,75 +586,98 @@ const p2pSync = {
         });
 
         this.peer.on('disconnected', () => {
-            // Background reconnection to signaling server
             setTimeout(() => { 
                 if (this.peer && !this.peer.destroyed) this.peer.reconnect(); 
             }, 5000);
         });
+    },
 
-        this.peer.on('error', (err) => {
-            console.warn("PeerJS error:", err.type);
-            if (err.type === 'peer-unavailable' && this.role === 'join') {
-                this.scheduleReconnect(this.targetPeerId);
+    connectToKnownDevices() {
+        this.knownDevices.forEach(device => {
+            if (device.id !== this.myPeerId && !this.connections[device.id]) {
+                const conn = this.peer.connect(device.id, { reliable: true });
+                this.setupConnection(conn);
             }
         });
     },
 
-    connectToTarget(targetId) {
-        if (!this.peer || this.peer.destroyed) return;
-        const conn = this.peer.connect(targetId, { reliable: true });
-        this.setupConnection(conn);
-    },
-
-    scheduleReconnect(targetId) {
-        clearTimeout(this._reconnectTimers[targetId]);
-        this._reconnectTimers[targetId] = setTimeout(() => {
-            if (this.role === 'join' && targetId) {
-                this.connectToTarget(targetId);
-            }
-        }, 5000);
-        this.updateStatusIndicator();
-    },
-
     setupConnection(conn) {
         conn.on('open', () => {
-            clearTimeout(this._reconnectTimers[conn.peer]);
-            this.dataChannels[conn.peer] = conn;
+            this.connections[conn.peer] = conn;
+            this.addDeviceToList(conn.peer);
             this.updateStatusIndicator();
-            
-            notify("P2P Sync Connected: " + conn.peer.substring(0, 12) + "...", "success");
+            this.updateDeviceUI();
+            notify("P2P Chain connected to device.", "success");
             this.closeOverlay();
             
-            if (this.role === 'host') {
-                this.triggerSync();
-            } else {
-                setTimeout(() => this.broadcastUpdate('sync_request', 'ready'), 500);
-            }
+            // Send our known list to them to build the mesh
+            conn.send({ type: 'PEER_EXCHANGE', payload: this.knownDevices });
+            this.triggerFullSync(); 
         });
 
         conn.on('data', (data) => {
             try {
                 const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-                if (parsed.type === 'UPDATE' && parsed.payload && parsed.payload.sync_request === 'ready') {
-                    if (this.role === 'host') this.triggerSync();
-                    return;
-                }
-                this.handleIncomingData(parsed);
+                this.handleIncomingData(parsed, conn);
             } catch (e) {
                 console.error("Error processing P2P data", e);
             }
         });
 
         conn.on('close', () => {
-            delete this.dataChannels[conn.peer];
+            delete this.connections[conn.peer];
             this.updateStatusIndicator();
-            if (this.role === 'join') this.scheduleReconnect(conn.peer);
+            this.updateDeviceUI();
         });
         
         conn.on('error', () => {
-            delete this.dataChannels[conn.peer];
+            delete this.connections[conn.peer];
             this.updateStatusIndicator();
-            if (this.role === 'join') this.scheduleReconnect(conn.peer);
+            this.updateDeviceUI();
+        });
+    },
+
+    addDeviceToList(id, name = "Linked Device") {
+        if (id === this.myPeerId) return;
+        if (!this.knownDevices.find(d => d.id === id)) {
+            this.knownDevices.push({ id, name, addedAt: Date.now() });
+            secureSave('p2p_known_devices', this.knownDevices);
+            this.updateDeviceUI();
+        }
+    },
+
+    removeDevice(id) {
+        this.knownDevices = this.knownDevices.filter(d => d.id !== id);
+        secureSave('p2p_known_devices', this.knownDevices);
+        if (this.connections[id]) {
+            this.connections[id].close();
+            delete this.connections[id];
+        }
+        this.updateDeviceUI();
+        this.updateStatusIndicator();
+    },
+
+    updateDeviceUI() {
+        const list = document.getElementById('device-chain-list');
+        if (!list) return;
+        list.innerHTML = '';
+        if (this.knownDevices.length === 0) {
+            list.innerHTML = `<div class="text-xs text-muted font-light p-2 text-center">No devices linked.</div>`;
+            return;
+        }
+        this.knownDevices.forEach(d => {
+            const isOnline = !!this.connections[d.id];
+            list.innerHTML += `
+                <div class="flex items-center justify-between bg-main p-2.5 rounded-lg border border-secondary text-xs">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
+                        <span class="text-adaptive font-mono truncate max-w-[150px]">${d.id.substring(0, 16)}...</span>
+                    </div>
+                    <button onclick="p2pSync.removeDevice('${d.id}')" class="text-muted hover:text-red-500 transition-colors p-1" title="Unlink">
+                        <i class="ri-delete-bin-line text-[14px]"></i>
+                    </button>
+                </div>
+            `;
         });
     },
 
@@ -674,130 +686,98 @@ const p2pSync = {
         const txt = document.getElementById('sync-status-text');
         if(!ind || !txt) return;
 
-        if (!this.role) {
+        if (this.knownDevices.length === 0) {
             ind.classList.add('hidden');
             return;
         }
-        
         ind.classList.remove('hidden');
-        if (Object.keys(this.dataChannels).length > 0) {
-            txt.textContent = "Connected";
+        if (Object.keys(this.connections).length > 0) {
+            txt.textContent = `${Object.keys(this.connections).length} Connected`;
             txt.className = "font-medium text-green-500";
         } else {
-            txt.textContent = "Reconnecting...";
+            txt.textContent = "Offline/Searching";
             txt.className = "font-medium text-amber-500";
         }
     },
 
     isConnected() {
-        return Object.keys(this.dataChannels).length > 0;
-    },
-    
-    resetAll() {
-        AppStorage.removeItem('p2p_role');
-        AppStorage.removeItem('p2p_target_id');
-        this.role = null;
-        this.targetPeerId = null;
-        
-        Object.values(this._reconnectTimers).forEach(clearTimeout);
-        this._reconnectTimers = {};
-        
-        Object.values(this.dataChannels).forEach(c => c.close());
-        this.dataChannels = {};
-        
-        if (this.peer) {
-            this.peer.destroy();
-            this.peer = null;
-        }
-        this.updateStatusIndicator();
-        notify("P2P Sync Disabled and Reset.", "info");
+        return Object.keys(this.connections).length > 0;
     },
 
-    async startHost() {
-        this.role = 'host';
-        AppStorage.setItem('p2p_role', 'host');
-        this.showOverlayLoading("Generating Sync Code...");
-        
+    openChainModal() {
         this.startPeerServer((id) => {
+            const overlay = document.getElementById('sync-overlay');
             const content = document.getElementById('sync-content');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
             content.innerHTML = `
                 <div class="flex items-center gap-2 mb-2 text-accent">
-                    <span class="material-symbols-rounded">qr_code</span>
-                    <h3 class="text-xl font-bold font-sans">Host Sync</h3>
+                    <i class="ri-link-m text-[24px]"></i>
+                    <h3 class="text-xl font-bold font-sans">Add Device to Chain</h3>
                 </div>
-                <p class="text-xs text-muted text-center mb-4">Scan this code using the <strong>Scan Device</strong> option on your other device. Synchronization will happen <strong>automatically</strong>.</p>
-                <div class="bg-white p-2 rounded-xl mb-6 flex justify-center w-full max-w-[280px] mx-auto">
-                    <canvas id="qr-canvas" class="w-full h-auto"></canvas>
+                <div class="flex w-full bg-secondary rounded-lg p-1 mb-4">
+                    <button id="chain-tab-show" onclick="p2pSync.renderChainShow('${id}')" class="flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Show QR</button>
+                    <button id="chain-tab-scan" onclick="p2pSync.renderChainScan()" class="flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Scan QR</button>
                 </div>
-                <div class="text-xs text-muted flex items-center justify-center gap-2 animate-pulse">
-                    <span class="material-symbols-rounded text-[16px]">sensors</span> Waiting for device to connect...
-                </div>
+                <div id="chain-modal-body" class="w-full flex flex-col items-center"></div>
             `;
-            new QRious({
-                element: document.getElementById('qr-canvas'),
-                value: id,
-                size: 800,
-                level: 'M'
-            });
+            this.renderChainShow(id);
         });
     },
 
-    async startJoin() {
-        this.showOverlayLoading("Starting Scanner...");
-
-        this.startScanner("Scan the Host's QR code to sync automatically.", async (decodedText) => {
-            this.stopScanner();
-            this.showOverlayLoading("Connecting to Host...");
-
-            if (!decodedText.startsWith('ventarys-')) {
-                notify("Invalid QR code scanned.", "error");
-                this.closeOverlay();
-                return;
-            }
-            
-            this.role = 'join';
-            this.targetPeerId = decodedText;
-            AppStorage.setItem('p2p_role', 'join');
-            AppStorage.setItem('p2p_target_id', this.targetPeerId);
-            
-            this.startPeerServer();
-        });
-    },
-
-    startScanner(instruction, onScanSuccess) {
-        const content = document.getElementById('sync-content');
-        this._currentScanCallback = onScanSuccess;
+    renderChainShow(id) {
+        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        this.stopScanner();
         
-        content.innerHTML = `
-            <div class="flex items-center gap-2 mb-2 text-accent">
-                <span class="material-symbols-rounded">document_scanner</span>
-                <h3 class="text-xl font-bold font-sans">Scan Code</h3>
+        const body = document.getElementById('chain-modal-body');
+        body.innerHTML = `
+            <p class="text-xs text-muted text-center mb-4">Scan this code on your other device using the "Scan QR" tab.</p>
+            <div class="bg-white p-2 rounded-xl flex justify-center w-full max-w-[200px] mx-auto">
+                <canvas id="qr-canvas" class="w-full h-auto"></canvas>
             </div>
-            <p class="text-xs text-muted text-center mb-4">${instruction}</p>
-            
-            <div id="qr-reader" class="w-full max-w-sm overflow-hidden rounded-xl border border-secondary bg-black min-h-[200px] flex items-center justify-center relative">
+            <div class="text-xs text-muted flex items-center justify-center gap-2 mt-4 animate-pulse">
+                <i class="ri-radar-line text-[16px]"></i> Waiting for scan...
+            </div>
+        `;
+        new QRious({
+            element: document.getElementById('qr-canvas'),
+            value: id,
+            size: 400,
+            level: 'M'
+        });
+    },
+
+    renderChainScan() {
+        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        
+        const body = document.getElementById('chain-modal-body');
+        body.innerHTML = `
+            <p class="text-xs text-muted text-center mb-4">Scan a Ventarys QR code to link devices.</p>
+            <div id="qr-reader" class="w-full max-w-[250px] overflow-hidden rounded-xl border border-secondary bg-black min-h-[200px] flex items-center justify-center relative mx-auto">
                 <div id="qr-reader-placeholder" class="absolute text-muted flex flex-col items-center">
-                    <span class="material-symbols-rounded animate-spin mb-2 text-2xl">sync</span>
-                    <span class="text-xs">Initializing camera...</span>
+                    <i class="ri-refresh-line animate-spin mb-2 text-2xl"></i>
+                    <span class="text-xs">Initializing...</span>
                 </div>
-            </div>
-            
-            <div class="w-full flex flex-col items-center gap-3 border-t border-secondary pt-4 mt-4">
-                <p class="text-xs text-muted text-center">No camera on this device? Upload QR image instead:</p>
-                <input type="file" id="qr-image-upload" accept="image/*" class="hidden" onchange="p2pSync.handleImageUpload(event)">
-                <button onclick="document.getElementById('qr-image-upload').click()" class="px-4 py-2.5 bg-secondary hover:bg-tertiary text-adaptive rounded-lg text-sm font-medium transition-colors border border-secondary flex items-center gap-2 w-full justify-center">
-                    <span class="material-symbols-rounded text-[18px]">upload_file</span>
-                    Upload QR Image
-                </button>
-                <div id="qr-upload-error" class="text-xs text-red-500 hidden mt-1 text-center font-medium"></div>
             </div>
         `;
         
         this.html5QrcodeScanner = new Html5Qrcode("qr-reader");
         this.html5QrcodeScanner.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 250, height: 250 } },
-            (decodedText) => { onScanSuccess(decodedText); },
+            { fps: 10, qrbox: { width: 200, height: 200 } },
+            (decodedText) => { 
+                if (decodedText.startsWith('ventarys-')) {
+                    this.stopScanner();
+                    this.addDeviceToList(decodedText);
+                    this.connectToKnownDevices();
+                    this.closeOverlay();
+                } else {
+                    notify("Invalid code.", "error");
+                }
+            },
             (errorMessage) => {}
         ).then(() => {
             const placeholder = document.getElementById('qr-reader-placeholder');
@@ -805,31 +785,9 @@ const p2pSync = {
         }).catch(err => {
             const qrReaderEl = document.getElementById('qr-reader');
             if (qrReaderEl) {
-                qrReaderEl.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center bg-black"><span class="material-symbols-rounded text-muted text-4xl mb-2">no_photography</span><p class="text-muted text-xs leading-relaxed">Camera access denied or unavailable.<br>Please use the upload option below.</p></div>`;
+                qrReaderEl.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center bg-black"><i class="ri-camera-off-line text-muted text-4xl mb-2"></i><p class="text-muted text-xs leading-relaxed">Camera unavailable.</p></div>`;
             }
         });
-    },
-    
-    async handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const errorEl = document.getElementById('qr-upload-error');
-        errorEl.classList.add('hidden');
-        
-        if (!this.html5QrcodeScanner) {
-            this.html5QrcodeScanner = new Html5Qrcode("qr-reader");
-        }
-        
-        try {
-            const decodedText = await this.html5QrcodeScanner.scanFile(file, true);
-            if (this._currentScanCallback) {
-                this._currentScanCallback(decodedText);
-            }
-        } catch (err) {
-            errorEl.textContent = "Could not detect a valid QR code in the uploaded image. Please try a clearer picture.";
-            errorEl.classList.remove('hidden');
-        }
-        event.target.value = ''; 
     },
 
     stopScanner() {
@@ -845,27 +803,16 @@ const p2pSync = {
         document.getElementById('sync-overlay').classList.remove('flex');
     },
 
-    showOverlayLoading(msg) {
-        document.getElementById('sync-overlay').classList.remove('hidden');
-        document.getElementById('sync-overlay').classList.add('flex');
-        document.getElementById('sync-content').innerHTML = `
-            <div class="flex flex-col items-center justify-center p-8 gap-4">
-                <span class="material-symbols-rounded animate-spin text-4xl text-accent">sync</span>
-                <span class="text-sm font-medium text-adaptive">${msg}</span>
-            </div>
-        `;
-    },
-
-    // Data Sync Logic
-    broadcastUpdate(key, value) {
+    // Action Sync Logic (Renames, Deletes)
+    broadcastAction(action, payload) {
         if (!this.isConnected()) return;
-        const msg = JSON.stringify({ type: 'UPDATE', payload: { [key]: value } });
-        Object.values(this.dataChannels).forEach(channel => {
+        const msg = JSON.stringify({ type: 'ACTION', action, payload });
+        Object.values(this.connections).forEach(channel => {
             if(channel.open) channel.send(msg);
         });
     },
 
-    triggerSync() {
+    triggerFullSync() {
         if (!this.isConnected()) return;
         clearTimeout(this._syncTimeout);
         this._syncTimeout = setTimeout(() => {
@@ -875,7 +822,6 @@ const p2pSync = {
 
     broadcastFullSync() {
         if (!this.isConnected()) return;
-        
         const payload = {
             chats: allChats,
             apiKeys: apiKeys,
@@ -883,27 +829,45 @@ const p2pSync = {
             unifiedModel: currentUnifiedModel,
             imageModel: currentImageModelId
         };
-        
         try {
             const payloadStr = JSON.stringify(payload);
             const compressed = pako.deflate(payloadStr);
-            Object.values(this.dataChannels).forEach(channel => {
+            Object.values(this.connections).forEach(channel => {
                 if(channel.open) channel.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed });
             });
-        } catch(err) {
-            console.error("Error al preparar paquete de sincronización:", err);
-        }
+        } catch(err) {}
     },
 
-    handleIncomingData(data) {
-        if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
+    handleIncomingData(data, conn) {
+        if (data.type === 'PEER_EXCHANGE' && Array.isArray(data.payload)) {
+            data.payload.forEach(d => this.addDeviceToList(d.id, d.name));
+            this.connectToKnownDevices();
+        }
+        else if (data.type === 'ACTION') {
+            let requiresUpdate = false;
+            if (data.action === 'RENAME_CHAT') {
+                if (allChats[data.payload.id]) {
+                    allChats[data.payload.id].title = data.payload.title;
+                    requiresUpdate = true;
+                }
+            } else if (data.action === 'DELETE_CHAT') {
+                if (allChats[data.payload.id]) {
+                    delete allChats[data.payload.id];
+                    requiresUpdate = true;
+                    if (currentChatId === data.payload.id) createNewChatUIOnly();
+                }
+            }
+            if (requiresUpdate) {
+                saveChatsLocally(false); // don't broadcast back
+                updateChatHistory();
+            }
+        }
+        else if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
             try {
                 const decompressedStr = pako.inflate(data.payload, { to: 'string' });
                 const payloadObj = JSON.parse(decompressedStr);
                 this.mergeDecryptedPayload(payloadObj);
-            } catch (err) {
-                console.error("Error al procesar payload sincronizado P2P:", err);
-            }
+            } catch (err) {}
         }
     },
 
@@ -972,10 +936,6 @@ const p2pSync = {
             initSettingsUI();
             fetchAllModels();
         }
-
-        if (requiresChatUpdate || requiresKeysUpdate || requiresSettingsUpdate) {
-            notify("P2P: Vault synchronized successfully (Chats, Keys, Settings).", "success");
-        }
     }
 };
 
@@ -985,9 +945,9 @@ const p2pSync = {
 function notify(message, type = 'info') {
     let container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    let icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+    let icon = type === 'success' ? 'ri-checkbox-circle-line' : type === 'error' ? 'ri-error-warning-line' : 'ri-information-line';
     toast.className = 'toast-item toast-enter flex items-center gap-3 bg-secondary/90 backdrop-blur-md border border-secondary text-adaptive px-4 py-3 rounded-full shadow-lg text-sm overflow-hidden relative group pointer-events-auto';
-    toast.innerHTML = `<span translate="no" class="material-symbols-rounded notranslate text-adaptive text-[18px] flex-shrink-0">${icon}</span><span class="flex-1 font-medium leading-tight">${escapeHTML(message)}</span>`;
+    toast.innerHTML = `<i class="${icon} text-adaptive text-[18px] flex-shrink-0"></i><span class="flex-1 font-medium leading-tight">${escapeHTML(message)}</span>`;
     container.appendChild(toast);
     setTimeout(() => {
         if (document.body.contains(toast)) {
@@ -997,6 +957,48 @@ function notify(message, type = 'info') {
         }
     }, 3500);
 }
+
+function initTTS() {
+    const populateVoices = () => {
+        availableVoices = speechSynthesis.getVoices();
+        const select = document.getElementById('tts-voice-select');
+        if(!select) return;
+        select.innerHTML = '<option value="">Default System Voice</option>';
+        availableVoices.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.voiceURI;
+            opt.textContent = `${v.name} (${v.lang})`;
+            if (v.voiceURI === selectedVoiceURI) opt.selected = true;
+            select.appendChild(opt);
+        });
+    };
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoices;
+    }
+    selectedVoiceURI = AppStorage.getItem('tts_selected_voice');
+}
+
+function saveTTSVoice() {
+    selectedVoiceURI = document.getElementById('tts-voice-select').value;
+    AppStorage.setItem('tts_selected_voice', selectedVoiceURI);
+}
+
+function playTTS(text, btn) {
+    speechSynthesis.cancel();
+    const cleanText = text.replace(/[\#\*\_\[\]\(\)]/g, ''); // strip some basic markdown for reading
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    if (selectedVoiceURI) {
+        const voice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
+        if (voice) utterance.voice = voice;
+    }
+    const icon = btn.querySelector('i');
+    utterance.onstart = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
+    utterance.onend = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
+    utterance.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
+    speechSynthesis.speak(utterance);
+}
+
 
 function continueAsGuest() {
     isGuest = true;
@@ -1031,8 +1033,8 @@ function updateFeatureChips() {
     const container = document.getElementById('feature-chips-container');
     if (!container) return;
     container.innerHTML = '';
-    const createChip = (icon, text, iconColorClass = 'text-accent', pulse = false) => `<div class="flex items-center gap-1.5 bg-secondary px-2.5 py-1 rounded-full text-[10px] font-medium text-adaptive shadow-sm animate-[fadeIn_0.2s_ease-out]"><span translate="no" class="material-symbols-rounded notranslate text-[14px] ${iconColorClass} ${pulse ? 'animate-pulse' : ''}">${icon}</span><span class="hidden sm:inline">${text}</span></div>`;
-    if (isSwarmModeActive) container.innerHTML += createChip('group', 'Swarm');
+    const createChip = (icon, text, iconColorClass = 'text-accent', pulse = false) => `<div class="flex items-center gap-1.5 bg-secondary px-2.5 py-1 rounded-full text-[10px] font-medium text-adaptive shadow-sm animate-[fadeIn_0.2s_ease-out]"><i class="${icon} text-[14px] ${iconColorClass} ${pulse ? 'animate-pulse' : ''}"></i><span class="hidden sm:inline">${text}</span></div>`;
+    if (isSwarmModeActive) container.innerHTML += createChip('ri-group-line', 'Swarm');
 }
 
 function handleSendClick() {
@@ -1048,16 +1050,26 @@ function handleSendClick() {
 }
 
 function updateSendButtonState() {
+    const btn = document.getElementById('send-btn');
     const icon = document.getElementById('send-btn-icon');
     const input = document.getElementById('user-input');
+    const text = input.value.trim();
+
     if (isProcessing) {
-        icon.textContent = 'stop';
+        icon.className = 'ri-stop-circle-fill text-[18px]';
         input.disabled = true;
         input.placeholder = "AI is thinking...";
+        btn.classList.remove('disabled');
     } else {
-        icon.textContent = 'arrow_upward';
+        icon.className = 'ri-arrow-up-line text-[18px]';
         input.disabled = false;
         input.placeholder = "Type a message or paste an image...";
+        
+        if (!text && attachedFiles.length === 0) {
+            btn.classList.add('disabled');
+        } else {
+            btn.classList.remove('disabled');
+        }
     }
 }
 
@@ -1071,7 +1083,7 @@ function toggleSwarmMode() {
     }
     isSwarmModeActive = !isSwarmModeActive;
     const btn = document.getElementById('menu-swarm-btn');
-    const icon = btn.querySelector('.material-symbols-rounded');
+    const icon = btn.querySelector('i');
     if (isSwarmModeActive) {
         btn.classList.add('bg-secondary');
         icon.classList.add('text-accent');
@@ -1093,13 +1105,14 @@ function initSettingsUI() {
     if (document.getElementById('local-node-key')) document.getElementById('local-node-key').value = localNodeSettings.key || '';
     if (document.getElementById('local-node-model')) document.getElementById('local-node-model').value = localNodeSettings.model || 'local-model';
     fetchImageModels();
+    p2pSync.updateDeviceUI();
 }
 
 function saveAllKeys() {
     apiKeys.aqua = document.getElementById('key-aqua').value.trim();
     apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
     secureSave('byok_keys', apiKeys);
-    if (p2pSync.isConnected()) p2pSync.triggerSync();
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
     fetchImageModels();
     fetchAllModels();
 }
@@ -1118,7 +1131,7 @@ function saveLocalNodeSettings() {
     localNodeSettings.key = document.getElementById('local-node-key').value.trim();
     localNodeSettings.model = document.getElementById('local-node-model').value.trim() || 'local-model';
     secureSave('local_node_settings', localNodeSettings);
-    if (p2pSync.isConnected()) p2pSync.triggerSync();
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
     updateLocalNodeProvider();
     fetchAllModels();
     notify("Local Node settings updated.", "success");
@@ -1142,7 +1155,7 @@ function updateHeaderModelSelector() {
             models.forEach(m => {
                 const val = `${m.providerId}:${m.id}`;
                 const isSelected = val === currentUnifiedModel;
-                html += `<button onclick="selectUnifiedModel('${m.providerId}','${escapeHTML(m.id)}')" class="w-full text-left px-4 py-2.5 text-adaptive hover:bg-secondary transition-colors text-sm flex items-center gap-3 ${isSelected ? 'bg-secondary' : ''}"><span translate="no" class="material-symbols-rounded notranslate text-[16px] ${isSelected ? 'text-accent' : 'text-muted'} flex-shrink-0">memory</span> <span class="truncate ${isSelected ? 'font-semibold' : 'font-light'}">${escapeHTML(m.id)}</span></button>`;
+                html += `<button onclick="selectUnifiedModel('${m.providerId}','${escapeHTML(m.id)}')" class="w-full text-left px-4 py-2.5 text-adaptive hover:bg-secondary transition-colors text-sm flex items-center gap-3 ${isSelected ? 'bg-secondary' : ''}"><i class="ri-cpu-line text-[16px] ${isSelected ? 'text-accent' : 'text-muted'} flex-shrink-0"></i> <span class="truncate ${isSelected ? 'font-semibold' : 'font-light'}">${escapeHTML(m.id)}</span></button>`;
             });
         }
         menu.innerHTML = html;
@@ -1161,7 +1174,7 @@ function updateHeaderModelSelector() {
 function selectUnifiedModel(providerId, modelId) {
     currentUnifiedModel = `${providerId}:${modelId}`;
     AppStorage.setItem('byok_unified_model', currentUnifiedModel);
-    if (p2pSync.isConnected()) p2pSync.triggerSync();
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
     updateHeaderModelSelector();
     document.getElementById('model-menu').classList.add('hidden');
 }
@@ -1310,7 +1323,7 @@ async function fetchImageModels() {
 function saveImageModel() {
     currentImageModelId = document.getElementById('image-model-select').value;
     AppStorage.setItem('byok_image_model', currentImageModelId);
-    if (p2pSync.isConnected()) p2pSync.triggerSync();
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
 }
 
 function initSecurity() {
@@ -1358,8 +1371,8 @@ function finishInitApp(isSoftReload = false) {
     updateChatHistory();
     updateFeatureChips();
     
-    // Resume P2P background listener/connector
-    p2pSync.initBackground();
+    p2pSync.init();
+    initTTS();
     
     if (currentChatId && allChats[currentChatId]) {
         loadChat(currentChatId, true);
@@ -1367,6 +1380,7 @@ function finishInitApp(isSoftReload = false) {
         createNewChatUIOnly();
     }
     updateFavicon(document.getElementById('ventarys-app-root').classList.contains('light'));
+    updateSendButtonState();
     
     if (!isSoftReload) {
         const isConfigured = validateApiKey(apiKeys.aqua) || validateApiKey(apiKeys.freetheai);
@@ -1418,14 +1432,14 @@ function renderTourStep() {
         case 1:
             html = `
             <div class="text-center flex flex-col gap-4">
-                <span class="material-symbols-rounded text-accent text-5xl">explore</span>
+                <i class="ri-compass-3-line text-accent text-5xl"></i>
                 <h2 class="text-2xl font-bold font-sans tracking-tight">Welcome to Ventarys</h2>
                 <p class="text-sm text-muted font-light leading-relaxed">
                     Ventarys runs entirely inside your browser. Configure your local secure connectors to access advanced models or stick to private local ones.
                 </p>
                 <div class="flex flex-col gap-2 mt-4">
                     <button onclick="nextTourStep()" class="w-full bg-accent text-[var(--accent-text)] py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                        Start guided setup <span class="material-symbols-rounded">arrow_forward</span>
+                        Start guided setup <i class="ri-arrow-right-line"></i>
                     </button>
                     <button onclick="skipToLocalNodeOnly()" class="w-full bg-transparent border border-secondary text-adaptive py-3 rounded-lg font-medium hover:bg-secondary transition-colors">
                         Use Local Node Only (Offline & Private)
@@ -1438,7 +1452,7 @@ function renderTourStep() {
             html = `
             <div class="flex flex-col gap-4">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-accent">language</span>
+                    <i class="ri-global-line text-accent"></i>
                     <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 1 of 3</span>
                 </div>
                 <h2 class="text-xl font-bold font-sans tracking-tight">Setup Aqua AI</h2>
@@ -1449,13 +1463,13 @@ function renderTourStep() {
                 <div class="flex flex-col gap-2 mt-2">
                     <label class="text-xs font-semibold text-adaptive flex justify-between">
                         <span>Aqua AI API Key</span>
-                        <a href="https://aquadevs.com/dashboard" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><span class="material-symbols-rounded text-[12px]">open_in_new</span> Get Key</a>
+                        <a href="https://aquadevs.com/dashboard" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><i class="ri-external-link-line text-[12px]"></i> Get Key</a>
                     </label>
                     <input type="password" id="tour-key-aqua" value="${escapeHTML(apiKeys.aqua || '')}" placeholder="sk-..." class="settings-input font-mono" oninput="clearTourError()">
                 </div>
                 <div class="flex justify-between items-center gap-3 mt-6">
                     <button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button>
-                    <button onclick="saveStepData(2)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <span class="material-symbols-rounded text-[16px]">chevron_right</span></button>
+                    <button onclick="saveStepData(2)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <i class="ri-arrow-right-s-line text-[16px]"></i></button>
                 </div>
                 <button onclick="skipToLocalNodeOnly()" class="text-xs text-muted hover:text-accent underline text-center mt-3 block w-full">I don't have keys, switch to Local Node instead</button>
             </div>
@@ -1465,7 +1479,7 @@ function renderTourStep() {
             html = `
             <div class="flex flex-col gap-4">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-accent">psychology</span>
+                    <i class="ri-brain-line text-accent"></i>
                     <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 2 of 3</span>
                 </div>
                 <h2 class="text-xl font-bold font-sans tracking-tight">Setup Agnes AI</h2>
@@ -1476,13 +1490,13 @@ function renderTourStep() {
                 <div class="flex flex-col gap-2 mt-2">
                     <label class="text-xs font-semibold text-adaptive flex justify-between">
                         <span>Agnes AI API Key</span>
-                        <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><span class="material-symbols-rounded text-[12px]">open_in_new</span> Get Key</a>
+                        <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><i class="ri-external-link-line text-[12px]"></i> Get Key</a>
                     </label>
                     <input type="password" id="tour-key-freetheai" value="${escapeHTML(apiKeys.freetheai || '')}" placeholder="sk-..." class="settings-input font-mono" oninput="clearTourError()">
                 </div>
                 <div class="flex justify-between items-center gap-3 mt-6">
                     <button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button>
-                    <button onclick="saveStepData(3)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <span class="material-symbols-rounded text-[16px]">chevron_right</span></button>
+                    <button onclick="saveStepData(3)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <i class="ri-arrow-right-s-line text-[16px]"></i></button>
                 </div>
                 <button onclick="skipToLocalNodeOnly()" class="text-xs text-muted hover:text-accent underline text-center mt-3 block w-full">I don't have keys, switch to Local Node instead</button>
             </div>
@@ -1491,14 +1505,14 @@ function renderTourStep() {
         case 4:
             html = `
             <div class="text-center flex flex-col gap-4">
-                <span class="material-symbols-rounded text-green-500 text-5xl">verified_user</span>
+                <i class="ri-shield-check-line text-green-500 text-5xl"></i>
                 <span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 3 of 3</span>
                 <h2 class="text-2xl font-bold font-sans tracking-tight">Vault Securely Configured</h2>
                 <p class="text-sm text-muted font-light leading-relaxed">
                     Great! All keys have been encrypted end-to-end with AES-256 on your local machine. They will never leave your system and are completely safe.
                 </p>
                 <button onclick="finishTour()" class="w-full mt-4 bg-accent text-[var(--accent-text)] py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                    Launch Assistant <span class="material-symbols-rounded">done_all</span>
+                    Launch Assistant <i class="ri-check-double-line"></i>
                 </button>
             </div>
             `;
@@ -1552,7 +1566,7 @@ function finishTour() {
     notify("Connectors updated & saved successfully!", "success");
     initSettingsUI();
     fetchAllModels();
-    if (p2pSync.isConnected()) p2pSync.triggerSync();
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
 }
 
 window.addEventListener('popstate', (e) => {
@@ -1641,7 +1655,7 @@ function toggleTheme() {
 
 function updateThemeIcon(isLight) {
     const icon = document.getElementById('theme-icon');
-    if (icon) icon.textContent = isLight ? 'dark_mode' : 'light_mode';
+    if (icon) icon.className = isLight ? 'ri-moon-line text-[18px]' : 'ri-sun-line text-[18px]';
 }
 
 function updateFavicon(isLight) {
@@ -1803,8 +1817,8 @@ function renderAttachments() {
     const container = document.getElementById('attachment-previews');
     container.innerHTML = '';
     attachedFiles.forEach((file, idx) => {
-        let icon = file.type === 'pdf' ? 'picture_as_pdf' : (file.type === 'image' ? 'image' : (file.processing ? 'sync' : 'description'));
-        container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><span translate="no" class="material-symbols-rounded notranslate text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}">${icon}</span><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><span translate="no" class="material-symbols-rounded notranslate text-[14px]">close</span></button></div>`;
+        let icon = file.type === 'pdf' ? 'ri-file-pdf-line' : (file.type === 'image' ? 'ri-image-line' : (file.processing ? 'ri-loader-4-line' : 'ri-file-text-line'));
+        container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><i class="${icon} text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}"></i><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><i class="ri-close-line text-[14px]"></i></button></div>`;
     });
 }
 
@@ -1990,7 +2004,7 @@ async function sendMessage() {
             if (searchMatch) {
                 const query = searchMatch[1].trim();
                 if (apiKeys['aqua']) {
-                    accumulatedSearchChipsHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-2"><span class="material-symbols-rounded text-[14px] text-accent animate-pulse">travel_explore</span><span class="font-medium">Web: ${escapeHTML(query)}...</span></div>`;
+                    accumulatedSearchChipsHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-2"><i class="ri-global-line text-[14px] text-accent animate-pulse"></i><span class="font-medium">Web: ${escapeHTML(query)}...</span></div>`;
                     chipsContainer.innerHTML = accumulatedSearchChipsHTML;
                     try {
                         const searchResults = await performAquaWebSearch(query);
@@ -2021,7 +2035,7 @@ async function sendMessage() {
             if (imageMatch) {
                 const imgPrompt = escapeHTML(imageMatch[1]);
                 contentEl.innerHTML = '';
-                chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><span class="material-symbols-rounded animate-spin text-[14px] text-accent">sync</span><span class="font-medium">Creating image...</span></div>`;
+                chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Creating image...</span></div>`;
                 try {
                     let finalImgUrl = "", base64Data = null;
                     let imgProv = null;
@@ -2046,12 +2060,12 @@ async function sendMessage() {
                     else throw new Error("Invalid response");
                     
                     const finalImageSrc = base64Data ? base64Data : finalImgUrl;
-                    const imgReplacement = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><span class="material-symbols-rounded text-[14px]">warning</span> Image link expires in 24h.</div></div>`;
+                    const imgReplacement = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><i class="ri-alert-line text-[14px]"></i> Image link expires in 24h.</div></div>`;
                     finalContent = finalContent.replace(imageMatch[0], imgReplacement);
                         
-                    chipsContainer.innerHTML = accumulatedSearchChipsHTML + `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3"><span class="material-symbols-rounded text-[14px] text-accent">image</span><span class="font-medium">Generated image</span></div>`;
+                    chipsContainer.innerHTML = accumulatedSearchChipsHTML + `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3"><i class="ri-image-line text-[14px] text-accent"></i><span class="font-medium">Generated image</span></div>`;
                 } catch (imgErr) {
-                    finalContent = finalContent.replace(imageMatch[0], `<span class="text-muted"><span class="material-symbols-rounded align-middle text-[16px]">error</span> ${escapeHTML(imgErr.message)}</span>`);
+                    finalContent = finalContent.replace(imageMatch[0], `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> ${escapeHTML(imgErr.message)}</span>`);
                     chipsContainer.innerHTML = accumulatedSearchChipsHTML;
                 }
             }
@@ -2071,7 +2085,7 @@ async function sendMessage() {
             saveChatsLocally();
             break;
         } catch (err) {
-            contentEl.innerHTML = `<span class="text-muted"><span class="material-symbols-rounded align-middle text-[16px]">error</span> ${escapeHTML(err.message)}</span>`;
+            contentEl.innerHTML = `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> ${escapeHTML(err.message)}</span>`;
             break;
         }
     }
@@ -2092,7 +2106,7 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
     const list = document.getElementById('messages-list');
     const div = document.createElement('div');
     if (id) div.id = id;
-    div.className = `flex w-full ${role === 'user' ? 'justify-end' : 'justify-start'} fade-in msg-container-group`;
+    div.className = `flex w-full ${role === 'user' ? 'justify-end' : 'justify-start'} fade-in msg-container-group relative`;
     let filesHtml = '';
     if (files.length > 0) {
         filesHtml = '<div class="flex flex-wrap gap-2 mb-3">';
@@ -2102,7 +2116,7 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
                 else if (f.localImgId) filesHtml += `<img data-img-id="${f.localImgId}" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23222'/%3E%3C/svg%3E" class="w-48 rounded-lg border border-secondary object-cover shadow-sm lazy-local-img">`;
                 else if (f.base64) filesHtml += `<img src="${DOMPurify.sanitize(f.base64)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm">`;
             } else {
-                filesHtml += `<div class="bg-main px-3 py-1.5 rounded-lg text-xs font-medium border border-secondary flex items-center gap-1.5 shadow-sm"><span class="material-symbols-rounded text-[16px] text-muted">draft</span> ${escapeHTML(f.name)}</div>`;
+                filesHtml += `<div class="bg-main px-3 py-1.5 rounded-lg text-xs font-medium border border-secondary flex items-center gap-1.5 shadow-sm"><i class="ri-file-text-line text-[16px] text-muted"></i> ${escapeHTML(f.name)}</div>`;
             }
         });
         filesHtml += '</div>';
@@ -2112,7 +2126,9 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
         div.innerHTML = `<div class="bg-message-user px-5 py-4 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm text-adaptive border border-secondary selectable-text">${filesHtml}<div class="text-[15px] font-light leading-relaxed">${contentHtml}</div></div>`;
     } else {
         const titleHeader = customHeaderTitle || 'Ventarys AI';
-        div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="/logo.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-wrap gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div></div>`;
+        const ttsBtn = `<button class="action-btn tts-btn mt-2" onclick="playTTS(this.closest('.msg-container-group').querySelector('.msg-content').innerText, this)"><i class="ri-volume-up-line text-[14px]"></i> Read Aloud</button>`;
+        
+        div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="/logo.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-wrap gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div><div class="msg-actions flex gap-2 opacity-0 transition-opacity absolute -bottom-8 left-0">${ttsBtn}</div></div>`;
     }
     list.appendChild(div);
     scrollToBottom();
@@ -2126,7 +2142,7 @@ function formatMarkdown(text) {
     if (!text) return '';
     text = text.replace(/Ġ/g, ' ').replace(/Ċ/g, '\n');
     text = text.replace(/<think>([\s\S]*?)(?:<\/think>|$)/gi, function (match, thoughts) {
-        return `<details class="mb-4 border border-secondary rounded-xl overflow-hidden shadow-sm"><summary class="bg-secondary px-4 py-2.5 cursor-pointer text-xs font-semibold text-adaptive flex items-center gap-2 hover:bg-tertiary outline-none select-none transition-colors"><span class="material-symbols-rounded text-[18px] text-muted">psychology</span>Analytical Process</summary><div class="p-4 bg-main text-[13px] text-muted whitespace-pre-wrap font-mono font-light border-t border-secondary">${escapeHTML(thoughts.trim())}</div></details>`;
+        return `<details class="mb-4 border border-secondary rounded-xl overflow-hidden shadow-sm"><summary class="bg-secondary px-4 py-2.5 cursor-pointer text-xs font-semibold text-adaptive flex items-center gap-2 hover:bg-tertiary outline-none select-none transition-colors"><i class="ri-brain-line text-[18px] text-muted"></i>Analytical Process</summary><div class="p-4 bg-main text-[13px] text-muted whitespace-pre-wrap font-mono font-light border-t border-secondary">${escapeHTML(thoughts.trim())}</div></details>`;
     });
     marked.setOptions({ breaks: true, gfm: true });
     const renderer = new marked.Renderer();
@@ -2136,9 +2152,9 @@ function formatMarkdown(text) {
         const languageClass = lang ? `language-${escapeHTML(lang)}` : '';
         let runBtn = '';
         if (lang === 'html' || lang === 'javascript' || lang === 'js' || lang === 'css') {
-            runBtn = `<button class="action-btn" onclick="window.runCode(this)"><span class="material-symbols-rounded text-[14px] text-accent">view_quilt</span> Preview</button>`;
+            runBtn = `<button class="action-btn" onclick="window.runCode(this)"><i class="ri-layout-masonry-line text-[14px] text-accent"></i> Preview</button>`;
         }
-        return `<div class="code-block-wrapper"><div class="code-actions">${runBtn}<button class="action-btn copy-code-btn"><span class="material-symbols-rounded text-[14px]">content_copy</span> Copy</button></div><pre><code class="${languageClass}">${escapeHTML(code)}</code></pre></div>`;
+        return `<div class="code-block-wrapper"><div class="code-actions">${runBtn}<button class="action-btn copy-code-btn"><i class="ri-clipboard-line text-[14px]"></i> Copy</button></div><pre><code class="${languageClass}">${escapeHTML(code)}</code></pre></div>`;
     };
     const html = marked.parse(text, { renderer: renderer });
     setTimeout(() => { document.querySelectorAll('#messages-list pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
@@ -2157,7 +2173,7 @@ window.copyCode = function (btn) {
     try {
         document.execCommand('copy');
         const original = btn.innerHTML;
-        btn.innerHTML = '<span class="material-symbols-rounded text-[14px] text-accent">check</span> Done';
+        btn.innerHTML = '<i class="ri-check-line text-[14px] text-accent"></i> Done';
         setTimeout(() => btn.innerHTML = original, 2000);
     } catch (err) { }
     document.body.removeChild(textArea);
@@ -2225,12 +2241,12 @@ function closePreviewModal() {
     document.getElementById('preview-iframe').srcdoc = '';
 }
 
-function saveChatsLocally() {
+function saveChatsLocally(broadcast = true) {
     try {
         secureSave('ventarys_chats', allChats);
         AppStorage.setItem('current_chat_id', currentChatId);
         updateChatHistory();
-        if (p2pSync.isConnected()) p2pSync.triggerSync();
+        if (broadcast && p2pSync.isConnected()) p2pSync.triggerFullSync();
     } catch (e) {
         if (e.name === 'QuotaExceededError') notify("Local storage full.", "error");
     }
@@ -2321,7 +2337,7 @@ function updateChatHistory(filterText = '') {
     const lowerFilter = filterText.toLowerCase();
     Object.entries(allChats).reverse().forEach(([id, chat]) => {
         if (filterText && !chat.title.toLowerCase().includes(lowerFilter)) return;
-        container.innerHTML += `<div class="group relative flex items-center justify-between px-2 py-1.5 hover:bg-secondary rounded-lg border border-transparent transition-colors"><div onclick="loadChat('${id}')" class="flex items-center gap-2 cursor-pointer flex-1 min-w-0 px-1 py-1"><span class="material-symbols-rounded text-muted text-[16px]">chat_bubble</span><span class="truncate text-sm font-medium opacity-80 group-hover:opacity-100 text-adaptive">${escapeHTML(chat.title)}</span></div><button onclick="toggleChatMenu(event, '${id}')" class="p-1 rounded text-muted hover:text-adaptive hover:bg-tertiary opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-colors"><span class="material-symbols-rounded text-[18px]">more_vert</span></button><div id="chat-menu-${id}" class="hidden absolute right-2 top-8 bg-main border border-secondary rounded-lg shadow-xl z-50 w-36 p-1 flex flex-col"><button onclick="renameChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">edit</span> Rename</button><button onclick="exportChatMD('${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px] text-muted">download</span> Export</button><button onclick="deleteChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-red-500 hover:bg-red-500/10 rounded transition-colors text-xs font-medium flex items-center gap-2"><span class="material-symbols-rounded text-[16px]">delete</span> Delete</button></div></div>`;
+        container.innerHTML += `<div class="group relative flex items-center justify-between px-2 py-1.5 hover:bg-secondary rounded-lg border border-transparent transition-colors"><div onclick="loadChat('${id}')" class="flex items-center gap-2 cursor-pointer flex-1 min-w-0 px-1 py-1"><i class="ri-chat-3-line text-muted text-[16px]"></i><span class="truncate text-sm font-medium opacity-80 group-hover:opacity-100 text-adaptive">${escapeHTML(chat.title)}</span></div><button onclick="toggleChatMenu(event, '${id}')" class="p-1 rounded text-muted hover:text-adaptive hover:bg-tertiary opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-colors"><i class="ri-more-2-line text-[18px]"></i></button><div id="chat-menu-${id}" class="hidden absolute right-2 top-8 bg-main border border-secondary rounded-lg shadow-xl z-50 w-36 p-1 flex flex-col"><button onclick="renameChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-pencil-line text-[16px] text-muted"></i> Rename</button><button onclick="exportChatMD('${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-download-line text-[16px] text-muted"></i> Export</button><button onclick="deleteChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-red-500 hover:bg-red-500/10 rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-delete-bin-line text-[16px]"></i> Delete</button></div></div>`;
     });
 }
 
@@ -2344,7 +2360,8 @@ function renameChat(e, id) {
         onConfirm: (v) => {
             if (v && v.trim()) {
                 allChats[id].title = escapeHTML(v.trim());
-                saveChatsLocally();
+                saveChatsLocally(false); 
+                p2pSync.broadcastAction('RENAME_CHAT', { id, title: allChats[id].title });
             }
         }
     });
@@ -2354,7 +2371,8 @@ function deleteChat(e, id) {
     e.stopPropagation();
     document.getElementById(`chat-menu-${id}`).classList.add('hidden');
     delete allChats[id];
-    saveChatsLocally();
+    saveChatsLocally(false);
+    p2pSync.broadcastAction('DELETE_CHAT', { id });
     if (currentChatId === id) {
         createNewChatUIOnly();
     }
