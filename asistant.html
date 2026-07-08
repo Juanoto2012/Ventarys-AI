@@ -22,7 +22,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <!-- PeerJS for automatic one-scan signaling -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -121,7 +120,6 @@
         .msg-container-group:hover .msg-actions{opacity:1}
         #tour-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
         #sync-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
-        /* Scanner styles */
         #qr-reader { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-secondary); background: #000; }
         #qr-reader video { object-fit: cover; }
     </style>
@@ -532,15 +530,12 @@ function secureLoad(key, defaultVal) {
 }
 
 // ==========================================
-// P2P SYNC IMPLEMENTATION (PeerJS + QR Auto)
+// P2P SYNC IMPLEMENTATION (PeerJS + QR Auto + Pako Compression)
 // ==========================================
 const AppStorage = {
     getItem: function (key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
     setItem: function (key, value) {
         try { localStorage.setItem(key, value); } catch (e) { }
-        if (typeof p2pSync !== 'undefined' && p2pSync.isConnected()) {
-            p2pSync.broadcastUpdate(key, value);
-        }
     },
     removeItem: function (key) {
         try { localStorage.removeItem(key); } catch (e) { }
@@ -557,6 +552,7 @@ const p2pSync = {
     html5QrcodeScanner: null,
     role: null, // 'host' or 'join'
     _currentScanCallback: null,
+    _syncTimeout: null,
     
     isConnected() {
         return this.dataChannel && this.dataChannel.open;
@@ -583,7 +579,7 @@ const p2pSync = {
             this.closeOverlay();
             
             if (this.role === 'host') {
-                this.broadcastFullSync();
+                this.triggerSync();
             } else {
                 // Request full sync to be sure
                 setTimeout(() => this.broadcastUpdate('sync_request', 'ready'), 500);
@@ -596,7 +592,7 @@ const p2pSync = {
                 
                 // If it's a joiner requesting sync, broadcast full sync as host
                 if (parsed.type === 'UPDATE' && parsed.payload && parsed.payload.sync_request === 'ready') {
-                    if (this.role === 'host') this.broadcastFullSync();
+                    if (this.role === 'host') this.triggerSync();
                     return;
                 }
                 
@@ -787,67 +783,127 @@ const p2pSync = {
         this.dataChannel.send(msg);
     },
 
+    triggerSync() {
+        if (!this.isConnected()) return;
+        clearTimeout(this._syncTimeout);
+        this._syncTimeout = setTimeout(() => {
+            this.broadcastFullSync();
+        }, 1500); // 1.5s debounce to avoid spamming
+    },
+
     broadcastFullSync() {
         if (!this.isConnected()) return;
-        const keys = ['ventarys_chats', 'byok_keys', 'byok_unified_model', 'byok_image_model', 'local_node_settings'];
-        const payload = {};
-        keys.forEach(k => {
-            const val = localStorage.getItem(k);
-            if (val) payload[k] = val;
-        });
-        const msg = JSON.stringify({ type: 'FULL_SYNC', payload: payload });
-        this.dataChannel.send(msg);
+        
+        // 1. Recopilar datos descifrados desde la memoria principal
+        const payload = {
+            chats: allChats,
+            apiKeys: apiKeys,
+            localNodeSettings: localNodeSettings,
+            unifiedModel: currentUnifiedModel,
+            imageModel: currentImageModelId
+        };
+        
+        // 2. Convertir a string y comprimir con Pako para evitar romper WebRTC por límite de tamaño
+        try {
+            const payloadStr = JSON.stringify(payload);
+            const compressed = pako.deflate(payloadStr);
+            
+            // WebRTC de PeerJS soporta transferencia directa de Uint8Array (ArrayBuffer)
+            this.dataChannel.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed });
+        } catch(err) {
+            console.error("Error al preparar paquete de sincronización:", err);
+        }
     },
 
     handleIncomingData(data) {
-        if (data.type === 'UPDATE' || data.type === 'FULL_SYNC') {
-            this.mergePayload(data.payload);
+        if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
+            try {
+                // 1. Descomprimir los datos puros usando Pako
+                const decompressedStr = pako.inflate(data.payload, { to: 'string' });
+                const payloadObj = JSON.parse(decompressedStr);
+                
+                // 2. Mezclar datos descifrados de forma segura
+                this.mergeDecryptedPayload(payloadObj);
+            } catch (err) {
+                console.error("Error al procesar payload sincronizado P2P:", err);
+            }
         }
     },
 
-    mergePayload(payload) {
-        let requiresUIUpdate = false;
-        
-        if (payload['ventarys_chats']) {
-            const remoteEncrypted = payload['ventarys_chats'];
-            let remoteChats = null;
-            try {
-                if (remoteEncrypted.startsWith('U2FsdGVkX1')) {
-                    const dec = CryptoJS.AES.decrypt(remoteEncrypted, masterKey).toString(CryptoJS.enc.Utf8);
-                    remoteChats = JSON.parse(dec);
-                } else {
-                    remoteChats = JSON.parse(remoteEncrypted);
+    mergeDecryptedPayload(payload) {
+        let requiresChatUpdate = false;
+        let requiresKeysUpdate = false;
+        let requiresSettingsUpdate = false;
+
+        // 1. Combinar historiales de Chat (priorizando el que tenga más mensajes)
+        if (payload.chats) {
+            for (const [id, chat] of Object.entries(payload.chats)) {
+                if (!allChats[id]) {
+                    allChats[id] = chat;
+                    requiresChatUpdate = true;
+                } else if (chat.messages.length > allChats[id].messages.length) {
+                    allChats[id] = chat;
+                    requiresChatUpdate = true;
                 }
-                
-                // Merge logic: For each chat, keep the one with the most messages
-                for (const [id, chat] of Object.entries(remoteChats)) {
-                    if (!allChats[id]) {
-                        allChats[id] = chat;
-                        requiresUIUpdate = true;
-                    } else if (chat.messages.length > allChats[id].messages.length) {
-                        allChats[id] = chat;
-                        requiresUIUpdate = true;
-                    }
-                }
-                if (requiresUIUpdate) {
-                    const jsonStr = JSON.stringify(allChats);
-                    const encrypted = CryptoJS.AES.encrypt(jsonStr, masterKey).toString();
-                    localStorage.setItem('ventarys_chats', encrypted);
-                }
-            } catch(e) { console.error("Error merging chats", e); }
+            }
         }
 
-        const simpleKeys = ['byok_keys', 'byok_unified_model', 'byok_image_model', 'local_node_settings'];
-        simpleKeys.forEach(k => {
-            if (payload[k] && localStorage.getItem(k) !== payload[k]) {
-                localStorage.setItem(k, payload[k]); 
-                requiresUIUpdate = true;
+        // 2. Combinar API Keys
+        if (payload.apiKeys) {
+            for (const [k, v] of Object.entries(payload.apiKeys)) {
+                if (v && v !== apiKeys[k]) {
+                    apiKeys[k] = v;
+                    requiresKeysUpdate = true;
+                }
             }
-        });
+        }
 
-        if (requiresUIUpdate) {
-            finishInitApp(true); 
-            notify("Data synced from peer", "info");
+        // 3. Combinar Configuración de Local Node
+        if (payload.localNodeSettings) {
+            if (JSON.stringify(payload.localNodeSettings) !== JSON.stringify(localNodeSettings)) {
+                localNodeSettings = { ...localNodeSettings, ...payload.localNodeSettings };
+                requiresSettingsUpdate = true;
+            }
+        }
+
+        // 4. Modelos Actuales
+        if (payload.unifiedModel && payload.unifiedModel !== currentUnifiedModel) {
+            currentUnifiedModel = payload.unifiedModel;
+            AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+            requiresSettingsUpdate = true;
+        }
+
+        if (payload.imageModel && payload.imageModel !== currentImageModelId) {
+            currentImageModelId = payload.imageModel;
+            AppStorage.setItem('byok_image_model', currentImageModelId);
+            requiresSettingsUpdate = true;
+        }
+
+        // --- Guardar y Actualizar Interfaz (Usando la llave local del dispositivo) ---
+        if (requiresChatUpdate) {
+            // Guardamos usando "secureSave" (esto usa AES con la masterKey *local* del dispositivo actual)
+            secureSave('ventarys_chats', allChats);
+            updateChatHistory();
+            if (currentChatId && allChats[currentChatId]) {
+                loadChat(currentChatId, true);
+            }
+        }
+
+        if (requiresKeysUpdate) {
+            secureSave('byok_keys', apiKeys);
+            initSettingsUI();
+            fetchAllModels();
+        }
+
+        if (requiresSettingsUpdate) {
+            secureSave('local_node_settings', localNodeSettings);
+            updateLocalNodeProvider();
+            initSettingsUI();
+            fetchAllModels();
+        }
+
+        if (requiresChatUpdate || requiresKeysUpdate || requiresSettingsUpdate) {
+            notify("P2P: Vault synchronized successfully (Chats, Keys, Settings).", "success");
         }
     }
 };
@@ -972,6 +1028,7 @@ function saveAllKeys() {
     apiKeys.aqua = document.getElementById('key-aqua').value.trim();
     apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
     secureSave('byok_keys', apiKeys);
+    if (p2pSync.isConnected()) p2pSync.triggerSync();
     fetchImageModels();
     fetchAllModels();
 }
@@ -990,6 +1047,7 @@ function saveLocalNodeSettings() {
     localNodeSettings.key = document.getElementById('local-node-key').value.trim();
     localNodeSettings.model = document.getElementById('local-node-model').value.trim() || 'local-model';
     secureSave('local_node_settings', localNodeSettings);
+    if (p2pSync.isConnected()) p2pSync.triggerSync();
     updateLocalNodeProvider();
     fetchAllModels();
     notify("Local Node settings updated.", "success");
@@ -1032,6 +1090,7 @@ function updateHeaderModelSelector() {
 function selectUnifiedModel(providerId, modelId) {
     currentUnifiedModel = `${providerId}:${modelId}`;
     AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+    if (p2pSync.isConnected()) p2pSync.triggerSync();
     updateHeaderModelSelector();
     document.getElementById('model-menu').classList.add('hidden');
 }
@@ -1180,6 +1239,7 @@ async function fetchImageModels() {
 function saveImageModel() {
     currentImageModelId = document.getElementById('image-model-select').value;
     AppStorage.setItem('byok_image_model', currentImageModelId);
+    if (p2pSync.isConnected()) p2pSync.triggerSync();
 }
 
 function initSecurity() {
@@ -1418,6 +1478,7 @@ function finishTour() {
     notify("Connectors updated & saved successfully!", "success");
     initSettingsUI();
     fetchAllModels();
+    if (p2pSync.isConnected()) p2pSync.triggerSync();
 }
 
 window.addEventListener('popstate', (e) => {
@@ -2095,6 +2156,7 @@ function saveChatsLocally() {
         secureSave('ventarys_chats', allChats);
         AppStorage.setItem('current_chat_id', currentChatId);
         updateChatHistory();
+        if (p2pSync.isConnected()) p2pSync.triggerSync();
     } catch (e) {
         if (e.name === 'QuotaExceededError') notify("Local storage full.", "error");
     }
