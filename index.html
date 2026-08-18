@@ -6,64 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- SEO and Advanced Metadata -->
-    <title>Ventarys | Private AI & Autonomous IDE</title>
+    <title>Ventarys | Private AI Ecosystem</title>
     <meta name="description"
-        content="Discover Ventarys AI and Ventarys IDX. A minimalist ecosystem to chat, generate code, and automate tasks while guaranteeing total local privacy." />
+        content="Ventarys AI: A minimalist ecosystem for Private AI. Chat, code generation, and autonomous automation built with pure HTML5, CSS3, and JavaScript." />
     <meta name="keywords"
-        content="artificial intelligence, chatbot, image generator, private AI, virtual assistants, cursor ai, ai ide, automation, ventarys idx" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="canonical" href="https://ventarys.net/" />
+        content="artificial intelligence, chatbot, private ai, virtual assistants, ai workspace, pure javascript, p2p sync" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="icon" href="logo.png">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
-
-    <!-- Open Graph / Facebook / WhatsApp -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ventarys.net/" />
-    <meta property="og:title" content="Ventarys AI & IDX | Absolute Control" />
-    <meta property="og:description"
-        content="Advanced client unifying AI, image generation, and code editing. 100% local privacy. Elegant and minimalist design." />
-    <meta property="og:image" content="https://ventarys.net/logo.png" />
-    <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://ventarys.net/" />
-    <meta name="twitter:title" content="Ventarys | Private AI" />
-    <meta name="twitter:description" content="Chat, generate images, and code with AI in a 100% private environment." />
-    <meta name="twitter:image" content="https://ventarys.net/logo.png" />
-
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Ventarys AI & IDX",
-      "operatingSystem": "Web, Windows",
-      "applicationCategory": "DeveloperApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "Advanced web client and local AI IDE for chatting, generating code, and images while ensuring absolute privacy.",
-      "url": "https://ventarys.net/",
-      "image": "https://ventarys.netlogo.png"
-    }
-    </script>
-
-    <!-- Material Web Components -->
-    <script type="module" src="https://esm.run/@material/web/all.js"></script>
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Elegant Fonts & Icons -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -73,24 +31,24 @@
                     fontFamily: {
                         sans: ['"Outfit"', 'sans-serif'],
                         body: ['"Inter"', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace'],
                     },
                     colors: {
-                        ventarys: {
-                            black: '#000000',
-                            white: '#ffffff',
-                            gray: { 50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4', 800: '#262626', 900: '#171717', 950: '#0a0a0a' },
-                            accent: '#888888'
+                        zinc: {
+                            850: '#1f1f22',
+                            900: '#18181b',
+                            950: '#09090b',
                         }
                     },
                     animation: {
                         'fade-in': 'fadeIn 1s ease-out forwards',
-                        'fade-in-up': 'fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                         fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
                     }
                 }
             }
@@ -98,417 +56,282 @@
     </script>
 
     <style>
-        /* Monochromatic Material 3 Overrides - Ultra Minimalist */
-        :root {
-            --md-sys-color-primary: #000000;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-outline: #e5e5e5;
-            --md-sys-color-surface: #ffffff;
-            --md-sys-color-on-surface: #000000;
-            --md-sys-typescale-label-large-font: 'Outfit', sans-serif;
-            --md-sys-shape-corner-full: 4px;
-            color-scheme: light dark;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --md-sys-color-primary: #ffffff;
-                --md-sys-color-on-primary: #000000;
-                --md-sys-color-outline: #262626;
-                --md-sys-color-surface: #0a0a0a;
-                --md-sys-color-on-surface: #ffffff;
-            }
-        }
-
         body {
             background-color: theme('colors.white');
-            color: theme('colors.black');
+            color: theme('colors.zinc.900');
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         @media (prefers-color-scheme: dark) {
             body {
-                background-color: theme('colors.ventarys.950');
-                color: theme('colors.white');
+                background-color: theme('colors.zinc.950');
+                color: theme('colors.zinc.50');
             }
         }
 
-        /* Ultra-subtle Glass Nav */
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-dark {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         @media (prefers-color-scheme: dark) {
-            .glass-nav {
-                background: rgba(10, 10, 10, 0.8);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            .glass {
+                background: rgba(9, 9, 11, 0.7);
+                border-color: rgba(255, 255, 255, 0.05);
             }
         }
 
-        /* Minimalist Cards - Elegant Redesign */
-        .minimal-card {
-            background-color: transparent;
-            border: 1px solid theme('colors.ventarys.gray.200');
-            border-radius: 8px;
+        /* Smooth Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #18181b, #52525b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .text-gradient {
+                background: linear-gradient(to right, #ffffff, #a1a1aa);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+
+        /* Modern Bento Cards */
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid theme('colors.zinc.200');
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .minimal-card:hover {
-            border-color: theme('colors.black');
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
-            transform: translateY(-2px);
+        .bento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            border-color: theme('colors.zinc.300');
         }
 
         @media (prefers-color-scheme: dark) {
-            .minimal-card {
-                border-color: theme('colors.ventarys.gray.800');
+            .bento-card {
+                background: linear-gradient(145deg, #18181b, #09090b);
+                border-color: theme('colors.zinc.800');
             }
-
-            .minimal-card:hover {
-                border-color: theme('colors.white');
-                box-shadow: 0 10px 40px -10px rgba(255, 255, 255, 0.05);
+            .bento-card:hover {
+                box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+                border-color: theme('colors.zinc.700');
             }
         }
 
-        .logo-mono {
+        .logo-adapt {
             filter: brightness(0);
             transition: filter 0.3s ease;
         }
 
         @media (prefers-color-scheme: dark) {
-            .logo-mono {
+            .logo-adapt {
                 filter: brightness(0) invert(1);
             }
         }
 
+        /* Ambient Background Glow */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(161, 161, 170, 0.1) 0%, rgba(0,0,0,0) 70%);
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .ambient-glow {
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(9, 9, 11, 0) 70%);
+            }
+        }
+
+        /* Animations */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
-
-        md-icon {
-            font-family: 'Material Symbols Rounded', sans-serif;
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .icon-filled {
-            font-variation-settings: 'FILL' 1, 'wght' 300;
-        }
-
-        /* Minimalist Loader */
-        .loader {
-            border: 1px solid theme('colors.ventarys.gray.200');
-            border-top: 1px solid theme('colors.black');
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .loader {
-                border: 1px solid theme('colors.ventarys.gray.800');
-                border-top: 1px solid theme('colors.white');
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Tailwind arbitrary-value utilities (perchance-safe) */
-        .top-80 { top: 80px; }
-        .fs-10 { font-size: 10px; }
-        .fs-14 { font-size: 14px; }
-        .fs-16 { font-size: 16px; }
-        .fs-18 { font-size: 18px; }
-        .fs-20 { font-size: 20px; }
-        .min-h-150 { min-height: 150px; }
-        .max-w-320 { max-width: 320px; }
-        @media (min-width: 768px) { .max-w-400 { max-width: 400px; } }
-
-        /* Ultra subtle Grid Background */
-        .bg-grid {
-            background-size: 60px 60px;
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .bg-grid {
-                background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            }
-        }
     </style>
 </head>
 
-<body
-    class="transition-colors duration-500 relative font-body selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+<body class="transition-colors duration-500 font-body relative selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-zinc-900">
 
-    <div class="fixed inset-0 z-0 pointer-events-none bg-grid opacity-50"></div>
+    <div class="ambient-glow"></div>
 
-    <!-- Elegant Navigation -->
-    <nav id="main-nav" class="fixed w-full z-50 glass-nav top-0 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-4 group">
-                <img src="logo.png" alt="Ventarys Logo"
-                    class="w-6 h-6 object-contain logo-mono opacity-80 group-hover:opacity-100 transition-opacity">
-                <span class="text-xl font-sans font-medium tracking-wide">Ventarys</span>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <img src="logo.png" alt="Ventarys Logo" class="w-6 h-6 object-contain logo-adapt opacity-90 group-hover:opacity-100 transition-opacity">
+                <span class="text-xl font-sans font-semibold tracking-tight">Ventarys</span>
             </a>
 
-            <div class="hidden md:flex items-center gap-10 translate-yes">
-                <a href="#ecosystem"
-                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Ecosystem</a>
-                <a href="#ventarys-idx"
-                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">IDX Editor</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Features</a>
+                <a href="#architecture" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Architecture</a>
+                <a href="#ai-news" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">AI Radar</a>
             </div>
 
-            <div class="flex items-center gap-4 translate-yes">
-                <div class="hidden md:block ml-4">
-                    <md-outlined-button href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank">
-                        GitHub
-                    </md-outlined-button>
-                </div>
-                <md-icon-button id="mobile-menu-btn" class="md:hidden">
-                    <md-icon class="notranslate" translate="no">menu</md-icon>
-                </md-icon-button>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors">
+                    GitHub
+                </a>
+                <a href="https://ventarys.net/chat" class="hidden md:flex items-center justify-center h-9 px-5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-sm font-medium hover:scale-105 transition-transform shadow-lg shadow-zinc-900/20 dark:shadow-white/10">
+                    Launch AI
+                </a>
+                
+                <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2">
+                    <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
+                    <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
+                </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu"
-            class="hidden md:hidden absolute top-80 left-0 w-full bg-white/95 dark:bg-ventarys-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-2xl transition-all translate-yes">
-            <div class="flex flex-col p-6 gap-6 font-sans text-lg">
-                <a href="#ecosystem" class="font-medium text-gray-800 dark:text-gray-200"
-                    onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ecosystem</a>
-                <a href="#ventarys-idx" class="font-medium text-gray-800 dark:text-gray-200"
-                    onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ventarys IDX</a>
-
-                <md-filled-button href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="w-full">View
-                    on GitHub</md-filled-button>
+        <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full glass border-b border-zinc-200 dark:border-zinc-800 shadow-2xl">
+            <div class="flex flex-col p-6 gap-6 font-sans">
+                <a href="#features" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Features</a>
+                <a href="#architecture" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Architecture</a>
+                <a href="#ai-news" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">AI Radar</a>
+                <div class="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
+                <a href="https://ventarys.net/chat" class="flex items-center justify-center h-12 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium">Launch Ventarys AI</a>
             </div>
         </div>
     </nav>
 
-    <!-- [ULTRA MINIMALIST HERO SECTION] -->
-    <header class="relative pt-48 pb-32 lg:pt-64 lg:pb-40 z-10 flex flex-col items-center text-center translate-yes">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="animate-fade-in-up">
-                <div
-                    class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase mb-10 text-gray-500 dark:text-gray-400">
-                    <span class="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse"></span>
-                    The evolution of private AI
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col items-center text-center z-10 px-6">
+        <div class="max-w-4xl mx-auto animate-fade-in-up">
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+                    <span class="w-2 h-2 rounded-full bg-zinc-900 dark:bg-white animate-pulse"></span>
+                    <span class="text-xs font-medium tracking-wide text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">Ventarys AI <i class="ri-rocket-2-line text-sm"></i></span>
                 </div>
+                <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group">
+                    <i class="ri-open-source-line text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors"></i>
+                    <span class="text-xs font-medium tracking-wide text-zinc-600 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">100% Open Source</span>
+                </a>
+            </div>
 
-                <h1
-                    class="text-5xl md:text-7xl lg:text-8xl font-sans font-light tracking-tight mb-8 leading-[1.1] text-gray-900 dark:text-white">
-                    Open intelligence.<br>
-                    <span class="font-semibold">Absolute control.</span>
-                </h1>
+            <h1 class="text-5xl md:text-7xl font-sans font-bold tracking-tight mb-6 leading-tight text-gradient">
+                Minimalist Ecosystem <br class="hidden md:block"> for Private AI.
+            </h1>
 
-                <p
-                    class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed mb-14 font-light">
-                    A unified ecosystem. A private conversational assistant and an autonomous development environment
-                    designed for those who demand performance without compromising their data.
-                </p>
+            <p class="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto mb-10">
+                Ventarys AI is a lightweight, <b class="font-medium text-zinc-800 dark:text-zinc-200">open-source</b> platform built with <b class="font-medium text-zinc-800 dark:text-zinc-200">HTML5, CSS3, and pure JavaScript</b>. Designed for developers seeking power without heavy dependencies, it allows them to run AI securely.
+                By stripping away bloatware and relying on native browser capabilities, Ventarys achieves near-instant load times and zero-configuration setups, making it the perfect companion for quick ideation and sustained development workflows.
+            </p>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up w-full"
-                    style="animation-delay: 0.2s;">
-                    <md-filled-button href="https://ventarys.net/chat" class="w-full sm:w-auto h-14 px-8 text-sm tracking-wide">
-                        Launch Ventarys AI
-                    </md-filled-button>
-                    <a href="#ventarys-idx"
-                        class="group flex items-center justify-center gap-2 h-14 px-8 text-sm font-medium border border-gray-200 dark:border-gray-800 rounded hover:border-black dark:hover:border-white transition-all w-full sm:w-auto bg-white dark:bg-black">
-                        Download IDX <md-icon
-                            class="fs-18 group-hover:translate-y-1 transition-transform notranslate"
-                            translate="no">south</md-icon>
-                    </a>
-                </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+                <a href="https://ventarys.net/chat" class="w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-8 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium hover:scale-105 transition-transform shadow-xl shadow-zinc-900/10 dark:shadow-white/5">
+                    Launch Workspace
+                    <i class="ri-arrow-right-line text-lg"></i>
+                </a>
+                <a href="#features" class="w-full sm:w-auto flex items-center justify-center h-12 px-8 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors">
+                    Explore Features
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- [ABOUT / DESCRIPTION] -->
-    <section id="about"
-        class="py-32 relative z-10 translate-yes border-t border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-ventarys-900/20">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center reveal">
-                <div
-                    class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase mb-10 text-gray-500 dark:text-gray-400">
-                    <span class="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse"></span>
-                    About Ventarys AI
-                </div>
-
-                <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-6">Ventarys AI 🚀</h2>
-                <p class="text-xl md:text-2xl font-sans font-light text-gray-800 dark:text-gray-200 mb-8 leading-relaxed">
-                    Minimalist Ecosystem for Private AI: Chat, Code Generation, and Autonomous Automation.
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 text-lg font-light leading-relaxed max-w-3xl mx-auto mb-16">
-                    Ventarys AI is a lightweight platform built with HTML5, CSS3, and pure JavaScript. Designed for
-                    developers seeking power without heavy dependencies, it allows them to run AI securely.
+    <!-- Features Bento Grid -->
+    <section id="features" class="py-24 md:py-32 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-sans font-bold tracking-tight mb-4">Core Architecture</h2>
+                <p class="text-zinc-500 dark:text-zinc-400 text-lg max-w-3xl mx-auto font-light leading-relaxed">
+                    Designed for those who demand performance, security, and absolute control. Ventarys challenges the modern web development paradigm by proving that complex AI applications don't require megabytes of JavaScript frameworks. Our monolithic, yet modular approach ensures that your data stays yours, while delivering a tool that feels faster than native.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="minimal-card p-8 reveal group">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">shield</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">Total Privacy</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Data is processed in your local environment.
-                    </p>
-                </div>
-
-                <div class="minimal-card p-8 reveal group" style="transition-delay: 50ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">code</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">Code Generation</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Optimized to assist in development and refactoring.
-                    </p>
-                </div>
-
-                <div class="minimal-card p-8 reveal group" style="transition-delay: 100ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">terminal</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">Standalone IDE (Ventarys IDX)</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        An integrated environment for working with AI agents.
-                    </p>
-                </div>
-
-                <div class="minimal-card p-8 reveal group" style="transition-delay: 150ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">architecture</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">Vanilla Architecture</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        No frameworks (React/Vue), ensuring maximum speed and portability.
-                    </p>
-                </div>
-
-                <div class="minimal-card p-8 reveal group" style="transition-delay: 200ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">crop_square</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">Minimalist Interface</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Focused on productivity and low resource consumption.
-                    </p>
-                </div>
-
-                <div class="minimal-card p-8 reveal group" style="transition-delay: 250ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">cloud_sync</md-icon>
-                    </div>
-                    <h3 class="text-lg font-sans font-medium mb-3">P2P Sync</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Sync your chats across devices without login!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- [VENTARYS IDX SECTION - PRODUCT HIGHLIGHT] -->
-    <section id="ventarys-idx"
-        class="py-32 border-t border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-ventarys-900/20 relative z-10 translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-12 gap-16 items-center">
-
-                <!-- IDX Information -->
-                <div class="lg:col-span-5 reveal">
-                    <div
-                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-6 text-gray-400">
-                        <md-icon class="fs-16 notranslate" translate="no">terminal</md-icon> Autonomous Environment
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">Ventarys IDX</h2>
-                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-10 font-light leading-relaxed">
-                        Redefining local software engineering. A code editor assisted by artificial intelligence agents
-                        that write, analyze, and edit live directly in your workspace.
-                    </p>
-
-                    <div class="space-y-8 mb-12">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 text-black dark:text-white"><md-icon
-                                    class="icon-filled text-2xl notranslate" translate="no">bolt</md-icon></div>
-                            <div>
-                                <h4 class="font-sans font-medium text-lg mb-1">AI Second Cursor</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 font-light leading-relaxed">The agent
-                                    interacts with your code in real time, implementing complex logic while you
-                                    supervise.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 text-black dark:text-white"><md-icon
-                                    class="icon-filled text-2xl notranslate" translate="no">security</md-icon></div>
-                            <div>
-                                <h4 class="font-sans font-medium text-lg mb-1">Local & Portable</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 font-light leading-relaxed">No
-                                    invasive installations. A lightweight executable that updates in the background
-                                    ensuring security.</p>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)]">
+                
+                <!-- Total Privacy -->
+                <div class="bento-card p-8 md:col-span-2 reveal flex flex-col justify-between">
+                    <i class="ri-shield-keyhole-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">Total Privacy Guarantee</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light leading-relaxed">
+                            Data is processed entirely within your local environment. We do not employ intermediary servers to relay your prompts. Your API keys are stored in your browser's local storage and injected directly into requests sent straight to the provider, eliminating the risk of man-in-the-middle data harvesting.
+                        </p>
                     </div>
                 </div>
 
-                <!-- Ultra Clean Download Card -->
-                <div class="lg:col-span-7 reveal" style="transition-delay: 150ms;">
-                    <div
-                        class="bg-white dark:bg-ventarys-950 border border-gray-200 dark:border-gray-800 rounded-xl p-8 md:p-12 shadow-2xl relative">
-                        <div class="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                            <md-icon class="text-8xl notranslate" translate="no">code_blocks</md-icon>
-                        </div>
+                <!-- Vanilla Architecture -->
+                <div class="bento-card p-8 reveal flex flex-col justify-between group">
+                    <i class="ri-javascript-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200 group-hover:rotate-12 transition-transform"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">Vanilla Architecture</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light text-sm">
+                            Zero frameworks (No React/Vue/Angular), ensuring maximum speed, unmatched portability, and a tiny footprint.
+                        </p>
+                    </div>
+                </div>
 
-                        <div
-                            class="flex items-center justify-between mb-10 border-b border-gray-100 dark:border-gray-900 pb-6">
-                            <h3 class="text-2xl font-sans font-medium">Get IDX</h3>
-                            <span
-                                class="text-xs font-mono bg-gray-100 dark:bg-gray-900 px-3 py-1 rounded text-gray-500">Windows
-                                x64</span>
-                        </div>
+                <!-- Standalone IDE (Ventarys IDX) -->
+                <div class="bento-card p-8 reveal flex flex-col justify-between group" style="transition-delay: 50ms;">
+                    <i class="ri-terminal-box-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200 group-hover:-translate-y-1 transition-transform"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">Standalone IDE Integration</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light text-sm">
+                            More than a chat. An integrated environment optimized for working dynamically with autonomous AI agents.
+                        </p>
+                    </div>
+                </div>
 
-                        <div id="idx-downloads-container" class="min-h-150 flex flex-col justify-center">
-                            <!-- Initial Loader -->
-                            <div class="flex flex-col items-center justify-center py-8 opacity-50">
-                                <div class="loader mb-6"></div>
-                                <p class="text-xs font-mono uppercase tracking-widest text-gray-500">Connecting
-                                    repository...</p>
-                            </div>
-                        </div>
+                <!-- Code Generation -->
+                <div class="bento-card p-8 reveal flex flex-col justify-between group" style="transition-delay: 100ms;">
+                    <i class="ri-code-box-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200 group-hover:-translate-y-1 transition-transform"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">Advanced Code Generation</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light text-sm">
+                            Tailored prompts and UI components optimized specifically to assist in rapid software development and complex refactoring.
+                        </p>
+                    </div>
+                </div>
 
-                        <div class="mt-8 pt-6 text-center">
-                            <a href="https://github.com/Juanoto2012/Ventarys-IDX" target="_blank"
-                                class="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest">
-                                <md-icon class="fs-14 notranslate" translate="no">open_in_new</md-icon> Source Code
-                            </a>
-                        </div>
+                <!-- Minimalist Interface -->
+                <div class="bento-card p-8 md:col-span-1 reveal flex flex-col justify-between" style="transition-delay: 150ms;">
+                    <i class="ri-layout-masonry-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">Minimalist Interface</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light text-sm">
+                            A distraction-free zone focused purely on productivity and maintaining remarkably low hardware resource consumption.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- P2P Sync -->
+                <div class="bento-card p-8 reveal flex flex-col justify-between" style="transition-delay: 200ms;">
+                    <i class="ri-loop-left-line text-3xl mb-6 text-zinc-800 dark:text-zinc-200 animate-pulse-slow"></i>
+                    <div>
+                        <h3 class="text-xl font-sans font-semibold mb-2">P2P Decentralized Sync</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 font-light text-sm">
+                            Seamlessly sync your chats and workspaces across multiple devices securely, without ever needing to create a centralized account or login!
+                        </p>
                     </div>
                 </div>
 
@@ -516,185 +339,53 @@
         </div>
     </section>
 
-    <!-- [ECOSYSTEM / FEATURES - ELEGANT BENTO DESIGN] -->
-    <section id="ecosystem" class="py-32 relative z-10 translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="mb-20 text-center reveal max-w-3xl mx-auto">
-                <h2 class="text-4xl md:text-5xl font-sans font-semibold mb-6 tracking-tight">Frictionless capabilities.
-                </h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg font-light leading-relaxed">
-                    Ventarys condenses the best artificial intelligence tools into an immersive interface. Designed to
-                    stay out of the way, built to scale.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- BYOK -->
-                <div class="minimal-card p-10 reveal group">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-8 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">key</md-icon>
-                    </div>
-                    <h3 class="text-xl font-sans font-medium mb-4">BYOK Integration</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Connect your own API keys. You own your requests, without middlemen applying markups or limiting
-                        your flow.
-                    </p>
-                </div>
-
-                <!-- Swarm -->
-                <div class="minimal-card p-10 reveal group" style="transition-delay: 50ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-8 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">hub</md-icon>
-                    </div>
-                    <h3 class="text-xl font-sans font-medium mb-4">Swarm Mode</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Summon multiple AI models simultaneously to debate, validate logic, and solve problems from
-                        different perspectives.
-                    </p>
-                </div>
-
-                <!-- Image Gen -->
-                <div class="minimal-card p-10 reveal group" style="transition-delay: 100ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-8 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">palette</md-icon>
-                    </div>
-                    <h3 class="text-xl font-sans font-medium mb-4">Visual Studio</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Native and seamless image creation. Support for state-of-the-art generative models directly in
-                        the chat.
-                    </p>
-                </div>
-
-                <!-- Web Search -->
-                <div class="minimal-card p-10 reveal group lg:col-span-2" style="transition-delay: 150ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-8 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">public</md-icon>
-                    </div>
-                    <h3 class="text-xl font-sans font-medium mb-4">Real-Time Knowledge</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed max-w-xl">
-                        Break the barrier of static training. Ventarys indexes the web live to provide you with updated
-                        and verifiable data, grounding its answers in the present.
-                    </p>
-                </div>
-
-                <!-- Puter Sync -->
-                <div class="minimal-card p-10 reveal group" style="transition-delay: 200ms;">
-                    <div
-                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-8 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                        <md-icon class="text-2xl notranslate" translate="no">cloud_sync</md-icon>
-                    </div>
-                    <h3 class="text-xl font-sans font-medium mb-4">P2P Sync</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
-                        Encrypted backups using Puter.js. Your histories sync across devices without touching
-                        centralized servers.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- [AI RADAR - RSS FEED] -->
-    <section id="ai-news"
-        class="py-24 bg-gray-50 dark:bg-ventarys-900/30 border-y border-gray-100 dark:border-gray-900 relative z-10 translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 reveal">
-                <div>
-                    <div
-                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-4 text-gray-500">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        Live AI Radar
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-sans font-semibold tracking-tight">Latest on Hugging Face</h2>
-                </div>
-                <a href="https://huggingface.co/blog" target="_blank"
-                    class="text-xs font-medium uppercase tracking-widest hover:text-black dark:hover:text-white transition-colors text-gray-400">View
-                    all posts &rarr;</a>
-            </div>
-            <div id="rss-feed-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Loader -->
-                <div class="col-span-1 md:col-span-3 flex justify-center py-12">
-                    <div class="loader"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- [VALUE CONTENT - PHILOSOPHY] -->
-    <section
-        class="py-32 relative z-10 translate-yes bg-white dark:bg-ventarys-950 border-t border-gray-100 dark:border-gray-900">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+    <!-- Additional Ecosystem Features -->
+    <section id="architecture" class="py-24 border-y border-zinc-100 dark:border-zinc-900 bg-zinc-50/30 dark:bg-zinc-900/10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
                 <div class="reveal">
-                    <div
-                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-6 text-gray-400">
-                        <md-icon class="fs-16 notranslate" translate="no">diamond</md-icon> Philosophy
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">The power of
-                        local.<br><span class="text-gray-400">No strings attached.</span></h2>
-                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-10 font-light leading-relaxed">
-                        Ventarys is not a service that hijacks your workflows. It is an open-source productivity engine
-                        designed to maximize efficiency and give control back to the user.
+                    <h2 class="text-3xl md:text-4xl font-sans font-bold tracking-tight mb-6">Frictionless Capabilities.</h2>
+                    <p class="text-zinc-500 dark:text-zinc-400 text-lg font-light leading-relaxed mb-8">
+                        Ventarys condenses the best artificial intelligence tools into an immersive, distraction-free interface. We believe that AI should be a tool that empowers, not a service that restricts.
                     </p>
-
-                    <ul class="space-y-8">
-                        <li class="flex items-start gap-5">
-                            <div
-                                class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white fs-20 notranslate"
-                                    translate="no">verified_user</md-icon>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white">
+                                <i class="ri-key-2-line text-sm"></i>
                             </div>
                             <div>
-                                <h4 class="font-sans font-medium text-lg mb-1">Absolute Ownership</h4>
-                                <p class="text-sm text-gray-500 font-light leading-relaxed">Your prompts, your code, and
-                                    your ideas belong to you. With no centralized databases, the risk of leaks is
-                                    reduced to absolute zero.</p>
+                                <h4 class="font-sans font-semibold text-lg">BYOK Integration</h4>
+                                <p class="text-zinc-500 dark:text-zinc-400 text-sm font-light mt-1">Bring Your Own Key. Connect your own API keys directly. You own your requests without arbitrary usage limits, hidden fees, or middleman markups. Pay exactly for what you use, directly to the provider.</p>
                             </div>
                         </li>
-                        <li class="flex items-start gap-5">
-                            <div
-                                class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white fs-20 notranslate"
-                                    translate="no">speed</md-icon>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white">
+                                <i class="ri-node-tree text-sm"></i>
                             </div>
                             <div>
-                                <h4 class="font-sans font-medium text-lg mb-1">Optimized Latency</h4>
-                                <p class="text-sm text-gray-500 font-light leading-relaxed">Direct connections to
-                                    inference endpoints. We eliminate heavy middle layers to ensure agile and precise
-                                    responses.</p>
+                                <h4 class="font-sans font-semibold text-lg">Swarm Mode</h4>
+                                <p class="text-zinc-500 dark:text-zinc-400 text-sm font-light mt-1">Summon multiple distinct AI models simultaneously. Have them debate architecture, validate logic from different perspectives, and synthesize the ultimate solution through multi-agent consensus.</p>
                             </div>
                         </li>
-                        <li class="flex items-start gap-5">
-                            <div
-                                class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white fs-20 notranslate"
-                                    translate="no">extension</md-icon>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white">
+                                <i class="ri-global-line text-sm"></i>
                             </div>
                             <div>
-                                <h4 class="font-sans font-medium text-lg mb-1">Extensible Ecosystem</h4>
-                                <p class="text-sm text-gray-500 font-light leading-relaxed">Natively prepared to
-                                    integrate with local and remote models, fitting perfectly to your team's specific
-                                    needs.</p>
+                                <h4 class="font-sans font-semibold text-lg">Real-Time Knowledge</h4>
+                                <p class="text-zinc-500 dark:text-zinc-400 text-sm font-light mt-1">Break the static training barrier. Ventarys can autonomously index the web to verify facts, fetch documentation, and update data live, ensuring your AI is always grounded in the present reality.</p>
                             </div>
                         </li>
                     </ul>
                 </div>
 
-                <div class="reveal flex justify-center items-center" style="transition-delay: 200ms;">
-                    <div
-                        class="w-full max-w-320 md:max-w-400 aspect-square bg-gray-50 dark:bg-ventarys-900 rounded-full flex items-center justify-center p-6 md:p-10 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-grid opacity-30"></div>
-                        <div
-                            class="w-full h-full bg-white dark:bg-black rounded-full shadow-2xl flex items-center justify-center border border-gray-200 dark:border-gray-800 relative z-10 overflow-hidden group">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-tr from-gray-100 to-transparent dark:from-gray-900 dark:to-transparent opacity-50">
-                            </div>
-                            <md-icon
-                                class="text-7xl md:text-9xl text-black dark:text-white relative z-10 animate-pulse-slow group-hover:scale-110 transition-transform duration-700 notranslate"
-                                translate="no">all_inclusive</md-icon>
+                <div class="reveal flex justify-center" style="transition-delay: 200ms;">
+                    <div class="w-full max-w-md aspect-square rounded-full border border-zinc-200 dark:border-zinc-800 relative flex items-center justify-center animate-float">
+                        <div class="absolute inset-0 rounded-full border border-zinc-200 dark:border-zinc-800 scale-110 opacity-50"></div>
+                        <div class="absolute inset-0 rounded-full border border-zinc-200 dark:border-zinc-800 scale-125 opacity-20"></div>
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-zinc-100 to-white dark:from-zinc-800 dark:to-zinc-700 shadow-2xl flex items-center justify-center z-10">
+                            <img src="logo.png" alt="Ventarys" class="w-12 h-12 object-contain logo-adapt">
                         </div>
                     </div>
                 </div>
@@ -702,168 +393,112 @@
         </div>
     </section>
 
-    <!-- [PRIVACY ARCHITECTURE] -->
-    <section id="workflow" class="py-32 relative z-10 translate-yes">
-        <div class="max-w-6xl mx-auto px-6 text-center reveal">
-            <md-icon class="text-5xl mb-8 font-light notranslate" translate="no">fingerprint</md-icon>
-            <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">Zero Knowledge.</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light leading-relaxed mb-16">
-                We don't collect telemetry. We don't store your conversations. Ventarys is a static client; you provide
-                the intelligence, the browser does the work. When you close the tab, your data evaporates.
-            </p>
-            <md-outlined-button href="privacy.html" class="h-12 px-8">
-                Audit Policy
-            </md-outlined-button>
+    <!-- AI News RSS Section -->
+    <section id="ai-news" class="py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+                <div>
+                    <div class="inline-flex items-center gap-2 mb-3">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span class="text-xs font-semibold tracking-widest uppercase text-zinc-500">Live AI Radar</span>
+                    </div>
+                    <h2 class="text-3xl font-sans font-bold tracking-tight">Hugging Face Updates</h2>
+                </div>
+                <a href="https://huggingface.co/blog" target="_blank" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors group flex items-center gap-1">
+                    View all posts <i class="ri-arrow-right-line text-lg group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div id="rss-feed-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Loader -->
+                <div class="col-span-1 md:col-span-3 flex justify-center py-12">
+                    <div class="w-8 h-8 border-2 border-zinc-200 dark:border-zinc-800 border-t-zinc-900 dark:border-t-white rounded-full animate-spin"></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Elegant Footer -->
-    <footer
-        class="bg-white dark:bg-ventarys-950 pt-24 pb-12 relative z-10 border-t border-gray-100 dark:border-gray-900 translate-yes">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-                <div class="md:col-span-2 max-w-sm">
+    <!-- Footer -->
+    <footer class="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pt-20 pb-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="md:col-span-2">
                     <div class="flex items-center gap-3 mb-6">
-                        <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain logo-mono translate-no">
-                        <span class="text-lg font-sans font-medium tracking-wide translate-no">Ventarys</span>
+                        <img src="logo.png" alt="Logo" class="w-6 h-6 object-contain logo-adapt">
+                        <span class="text-xl font-sans font-semibold tracking-tight">Ventarys</span>
                     </div>
-                    <p class="text-gray-400 text-sm font-light leading-relaxed">
-                        Building the standard for private interaction with Artificial Intelligence. Open source by
-                        conviction.
+                    <p class="text-zinc-500 dark:text-zinc-400 text-sm font-light leading-relaxed max-w-sm">
+                        Building the standard for private, lightweight, and frictionless interaction with Artificial Intelligence. Open source by conviction.
                     </p>
                 </div>
-
+                
                 <div class="flex flex-col gap-4">
-                    <span class="font-mono tracking-widest uppercase fs-10 text-gray-400 mb-2">Platform</span>
-                    <a href="https://ventarys.net/chat"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys
-                        AI</a>
-                    <a href="#ventarys-idx"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys
-                        IDX</a>
+                    <span class="text-xs font-semibold tracking-widest uppercase text-zinc-900 dark:text-white mb-2">Platform</span>
+                    <a href="https://ventarys.net/chat" class="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Ventarys AI Workspace</a>
+                    <a href="#features" class="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Features</a>
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <span class="font-mono tracking-widest uppercase fs-10 text-gray-400 mb-2">Community</span>
-                    <a href="https://github.com/Juanoto2012" target="_blank"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">GitHub</a>
-                    <a href="forum.html"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Forum</a>
-                    <a href="privacy.html"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Privacy</a>
-                    <a href="terms.html"
-                        class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Terms</a>
+                    <span class="text-xs font-semibold tracking-widest uppercase text-zinc-900 dark:text-white mb-2">Legal & Community</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">GitHub Profile</a>
+                    <a href="privacy.html" class="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="terms.html" class="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Terms of Service</a>
                 </div>
             </div>
 
-            <div
-                class="border-t border-gray-100 dark:border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 font-light">
+            <div class="border-t border-zinc-200 dark:border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400 font-light">
                 <p>© 2026 Ventarys. All rights reserved.</p>
-                <div class="flex items-center gap-2">
-                    <span>Designed and developed by</span>
-                    <a href="https://github.com/Juanoto2012" target="_blank"
-                        class="font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors translate-no">JJDev Studio
-                        Studio</a>
+                <div class="flex items-center gap-1">
+                    <span>Engineered by</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="font-medium text-zinc-800 dark:text-zinc-200 hover:underline">JJDev Studio</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Minimalist Cookie Banner -->
-    <div id="cookie-consent"
-        class="translate-yes fixed bottom-6 left-1/2 transform -translate-x-1/2 max-w-xl bg-white dark:bg-ventarys-950 border border-gray-200 dark:border-gray-800 p-4 rounded hidden flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-700 translate-y-10 opacity-0" style="width: 90%; z-index: 60;">
-        <p class="text-xs text-gray-500 text-center sm:text-left font-light leading-relaxed">
-            Your privacy is absolute. <b>No advertising. No trackers.</b>
-        </p>
-        <button onclick="acceptCookies()"
-            class="flex-shrink-0 text-xs font-medium uppercase tracking-widest border border-black dark:border-white px-6 py-2 rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
-            Got it
+    <div id="cookie-consent" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-lg bg-white dark:bg-zinc-950/90 backdrop-blur-xl border border-zinc-200 dark:border-zinc-700 p-5 rounded-2xl hidden flex-col sm:flex-row items-center justify-between gap-5 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-700 translate-y-10 opacity-0 z-[60]">
+        <div class="flex flex-col gap-1">
+            <h4 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 text-center sm:text-left">Privacy First. Always.</h4>
+            <p class="text-xs text-zinc-600 dark:text-zinc-400 text-center sm:text-left font-light leading-relaxed">
+                We believe in zero telemetry. This site uses local storage solely to remember your theme and layout preferences. <b>No advertising. No third-party trackers. No compromises.</b>
+            </p>
+        </div>
+        <button onclick="acceptCookies()" class="flex-shrink-0 w-full sm:w-auto text-xs font-semibold px-6 py-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:scale-105 transition-transform shadow-lg shadow-zinc-900/20 dark:shadow-white/10">
+            I Understand
         </button>
     </div>
 
-    <!-- CORE SCRIPTS -->
+    <!-- Scripts -->
     <script>
-        window.addEventListener('load', () => {
-            fetchLatestIDXRelease();
-        });
-
-        // GitHub API logic for Ventarys IDX downloads
-        async function fetchLatestIDXRelease() {
-            const container = document.getElementById('idx-downloads-container');
-            if (!container) return;
-
-            try {
-                const response = await fetch('https://api.github.com/repos/Juanoto2012/Ventarys-IDX/releases/latest');
-                if (!response.ok) throw new Error('Failed to connect to GitHub');
-
-                const data = await response.json();
-                const version = data.tag_name || 'v?.?.?';
-                const windowsAssets = data.assets.filter(a => a.name.endsWith('.exe') || a.name.endsWith('Setup.exe'));
-
-                if (windowsAssets.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center py-6">
-                            <p class="text-sm font-medium">Preparing release ${version}</p>
-                            <p class="text-xs text-gray-400 font-light mt-1">Binaries will be available shortly.</p>
-                        </div>`;
-                    return;
-                }
-
-                let htmlStr = `
-                    <div class="mb-6 flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white animate-pulse"></span>
-                        <span class="text-[10px] font-mono tracking-widest uppercase text-gray-500">Release ${version}</span>
-                    </div>
-                    <div class="space-y-3">
-                `;
-
-                windowsAssets.forEach(asset => {
-                    const sizeMB = (asset.size / (1024 * 1024)).toFixed(1);
-                    htmlStr += `
-                        <a href="${asset.browser_download_url}" class="group flex items-center justify-between p-4 md:p-5 border border-gray-200 dark:border-gray-800 rounded hover:border-black dark:hover:border-white transition-colors bg-white dark:bg-black">
-                            <div>
-                                <h4 class="font-sans font-medium text-sm md:text-base group-hover:translate-x-1 transition-transform">${asset.name}</h4>
-                                <p class="text-xs text-gray-400 font-light mt-1 group-hover:translate-x-1 transition-transform">${sizeMB} MB • Portable Executable</p>
-                            </div>
-                            <div class="w-10 h-10 rounded-full border border-gray-100 dark:border-gray-900 flex items-center justify-center group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
-                                <md-icon class="text-[18px] notranslate" translate="no">download</md-icon>
-                            </div>
-                        </a>
-                    `;
-                });
-
-                htmlStr += `</div>`;
-                container.innerHTML = htmlStr;
-
-            } catch (error) {
-                console.error("Error fetching releases:", error);
-                container.innerHTML = `
-                    <div class="text-center py-6 border border-gray-200 dark:border-gray-800 rounded">
-                        <p class="text-sm text-gray-500 mb-3">Connection to repository interrupted.</p>
-                        <a href="https://github.com/Juanoto2012/Ventarys-IDX/releases/latest" target="_blank" class="text-xs font-medium uppercase tracking-widest border-b border-black dark:border-white pb-0.5">
-                            Download via GitHub
-                        </a>
-                    </div>`;
-            }
-        }
-
-        // Scroll Animations
+        // Scroll Reveal Animation
         document.addEventListener("DOMContentLoaded", () => {
             const reveals = document.querySelectorAll('.reveal');
-            const revealOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
-
-            const revealOnScroll = new IntersectionObserver(function (entries, observer) {
+            const observer = new IntersectionObserver((entries, obs) => {
                 entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        obs.unobserve(entry.target);
+                    }
                 });
-            }, revealOptions);
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-            reveals.forEach(reveal => revealOnScroll.observe(reveal));
+            reveals.forEach(el => observer.observe(el));
         });
 
-        // Cookies
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        if (menuBtn) {
+            menuBtn.addEventListener('click', toggleMenu);
+        }
+
+        // Cookie Consent Logic
         const cookieBanner = document.getElementById('cookie-consent');
         function checkCookies() {
             if (!localStorage.getItem('ventarys_consent')) {
@@ -875,92 +510,56 @@
         function acceptCookies() {
             localStorage.setItem('ventarys_consent', 'true');
             cookieBanner.classList.add('translate-y-10', 'opacity-0');
-            setTimeout(() => cookieBanner.style.display = 'none', 700);
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+                cookieBanner.classList.add('hidden');
+            }, 700);
         }
 
-        // Mobile Menu
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-        if (btn && menu) {
-            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-        }
-
-        // Dynamic Favicon Dark/Light
-        const initDynamicFavicon = () => {
-            const favicon = document.querySelector("link[rel='icon']");
-            if (!favicon) return;
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = favicon.href;
-
-            const renderFavicon = () => {
-                if (!img.width) return;
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width; canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                ctx.filter = isDark ? 'brightness(0) invert(1)' : 'brightness(0)';
-                ctx.drawImage(img, 0, 0);
-                try { favicon.href = canvas.toDataURL('image/png'); } catch (e) { }
-            };
-
-            img.onload = () => {
-                renderFavicon();
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderFavicon);
-            };
-        };
-
-        window.addEventListener('load', () => {
-            initDynamicFavicon();
-            setTimeout(checkCookies, 2000);
-            fetchAINews();
-        });
-
-        // RSS Feed Reader (Hugging Face Blog)
+        // RSS Feed Fetcher (Hugging Face)
         async function fetchAINews() {
             const container = document.getElementById('rss-feed-container');
             if (!container) return;
 
             try {
-                // Using a public RSS to JSON proxy to avoid CORS issues
                 const rssUrl = encodeURIComponent('https://huggingface.co/blog/feed.xml');
                 const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
-
                 if (!response.ok) throw new Error('Network error');
+                
                 const data = await response.json();
-
-                if (data.status === 'ok' && data.items && data.items.length > 0) {
-                    const items = data.items.slice(0, 3); // Show the 3 most recent posts
-
+                if (data.status === 'ok' && data.items) {
+                    const items = data.items.slice(0, 3);
                     container.innerHTML = items.map((item, index) => {
                         const date = new Date(item.pubDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-                        // Extract plain text from description in case it comes with HTML
                         const tempDiv = document.createElement("div");
                         tempDiv.innerHTML = item.description;
-                        const cleanDesc = tempDiv.textContent || tempDiv.innerText || "Discover the latest news about artificial intelligence and language models...";
+                        const cleanDesc = tempDiv.textContent || tempDiv.innerText || "Read the latest AI updates...";
 
                         return `
-                        <a href="${item.link}" target="_blank" class="minimal-card p-8 flex flex-col bg-white dark:bg-ventarys-950 group reveal active" style="transition-delay: ${index * 100}ms">
-                            <span class="text-[10px] font-mono tracking-widest uppercase text-gray-400 mb-4 block">${date}</span>
-                            <h3 class="text-lg font-sans font-medium mb-3 group-hover:text-black dark:group-hover:text-white text-gray-800 dark:text-gray-200 transition-colors line-clamp-2">${item.title}</h3>
-                            <p class="text-sm text-gray-500 font-light line-clamp-3 mt-auto leading-relaxed">${cleanDesc}</p>
+                        <a href="${item.link}" target="_blank" class="bento-card p-6 flex flex-col group reveal active" style="transition-delay: ${index * 100}ms">
+                            <span class="text-[10px] font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500 mb-3 block">${date}</span>
+                            <h3 class="text-lg font-sans font-semibold mb-3 text-zinc-800 dark:text-zinc-100 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-tight">${item.title}</h3>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 font-light line-clamp-3 mt-auto leading-relaxed">${cleanDesc}</p>
                         </a>
                         `;
                     }).join('');
                 } else {
-                    throw new Error('Invalid data format');
+                    throw new Error('Invalid data');
                 }
             } catch (error) {
-                console.error('Error loading RSS:', error);
                 container.innerHTML = `
-                    <div class="col-span-1 md:col-span-3 text-center py-12 border border-dashed border-gray-200 dark:border-gray-800 rounded-lg">
-                        <p class="text-sm text-gray-500">Could not load news at this time.</p>
-                        <button onclick="fetchAINews()" class="mt-4 text-xs font-medium uppercase tracking-widest border-b border-black dark:border-white pb-0.5">Retry</button>
+                    <div class="col-span-1 md:col-span-3 text-center py-10 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <p class="text-sm text-zinc-500 mb-2">Could not load AI news at this time.</p>
+                        <button onclick="fetchAINews()" class="text-xs font-medium underline text-zinc-800 dark:text-zinc-200">Retry Connection</button>
                     </div>
                 `;
             }
         }
+
+        window.addEventListener('load', () => {
+            setTimeout(checkCookies, 1500);
+            fetchAINews();
+        });
     </script>
 </body>
-
 </html>
