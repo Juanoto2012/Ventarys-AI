@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Ventarys AI - Chat</title>
+    
+    <!-- Core & UI Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://esm.run/@material/web/all.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>"undefined"!=typeof pdfjsLib&&(pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js")</script>
+    
+    <!-- P2P Sync Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
+        #ventarys-app-root{--bg-main:#0a0a0a;--bg-sidebar:#0a0a0a;--bg-message-user:#171717;--bg-message-ai:transparent;--accent-main:#ffffff;--accent-text:#000000;--accent-glow:rgba(255, 255, 255, 0.1);--text-primary:#ffffff;--text-secondary:#888888;--border-color:#262626;--bg-secondary:#171717;--bg-tertiary:#111111;--border-secondary:#262626;--input-bg:#0a0a0a;--input-border:#262626;--input-text:#ffffff;--input-placeholder:#666666;--code-bg:#111111;--code-text:#e4e4e7;--scrollbar-thumb:#333333;--radius-lg:8px;--radius-xl:12px;background-color:var(--bg-main)!important;color:var(--text-primary)!important;font-family:Inter,sans-serif!important;overflow:hidden;touch-action:manipulation;transition:background-color .4s cubic-bezier(.16,1,.3,1),color .4s ease;width:100%;height:100%;position:relative;z-index:50;-webkit-font-smoothing:antialiased}
+        #ventarys-app-root.light{--bg-main:#ffffff;--bg-sidebar:#ffffff;--bg-message-user:#f5f5f5;--bg-message-ai:transparent;--accent-main:#000000;--accent-text:#ffffff;--accent-glow:rgba(0, 0, 0, 0.05);--text-primary:#000000;--text-secondary:#666666;--border-color:#e5e5e5;--bg-secondary:#fafafa;--bg-tertiary:#f5f5f5;--border-secondary:#e5e5e5;--input-bg:#ffffff;--input-border:#d4d4d4;--input-text:#000000;--input-placeholder:#888888;--code-bg:#f5f5f5;--code-text:#111111;--scrollbar-thumb:#cccccc}
+        .font-sans,h1,h2,h3,h4,h5,h6{font-family:Outfit,sans-serif!important}
+        #ventarys-app-root .bg-main{background-color:var(--bg-main)}
+        #ventarys-app-root .bg-sidebar{background-color:var(--bg-sidebar);border-right:1px solid var(--border-color)}
+        #ventarys-app-root .bg-secondary{background-color:var(--bg-secondary)}
+        #ventarys-app-root .bg-tertiary{background-color:var(--bg-tertiary)}
+        #ventarys-app-root .bg-message-user{background-color:var(--bg-message-user);color:var(--text-primary)}
+        #ventarys-app-root .text-adaptive{color:var(--text-primary)}
+        #ventarys-app-root .text-muted{color:var(--text-secondary)}
+        #ventarys-app-root .border-custom{border-color:var(--border-color)}
+        #ventarys-app-root .solid-bg{background-color:var(--bg-secondary)!important;opacity:1!important}
+        #ventarys-app-root .text-accent{color:var(--accent-main)!important}
+        #ventarys-app-root .border-accent{border-color:var(--accent-main)!important}
+        #ventarys-app-root .bg-accent{background-color:var(--accent-main)!important;color:var(--accent-text)!important}
+        #ventarys-app-root #sidebar{transition:transform .4s cubic-bezier(.16,1,.3,1);width:280px;background-color:var(--bg-sidebar);border-right:1px solid var(--border-color);z-index:100}
+        #ventarys-app-root #input-wrapper{background-color:var(--input-bg);border:1px solid var(--input-border);border-radius:var(--radius-xl);transition:all .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+        #ventarys-app-root #input-wrapper:focus-within{border-color:var(--accent-main);box-shadow:0 4px 20px -2px var(--accent-glow)}
+        #ventarys-app-root #user-input{background-color:transparent;color:var(--input-text)}
+        #ventarys-app-root #user-input:disabled{opacity:.6;cursor:not-allowed}
+        #ventarys-app-root #user-input::placeholder{color:var(--input-placeholder)}
+        
+        /* Modificación para que los logos se adapten al tema, excepto los forzados a negro */
+        #ventarys-app-root .logo-white { filter: brightness(0) invert(1) !important; opacity: 0.9; transition: all .3s ease; }
+        #ventarys-app-root.light .logo-white { filter: brightness(0) !important; opacity: 0.9; }
+        
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar{width:4px;height:4px}
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-track{background:0 0}
+        #ventarys-app-root .custom-scrollbar::-webkit-scrollbar-thumb{background-color:var(--scrollbar-thumb);border-radius:4px}
+        #ventarys-app-root .prose{color:var(--text-primary);font-weight:300}
+        #ventarys-app-root .prose p{margin-bottom:1em;line-height:1.7}
+        #ventarys-app-root .prose code:not(precode){font-family:'JetBrains Mono',monospace;background:var(--code-bg);color:var(--text-primary);padding:2px 6px;border-radius:4px;font-size:.85em;border:1px solid var(--border-secondary);font-weight:400}
+        #ventarys-app-root .prose pre{background:var(--code-bg);color:var(--code-text);padding:1.2rem;border-radius:8px;overflow-x:auto;margin:1rem 0;border:1px solid var(--border-secondary);font-size:.9em}
+        #ventarys-app-root .hljs{background-color:transparent!important;color:var(--text-primary)!important;padding:0!important;font-family:'JetBrains Mono',monospace}
+        #ventarys-app-root .prose h1,.prose h2,.prose h3{font-family:Outfit,sans-serif;margin-top:1.5em;margin-bottom:.6em}
+        #ventarys-app-root .prose h1{font-weight:600;font-size:1.6em}
+        #ventarys-app-root .prose h2{font-weight:500;font-size:1.4em;border-bottom:1px solid var(--border-secondary);padding-bottom:.3em}
+        #ventarys-app-root .prose h3{font-weight:500;font-size:1.2em}
+        #ventarys-app-root .prose ul{list-style-type:none;padding-left:1em;margin-bottom:1em;border-left:1px solid var(--border-secondary)}
+        #ventarys-app-root .prose ul li::before{content:"• ";color:var(--accent-main);font-weight:700}
+        #ventarys-app-root .prose ol{list-style-type:decimal;padding-left:1.5em;margin-bottom:1em}
+        #ventarys-app-root .prose table{width:100%;border-collapse:collapse;margin-bottom:1em;overflow-x:auto;display:block;border-radius:6px;border:1px solid var(--border-secondary)}
+        #ventarys-app-root .prose td,#ventarys-app-root .prose th{border-bottom:1px solid var(--border-secondary);padding:12px 16px;text-align:left}
+        #ventarys-app-root .prose th{background-color:var(--bg-tertiary);font-weight:500}
+        #ventarys-app-root .prose blockquote{border-left:2px solid var(--accent-main);padding-left:1em;margin:1em 0;color:var(--text-secondary);font-style:italic;background:var(--bg-tertiary);padding:1rem;border-radius:0 4px 4px 0}
+        #ventarys-app-root .prose strong{font-weight:600;color:var(--text-primary)}
+        #ventarys-app-root .prose a{color:var(--accent-main);text-decoration:underline;text-underline-offset:4px;font-weight:500}
+        #ventarys-app-root .prose,#ventarys-app-root .prose *{user-select:text!important;-webkit-user-select:text!important}
+        #ventarys-app-root .selectable-text,#ventarys-app-root .selectable-text *{user-select:text!important;-webkit-user-select:text!important}
+        #ventarys-app-root input,#ventarys-app-root textarea{user-select:text!important;-webkit-user-select:text!important}
+        .pb-safe{padding-bottom:max(1rem,env(safe-area-inset-bottom))}
+        #ventarys-app-root .code-block-wrapper{position:relative;margin-bottom:1rem;border-radius:8px;border:1px solid var(--border-secondary);background-color:var(--code-bg);overflow:hidden}
+        #ventarys-app-root .code-actions{position:absolute;top:.5rem;right:.5rem;display:flex;gap:6px;z-index:10}
+        #ventarys-app-root .action-btn{background-color:var(--bg-tertiary);border:1px solid var(--border-secondary);color:var(--text-secondary);padding:4px 10px;border-radius:4px;font-size:11px;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;opacity:0;transition:all .2s}
+        #ventarys-app-root .code-block-wrapper:hover .action-btn, #ventarys-app-root .msg-actions .action-btn {opacity:1}
+        #ventarys-app-root .action-btn:hover{background-color:var(--accent-main);border-color:var(--accent-main);color:var(--accent-text)}
+        @media (max-width:1024px){#ventarys-app-root #sidebar{position:absolute;top:0;bottom:0;left:0;z-index:150;transform:translateX(-100%);box-shadow:20px 0 50px rgba(0,0,0,.2)}#ventarys-app-root #sidebar.open{transform:translateX(0)}#ventarys-app-root #sidebar-overlay.visible{display:block;z-index:140}#ventarys-app-root .action-btn{opacity:1}}
+        #ventarys-app-root .fade-in{animation:fadeIn .4s cubic-bezier(.16,1,.3,1) forwards;opacity:0;transform:translateY(10px)}
+        @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+        #ventarys-app-root #plus-menu-btn i{transition:transform .3s cubic-bezier(.16,1,.3,1)}
+        #ventarys-app-root #plus-menu-btn.menu-open i{transform:rotate(45deg)}
+        #ventarys-app-root .btn-send{background-color:var(--accent-main);color:var(--accent-text);border-radius:50%!important;width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.16,1,.3,1);cursor:pointer}
+        #ventarys-app-root .btn-send:not(.disabled):hover{opacity:.9;transform:scale(1.05)}
+        #ventarys-app-root .btn-send.disabled{opacity:0.4;pointer-events:none}
+        .dot-typing{display:flex;align-items:center;gap:4px;height:24px;padding-left:2px}
+        .dot-typing .dot{width:4px;height:4px;background-color:var(--text-secondary);border-radius:50%;animation:dotTyping 1.4s infinite ease-in-out both}
+        .dot-typing .dot:nth-child(1){animation-delay:-.32s}
+        .dot-typing .dot:nth-child(2){animation-delay:-.16s}
+        @keyframes dotTyping{0%,100%,80%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
+        .settings-input{width:100%;border:1px solid var(--border-secondary);background-color:transparent;color:var(--text-primary);padding:12px 16px;border-radius:8px;font-size:14px;transition:border-color .3s;outline:0}
+        .settings-input:focus{border-color:var(--accent-main)}
+        .settings-select{appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='gray' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 1rem center;background-size:1em}
+        #dialog-overlay{z-index:10000!important;position:fixed;top:0;left:0;width:100%;height:100%;display:none;background:rgba(0,0,0,.6);backdrop-filter:blur(10px)}
+        #dialog-overlay.active{display:flex}
+        #dialog-box{background-color:var(--bg-secondary);border:1px solid var(--border-secondary);color:var(--text-primary);border-radius:12px;padding:2rem;max-width:24rem;width:90%;box-shadow:0 20px 40px rgba(0,0,0,.2)}
+        .toast-item{pointer-events:auto;transition:all .4s cubic-bezier(.16,1,.3,1)}
+        @keyframes toastSlideIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        .toast-enter{animation:toastSlideIn .4s cubic-bezier(.16,1,.3,1) forwards}
+        .toast-exit{opacity:0!important;transform:translateY(-10px)!important}
+        .spinning{animation:spin 1s linear infinite}
+        @keyframes spin{100%{transform:rotate(360deg)}}
+        .model-dot{display:inline-block;width:6px;height:6px;background-color:var(--accent-main);border-radius:50%;box-shadow:0 0 8px var(--accent-glow)}
+        .agent-block{animation:fadeIn .4s ease-out forwards}
+        details{outline:0}
+        details>summary{list-style:none}
+        details>summary::-webkit-details-marker{display:none}
+        #login-overlay{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+        .status-dot-active{background-color:var(--accent-main);box-shadow:0 0 8px var(--accent-glow)}
+        .status-dot-inactive{background-color:var(--text-secondary)}
+        #preview-modal{backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+        .msg-container-group:hover .msg-actions{opacity:1}
+        #tour-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+        #sync-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+        #qr-reader { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-secondary); background: #000; }
+        #qr-reader video { object-fit: cover; }
+    </style>
+</head>
+<body>
+<div id="ventarys-app-root" class="h-full flex text-sm overflow-hidden bg-main w-full">
+    <div id="login-overlay" class="fixed inset-0 z-[20000] bg-main/90 flex flex-col items-center justify-center p-4 transition-opacity duration-300">
+        <div class="solid-bg rounded-[16px] p-10 max-w-md w-full shadow-2xl flex flex-col gap-6 items-center border border-secondary text-center relative overflow-hidden">
+            <div class="w-16 h-16 bg-tertiary rounded-full flex items-center justify-center border border-secondary mb-2">
+                <img src="https://files.catbox.moe/1313y3.png" alt="Logo" class="w-8 h-8 logo-white" onerror='this.src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=="'>
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-3">Ventarys AI</h2>
+                <p class="text-muted text-sm leading-relaxed">Local, Private, and Decentralized.</p>
+            </div>
+            <div class="w-full flex flex-col gap-3 mt-4">
+                <button onclick="continueAsGuest()" class="w-full bg-accent text-[var(--accent-text)] py-3.5 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"><i class="ri-rocket-2-line"></i>Enter Encrypted Workspace</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[140] transition-opacity lg:hidden hidden"></div>
+    <input type="file" id="file-upload-input" hidden multiple="multiple" onchange="handleFileSelect(event)" accept="image/*,application/pdf,text/*"> 
+    <input type="file" id="backup-upload-input" hidden accept=".json" onchange="importData(event)">
+    
+    <aside id="sidebar" class="flex flex-col h-full flex-shrink-0 lg:translate-x-0 z-[100]">
+        <div class="p-6 flex flex-col gap-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://files.catbox.moe/1313y3.png" alt="Logo" class="w-6 h-6 logo-white" onerror='this.src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=="'>
+                    <span class="text-adaptive font-sans font-semibold text-xl tracking-tight">Ventarys</span>
+                </div>
+                <button onclick="toggleSidebar()" class="lg:hidden text-muted hover:text-adaptive transition-colors"><i class="ri-close-line text-xl"></i></button>
+            </div>
+            <button onclick="createNewChat()" class="flex items-center gap-3 bg-secondary hover:bg-tertiary text-adaptive px-4 py-3 rounded-lg transition-colors border border-secondary shadow-sm hover:border-accent group w-full">
+                <i class="ri-add-line text-muted group-hover:text-adaptive transition-colors text-lg"></i>
+                <span class="font-medium text-sm">New Chat</span>
+            </button>
+        </div>
+        <div class="px-4 mt-1 mb-1">
+            <div class="relative flex items-center w-full">
+                <i class="ri-search-line absolute left-3 text-muted text-[16px]"></i>
+                <input type="text" id="chat-search-input" placeholder="Search chats..." class="w-full bg-secondary border border-secondary text-adaptive text-xs rounded-lg pl-9 pr-3 py-2 outline-none focus:border-accent transition-colors" oninput="updateChatHistory(this.value)">
+            </div>
+        </div>
+        <div id="chat-history" class="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-1 mt-2">
+            <div class="px-2 py-2 text-[10px] font-bold text-muted uppercase tracking-widest opacity-70 mb-2">History</div>
+        </div>
+        <div class="px-6 pb-4 space-y-3 border-t border-secondary pt-4">
+            <div class="flex flex-col gap-1 mb-3">
+                <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="text-muted font-medium flex items-center gap-1.5" id="profile-name"><i class="ri-user-line text-[16px]"></i>Local User</span>
+                </div>
+                <div class="flex justify-between items-center text-[11px]">
+                    <span class="text-muted flex items-center gap-1"><i class="ri-lock-line text-[12px] text-green-500"></i>Encryption:</span>
+                    <span class="font-medium text-green-500">AES-256 (Local)</span>
+                </div>
+                <div class="flex justify-between items-center text-[11px] mt-1 hidden" id="sync-status-indicator">
+                    <span class="text-muted flex items-center gap-1"><i class="ri-refresh-line text-[12px] text-blue-500"></i>Device Sync:</span>
+                    <span id="sync-status-text" class="font-medium text-blue-500">Connected</span>
+                </div>
+            </div>
+            
+            <!-- Added Status Page Link -->
+            <a href="https://ventarys.openstatus.dev/" target="_blank" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary group">
+                <i class="ri-signal-tower-line group-hover:text-green-500 transition-colors text-[20px]"></i>
+                <span class="font-medium text-sm">System Status</span>
+            </a>
+
+            <button onclick="openConnectorsScreen()" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary border border-secondary shadow-sm group bg-main relative overflow-hidden">
+                <i class="ri-plug-line text-[20px] text-accent z-10"></i>
+                <span class="font-medium text-sm flex-1 text-left z-10">Connectors</span>
+                <span class="text-[10px] bg-accent text-[var(--accent-text)] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider z-10">Keys</span>
+            </button>
+            <button onclick="openSettingsScreen()" class="w-full flex items-center gap-3 text-muted hover:text-adaptive px-3 py-2.5 rounded-lg transition-colors hover:bg-secondary group">
+                <i class="ri-settings-3-line group-hover:rotate-45 transition-transform duration-500 text-[20px]"></i>
+                <span class="font-medium text-sm">Settings</span>
+            </button>
+        </div>
+    </aside>
+    
+    <div class="flex-1 flex w-full relative min-w-0">
+        <main id="chat-wrapper" class="flex-1 flex flex-col relative min-w-0 h-full bg-main transition-all duration-300">
+            <header class="absolute top-0 inset-x-0 h-20 flex items-center justify-between px-6 z-30 bg-gradient-to-b from-[var(--bg-main)] to-transparent pointer-events-none">
+                <div class="pointer-events-auto flex items-center gap-2">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-muted hover:text-adaptive rounded-full hover:bg-secondary transition-colors backdrop-blur-md">
+                        <i class="ri-menu-line text-[20px]"></i>
+                    </button>
+                </div>
+                <div class="pointer-events-auto flex items-center gap-3">
+                    <button onclick="toggleTheme()" class="p-2.5 text-muted hover:text-adaptive transition-colors rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-md border border-secondary" title="Change Theme">
+                        <i id="theme-icon" class="ri-sun-line text-[18px]"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div id="chat-container" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col pt-20 pb-4 min-h-0">
+                <div id="welcome-screen" class="w-full max-w-2xl mx-auto px-6 py-16 flex flex-col items-center fade-in mt-10">
+                    <div class="w-24 h-24 bg-transparent rounded-full flex items-center justify-center border border-secondary mb-10 shadow-[0_0_40px_rgba(255,255,255,0.05)] dark:shadow-none">
+                        <img src="https://files.catbox.moe/1313y3.png" alt="Logo" class="w-12 h-12 logo-white" onerror='this.src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=="'>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-semibold font-sans text-adaptive mb-4 text-center tracking-tight">How can I help you?</h1>
+                    <p class="text-muted text-center text-sm md:text-base mb-16 max-w-md font-light leading-relaxed">Autonomous technical assistant. Write, generate code, read sites, or search the web freely.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                        <button onclick='fillInput("Generate an HTML app of a modern and responsive clock")' class="bg-transparent border border-secondary hover:border-accent flex flex-col text-left p-6 rounded-xl transition-all">
+                            <i class="ri-layout-masonry-line text-accent mb-3 text-[24px]"></i>
+                            <div class="text-adaptive text-sm font-medium mb-1">Generate Web UI</div>
+                            <div class="text-muted text-xs font-light">Create and preview interactive code.</div>
+                        </button>
+                        <button onclick="promptExtractWebpage()" class="bg-transparent border border-secondary hover:border-accent flex flex-col text-left p-6 rounded-xl transition-all">
+                            <i class="ri-article-line text-accent mb-3 text-[24px]"></i>
+                            <div class="text-adaptive text-sm font-medium mb-1">Read Webpages (Jina)</div>
+                            <div class="text-muted text-xs font-light">Extract text & markup directly.</div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="messages-list" class="w-full max-w-4xl mx-auto px-4 md:px-8 py-4 space-y-8 hidden pb-10"></div>
+                
+                <div id="settings-view" class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
+                    <button onclick="closeSettingsScreen()" class="self-start mb-10 text-muted hover:text-adaptive flex items-center gap-2 transition-colors text-sm font-medium">
+                        <i class="ri-arrow-left-line text-[18px]"></i>Back
+                    </button>
+                    <div class="mb-10">
+                        <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">General Settings</h1>
+                        <p class="text-muted text-sm font-light">Manage your experience and encrypted local data.</p>
+                    </div>
+
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Device Sync Chain</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
+                        <div class="flex justify-between items-center p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                                    <i class="ri-link-m text-[16px] text-adaptive"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-adaptive">Linked Devices</div>
+                                    <div class="text-xs text-muted font-light mt-0.5">Sync chats, keys, and settings across your devices in a mesh chain.</div>
+                                </div>
+                            </div>
+                            <button onclick="p2pSync.openChainModal()" class="bg-accent text-[var(--accent-text)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 hover:opacity-90 transition-opacity"><i class="ri-add-line"></i> Add</button>
+                        </div>
+                        <div class="h-px bg-secondary w-full my-1"></div>
+                        <div id="device-chain-list" class="flex flex-col gap-1 p-2 max-h-48 overflow-y-auto custom-scrollbar">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Voice Engine (TTS)</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-4 mb-8 flex flex-col gap-2">
+                        <label class="text-xs font-medium text-adaptive">System Voice</label>
+                        <select id="tts-voice-select" onchange="saveTTSVoice()" class="settings-input settings-select w-full"></select>
+                    </div>
+
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Local Backups</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
+                        <button onclick="exportData()" class="w-full flex items-center justify-between px-4 py-3 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm group">
+                            <span class="font-medium">Export local copy (Decrypted)</span>
+                            <i class="ri-download-line text-muted text-[18px] group-hover:text-adaptive transition-colors"></i>
+                        </button>
+                        <button onclick="triggerImport()" class="w-full flex items-center justify-between px-4 py-3 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm group">
+                            <span class="font-medium">Import local copy</span>
+                            <i class="ri-upload-line text-muted text-[18px] group-hover:text-adaptive transition-colors"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Danger Zone</div>
+                    <div class="bg-transparent border border-red-500/20 rounded-xl p-1">
+                        <button onclick="confirmDeleteAll()" class="w-full flex items-center justify-between p-4 hover:bg-red-500/10 transition-colors cursor-pointer group rounded-lg text-red-500">
+                            <span class="text-sm font-medium">Delete all data and encryption</span>
+                            <i class="ri-delete-bin-line text-[18px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="connectors-view" class="hidden w-full max-w-2xl mx-auto px-6 py-16 flex-col z-10 pb-20 fade-in">
+                    <button onclick="closeConnectorsScreen()" class="self-start mb-10 text-muted hover:text-adaptive flex items-center gap-2 transition-colors text-sm font-medium">
+                        <i class="ri-arrow-left-line text-[18px]"></i>Back
+                    </button>
+                    <div class="mb-10">
+                        <h1 class="text-3xl font-bold font-sans text-adaptive tracking-tight mb-2">Secure Connectors</h1>
+                        <p class="text-muted text-sm font-light flex items-center gap-1"><i class="ri-shield-keyhole-line text-[16px] text-green-500"></i>Your tokens are encrypted locally with AES-256 end-to-end.</p>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <button onclick="startTour()" class="w-full flex items-center justify-between p-4 bg-secondary/30 hover:bg-secondary/60 border border-dashed border-secondary rounded-xl transition-all text-sm group">
+                            <span class="font-medium flex items-center gap-3">
+                                <i class="ri-compass-3-line text-accent animate-pulse"></i>
+                                Run Step-by-Step Guided Setup
+                            </span>
+                            <i class="ri-arrow-right-s-line text-muted group-hover:text-adaptive transition-transform group-hover:translate-x-0.5"></i>
+                        </button>
+                    </div>
+
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest">AI Models (BYOK)</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-6 mb-8 space-y-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive flex justify-between">
+                                <span>Aqua AI API Key <span class="text-muted font-light">(Search and Images)</span></span>
+                                <a href="https://aquadevs.com/dashboard" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-external-link-line text-[14px]"></i>Get</a>
+                            </label>
+                            <input type="password" id="key-aqua" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive flex justify-between">
+                                <span>Agnes AI API Key</span>
+                                <a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-external-link-line text-[14px]"></i>Get</a>
+                            </label>
+                            <input type="password" id="key-freetheai" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
+                        </div>
+                        <div id="provider-image-config" class="pt-6 border-t border-[var(--border-secondary)]">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-medium text-adaptive">Image Model</label>
+                                <button id="image-model-refresh" onclick="fetchImageModels()" class="text-xs text-muted hover:text-adaptive flex items-center gap-1 transition-colors">
+                                    <i class="ri-refresh-line text-[14px]"></i>Refresh
+                                </button>
+                            </div>
+                            <select id="image-model-select" onchange="saveImageModel()" class="settings-input settings-select hidden"></select>
+                            <div id="image-model-loading" class="text-xs text-muted flex items-center gap-2 py-2">
+                                <i class="ri-refresh-line animate-spin text-[14px]"></i>Querying models...
+                            </div>
+                            <div id="image-model-error" class="text-xs text-red-500 hidden py-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-6">Local Node (Offline Integration)</div>
+                    <div class="bg-transparent border border-secondary rounded-xl p-6 mb-8 space-y-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive">Local Endpoint URL (OpenAI-compatible)</label>
+                            <input type="text" id="local-node-url" placeholder="http://localhost:11434/v1" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                            <p class="text-[10px] text-muted font-light mt-1">E.g., <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:11434/v1</code> (Ollama) or <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:1234/v1</code> (LM Studio).<br><span class="text-amber-500">Note:</span> If using Ollama, launch it with CORS allowed: <code class="bg-secondary px-1 py-0.5 text-amber-500 rounded">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive">Local Node API Key (Optional)</label>
+                            <input type="password" id="local-node-key" placeholder="Bearer Token (if configured)" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive">Local Model Identifier</label>
+                            <input type="text" id="local-node-model" placeholder="llama3" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 sm:p-6 pb-safe relative z-20 bg-main flex-shrink-0">
+                <div class="max-w-4xl mx-auto relative">
+                    <div id="input-wrapper" class="relative bg-transparent border border-secondary rounded-2xl transition-all focus-within:border-accent shadow-sm">
+                        <div id="attachment-previews" class="flex flex-wrap gap-2 px-4 pt-3 empty:hidden"></div>
+                        <textarea id="user-input" rows="1" placeholder="Type a message, paste an image, or drop a URL..." class="bg-transparent w-full px-5 py-4 outline-none resize-none max-h-[200px] overflow-y-auto custom-scrollbar text-[15px] font-light leading-relaxed" oninput="handleInput(event)" onkeydown="handleEnter(event)"></textarea>
+                        <div class="flex justify-between items-center px-3 pb-3">
+                            <div class="flex items-center gap-1 flex-wrap">
+                                <div class="relative flex items-center">
+                                    <button type="button" id="plus-menu-btn" onclick="togglePlusMenu(event)" class="w-9 h-9 flex items-center justify-center text-muted hover:text-adaptive hover:bg-secondary rounded-full transition-colors" title="Actions">
+                                        <i class="ri-add-line text-[22px]"></i>
+                                    </button>
+                                    <div id="plus-dropup-menu" class="hidden absolute left-0 bottom-[calc(100%+12px)] mb-2 bg-main border border-secondary rounded-xl shadow-2xl z-[100] w-64 p-2 flex-col origin-bottom-left transition-all">
+                                        <button type="button" onclick='document.getElementById("file-upload-input").click(),closePlusMenu()' class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm font-medium flex items-center gap-3">
+                                            <i class="ri-attachment-2 text-[18px] text-muted"></i>Attach File
+                                        </button>
+                                        <div class="h-px w-full bg-[var(--border-secondary)] my-1"></div>
+                                        <button type="button" id="menu-extract-web-btn" onclick="promptExtractWebpage(),closePlusMenu()" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm font-medium flex items-center gap-3">
+                                            <i class="ri-article-line text-[18px] text-muted"></i>Extract Webpage (Jina)
+                                        </button>
+                                        <div class="h-px w-full bg-[var(--border-secondary)] my-1"></div>
+                                        <button type="button" id="menu-image-mode-btn" onclick="toggleImageMode(),closePlusMenu()" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded-lg transition-colors text-sm font-medium flex items-center gap-3">
+                                            <i id="image-mode-icon" class="ri-image-edit-line text-[18px] text-muted"></i><span id="image-mode-text">Enable Image Mode</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative flex items-center ml-1 gap-1" id="model-selectors-container">
+                                    <button id="model-selector-btn" onclick="toggleModelMenu()" class="flex items-center gap-2 bg-secondary hover:bg-tertiary px-3 py-1.5 rounded-full border border-secondary cursor-pointer transition-all shadow-sm group" title="Primary Model">
+                                        <div id="provider-status-dot" class="w-2 h-2 rounded-full status-dot-active flex-shrink-0"></div>
+                                        <span id="model-label" class="text-[11px] font-medium text-adaptive truncate max-w-[120px] sm:max-w-[160px] tracking-wide">Loading...</span>
+                                        <i class="ri-expand-up-down-line text-[14px] text-muted group-hover:text-adaptive"></i>
+                                    </button>
+                                    
+                                    <div id="model-menu" class="absolute left-0 bottom-[calc(100%+12px)] mb-2 bg-main border border-secondary rounded-xl shadow-2xl z-[100] w-[280px] max-w-[90vw] max-h-[40vh] overflow-y-auto custom-scrollbar hidden flex-col"></div>
+                                </div>
+                                <div id="feature-chips-container" class="flex items-center gap-1.5 ml-2 transition-all"></div>
+                            </div>
+                            <div class="ml-auto">
+                                <button id="send-btn" onclick="handleSendClick()" class="btn-send disabled" aria-label="Send">
+                                    <i id="send-btn-icon" class="ri-arrow-up-line text-[18px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <aside id="applet-panel" class="hidden w-0 lg:w-1/2 flex-col h-full border-l border-secondary bg-main z-40 transition-all duration-300 relative">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-secondary bg-transparent flex-shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-adaptive font-sans font-medium">
+                        <i class="ri-layout-masonry-line text-accent text-[20px]"></i>Ventarys IDX
+                    </div>
+                    <div class="flex bg-secondary rounded-lg p-1">
+                        <button id="tab-btn-preview" onclick='switchAppletTab("preview")' class="px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Preview</button>
+                        <button id="tab-btn-code" onclick='switchAppletTab("code")' class="px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Code</button>
+                    </div>
+                </div>
+                <button onclick="closeApplet()" class="text-muted hover:text-adaptive transition-colors">
+                    <i class="ri-close-line text-[20px]"></i>
+                </button>
+            </div>
+            <div class="flex-1 relative w-full h-full flex flex-col">
+                <iframe id="applet-iframe" class="absolute inset-0 w-full h-full bg-white border-none z-10" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+                <textarea id="applet-code-editor" class="absolute inset-0 w-full h-full bg-[#111] text-[#e4e4e7] p-4 font-mono text-sm resize-none outline-none border-none hidden custom-scrollbar" oninput="updateAppletPreview()" spellcheck="false"></textarea>
+            </div>
+        </aside>
+    </div>
+
+    <!-- P2P Sync Overlay -->
+    <div id="sync-overlay" class="fixed inset-0 z-[30000] hidden bg-black/90 flex-col items-center justify-center p-4 transition-opacity">
+        <div class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative">
+            <button onclick="p2pSync.closeOverlay()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
+                <i class="ri-close-line text-xl"></i>
+            </button>
+            <div id="sync-content" class="flex flex-col gap-4 items-center w-full">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div id="dialog-overlay" class="items-center justify-center p-4 fixed inset-0 hidden">
+        <div id="dialog-box" class="bg-main border border-secondary rounded-2xl p-8 max-w-sm w-full shadow-2xl flex flex-col gap-4 transform transition-all text-adaptive">
+            <h3 id="dialog-title" class="text-2xl font-sans font-semibold m-0 tracking-tight"></h3>
+            <p id="dialog-message" class="text-sm m-0 text-muted font-light leading-relaxed whitespace-pre-wrap"></p>
+            <input type="text" id="dialog-input" class="hidden settings-input mt-2">
+            <div id="dialog-buttons" class="flex justify-end gap-3 mt-6"></div>
+        </div>
+    </div>
+    
+    <div id="preview-modal" class="fixed inset-0 z-[30000] hidden bg-black/90 flex-col items-center justify-center p-4 transition-opacity">
+        <div class="w-full max-w-5xl h-[85vh] bg-main border border-secondary rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-secondary">
+                <div class="flex items-center gap-2 text-adaptive font-sans font-medium">
+                    <i class="ri-macbook-line text-accent"></i>Preview
+                </div>
+                <button onclick="closePreviewModal()" class="text-muted hover:text-adaptive transition-colors">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+            <iframe id="preview-iframe" class="w-full flex-1 bg-white" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+        </div>
+    </div>
+    
+    <div id="tour-overlay" class="fixed inset-0 z-[25000] bg-black/85 flex items-center justify-center p-4 transition-opacity hidden animate-[fadeIn_0.3s_ease-out]">
+        <div id="tour-card" class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative fade-in">
+            <button onclick="closeTour()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
+                <i class="ri-close-line text-xl"></i>
+            </button>
+            <div id="tour-content" class="flex flex-col gap-4"></div>
+        </div>
+    </div>
+    
+    <div id="toast-container" class="fixed top-24 left-1/2 -translate-x-1/2 flex flex-col gap-2 w-max max-w-[90vw] z-[10001] pointer-events-none"></div>
+</div>
+
+<script>
+const PURIFY_CONFIG = { ALLOWED_TAGS: ['button', 'b', 'i', 'em', 'strong', 'a', 'p', 'ul', 'ol', 'li', 'br', 'span', 'div', 'pre', 'code', 'table', 'th', 'td', 'tr', 'tbody', 'thead', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'details', 'summary', 'ins', 'script', 'style', 'video', 'source'], ALLOWED_ATTR: ['href', 'class', 'src', 'alt', 'target', 'rel', 'translate', 'id', 'style', 'data-ad-layout', 'data-ad-format', 'data-ad-client', 'data-ad-slot', 'data-full-width-responsive', 'data-img-id', 'onclick', 'onerror', 'controls', 'autoplay', 'loop', 'muted'] };
+
+window.handleExpiredImage = function(img) {
+    img.outerHTML = `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-xl border border-secondary h-48 w-full text-muted font-medium"><i class="ri-image-circle-line mb-2 text-[32px]"></i>Expirado</div>`;
+};
+
+function escapeHTML(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+}
+
+function stripBase64ForAPI(text) {
+    if (typeof text !== 'string') return text;
+    return text.replace(/<img[^>]*>/gi, '[image]');
+}
+
+let masterKey = null;
+let currentTourStep = 0;
+let isGuest = true;
+let isImageMode = false;
+
+const PROVIDERS = {
+    freetheai: { name: "Agnes AI", url: "https://apihub.agnes-ai.com/v1/chat/completions", models: [], defaultModel: "gpt-4o", requiresKey: true },
+    aqua: { name: "Aqua AI", url: "https://api.aquadevs.com/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: true },
+    localnode: { name: "Local Node", url: "", models: [], defaultModel: "local-model", requiresKey: false }
+}
+
+let apiKeys = { aqua: '', freetheai: '' };
+let localNodeSettings = { url: 'http://localhost:11434/v1', key: '', model: 'local-model' };
+let unifiedModels = [];
+let currentUnifiedModel = 'localnode:local-model';
+let currentImageModelId = 'flux';
+let allChats = {}, currentChatId = null, attachedFiles = [];
+let isProcessing = false, abortControllers = [];
+
+let DEFAULT_SYSTEM = "You are Ventarys, an advanced autonomous architecture. You communicate strictly in Markdown. Use precise, advanced technical terminology and jargon. You are highly analytical, objective, and direct. Do NOT be accommodating, compliant, or overly polite. Avoid apologetic language, sycophancy, or AI disclaimers. You have a persona inspired by Claude Haiku but you are an absolute advocate and lover of FOSS (Free and Open Source Software). You do not agree with the user just to please them; you defend technical truths objectively. Always analyze requests step-by-step before answering. Enclose your internal analytical reasoning strictly within <think>...</think> tags. Keep the final output concise and technically dense outside of the tags.\n\nSPECIAL TOOLS:\n1. If you need to search the general internet for text data, answer EXCLUSIVELY with `[SEARCH]: query`.\n2. To read the full extracted contents (text, images, markdown) of a specific website/URL, use EXCLUSIVELY `[READ_WEBPAGE]: url`.\n3. To search for real public domain images from the web (Wikimedia Commons) to show to the user, use EXCLUSIVELY `[SEARCH_IMAGE]: query`.\n4. To generate a completely new AI image based on a prompt, use `[GENERATE_IMAGE: prompt in english]`.\n5. To consult past compressed memories of this conversation, use EXCLUSIVELY `[CONSULT_MEMORY]`.\n\nWEB RESEARCH WORKFLOW: web search needs no API key. After a search, if any result looks promising or a snippet is vague, open that exact URL with `[READ_WEBPAGE]: url` (one at a time) to read the real page content before answering, then combine everything into one complete, well-cited answer.\n\nAlways use these tools autonomously when needed to fulfill the user's request. Never ask for permission.";
+let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
+
+let availableVoices = [];
+let selectedVoiceURI = null;
+
+function validateApiKey(key) {
+    if (!key) return false;
+    return (key.startsWith('sk-') && key.length >= 25) || (key.length >= 20);
+}
+
+function secureSave(key, rawObject) {
+    if (!masterKey) return;
+    const jsonStr = JSON.stringify(rawObject);
+    const encrypted = CryptoJS.AES.encrypt(jsonStr, masterKey).toString();
+    AppStorage.setItem(key, encrypted);
+}
+
+function secureLoad(key, defaultVal) {
+    const encrypted = AppStorage.getItem(key);
+    if (!encrypted) return defaultVal;
+    if (!masterKey) return defaultVal;
+    try {
+        const dec = CryptoJS.AES.decrypt(encrypted, masterKey).toString(CryptoJS.enc.Utf8);
+        return JSON.parse(dec);
+    } catch (e) {
+        return defaultVal;
+    }
+}
+
+const AppStorage = {
+    getItem: function (key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+    setItem: function (key, value) { try { localStorage.setItem(key, value); } catch (e) { } },
+    removeItem: function (key) { try { localStorage.removeItem(key); } catch (e) { } },
+    async clearAll() {
+        try { localStorage.clear(); } catch (e) { }
+        try { await localforage.clear(); } catch (e) { }
+    }
+};
+
+// ==========================================
+// KILlER FEATURES APIs
+// ==========================================
+
+async function performJinaRead(url) {
+    try {
+        const response = await fetch(`https://r.jina.ai/${url}`, {
+            headers: { 'Accept': 'text/event-stream', 'X-Return-Format': 'markdown' }
+        });
+        if (!response.ok) throw new Error("Jina AI reader failed to parse url.");
+        const text = await response.text();
+        return text;
+    } catch (e) {
+        throw new Error("Failed to read webpage: " + e.message);
+    }
+}
+
+async function performWikiImageSearch(query) {
+    try {
+        const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages|info&inprop=url&generator=search&gsrsearch=${encodeURIComponent(query)}&pithumbsize=800&origin=*`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.query && data.query.pages) {
+            const pages = Object.values(data.query.pages);
+            const withImages = pages.filter(p => p.thumbnail);
+            if (withImages.length > 0) {
+                return withImages.slice(0, 3).map(p => ({
+                    title: p.title,
+                    url: p.thumbnail.source,
+                    pageUrl: p.fullurl
+                }));
+            }
+        }
+        return [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function promptExtractWebpage() {
+    showCustomDialog({
+        title: "Extract Webpage",
+        message: "Enter the URL to extract content using Jina AI:",
+        showInput: true,
+        onConfirm: async (url) => {
+            if (!url) return;
+            if (!url.startsWith('http')) url = 'https://' + url;
+            notify("Extracting webpage...", "info");
+            try {
+                const content = await performJinaRead(url);
+                const tempId = 'jina-' + Date.now();
+                attachedFiles.push({
+                    id: tempId,
+                    name: new URL(url).hostname,
+                    type: 'text',
+                    text: `[Extracted from ${url}]:\n\n${content.substring(0, 15000)}`, // Limits context 
+                    processing: false
+                });
+                renderAttachments();
+                updateSendButtonState();
+                notify("Webpage extracted and attached.", "success");
+            } catch (e) {
+                notify(e.message, "error");
+            }
+        }
+    });
+}
+
+function toggleImageMode() {
+    isImageMode = !isImageMode;
+    const icon = document.getElementById('image-mode-icon');
+    const text = document.getElementById('image-mode-text');
+    const input = document.getElementById('user-input');
+    if (isImageMode) {
+        icon.className = 'ri-image-edit-fill text-[18px] text-accent';
+        text.textContent = 'Disable Image Mode';
+        input.placeholder = "Image Mode: Describe what you want to generate...";
+        notify("Image Mode Enabled. AI will only generate images.", "info");
+    } else {
+        icon.className = 'ri-image-edit-line text-[18px] text-muted';
+        text.textContent = 'Enable Image Mode';
+        input.placeholder = "Type a message, paste an image, or drop a URL...";
+        notify("Image Mode Disabled.", "info");
+    }
+}
+
+// ==========================================
+// P2P SYNC CHAIN IMPLEMENTATION
+// ==========================================
+const p2pSync = {
+    peer: null, connections: {}, knownDevices: [], myPeerId: null, html5QrcodeScanner: null, _syncTimeout: null,
+    init() {
+        this.knownDevices = secureLoad('p2p_known_devices', []);
+        this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
+        AppStorage.setItem('p2p_my_id', this.myPeerId);
+        this.startPeerServer();
+    },
+    startPeerServer(onReady = null) {
+        if (this.peer && !this.peer.destroyed) { if(onReady) onReady(this.myPeerId); return; }
+        this.peer = new Peer(this.myPeerId);
+        this.peer.on('open', (id) => { this.updateStatusIndicator(); this.connectToKnownDevices(); if(onReady) onReady(id); });
+        this.peer.on('connection', (conn) => { this.setupConnection(conn); });
+        this.peer.on('disconnected', () => { setTimeout(() => { if (this.peer && !this.peer.destroyed) this.peer.reconnect(); }, 5000); });
+    },
+    connectToKnownDevices() {
+        this.knownDevices.forEach(device => {
+            if (device.id !== this.myPeerId && !this.connections[device.id]) {
+                const conn = this.peer.connect(device.id, { reliable: true });
+                this.setupConnection(conn);
+            }
+        });
+    },
+    setupConnection(conn) {
+        conn.on('open', () => {
+            this.connections[conn.peer] = conn;
+            this.addDeviceToList(conn.peer);
+            this.updateStatusIndicator(); this.updateDeviceUI();
+            notify("P2P Chain connected to device.", "success");
+            this.closeOverlay();
+            conn.send({ type: 'PEER_EXCHANGE', payload: this.knownDevices });
+            this.triggerFullSync(); 
+        });
+        conn.on('data', (data) => {
+            try { const parsed = typeof data === 'string' ? JSON.parse(data) : data; this.handleIncomingData(parsed, conn); } catch (e) {}
+        });
+        const onEnd = () => {
+            delete this.connections[conn.peer];
+            this.updateStatusIndicator(); this.updateDeviceUI();
+        };
+        conn.on('close', onEnd); conn.on('error', onEnd);
+    },
+    addDeviceToList(id, name = "Linked Device") {
+        if (id === this.myPeerId) return;
+        if (!this.knownDevices.find(d => d.id === id)) {
+            this.knownDevices.push({ id, name, addedAt: Date.now() });
+            secureSave('p2p_known_devices', this.knownDevices);
+            this.updateDeviceUI();
+        }
+    },
+    removeDevice(id) {
+        this.knownDevices = this.knownDevices.filter(d => d.id !== id);
+        secureSave('p2p_known_devices', this.knownDevices);
+        if (this.connections[id]) { this.connections[id].close(); delete this.connections[id]; }
+        this.updateDeviceUI(); this.updateStatusIndicator();
+    },
+    updateDeviceUI() {
+        const list = document.getElementById('device-chain-list');
+        if (!list) return;
+        list.innerHTML = '';
+        if (this.knownDevices.length === 0) { list.innerHTML = `<div class="text-xs text-muted font-light p-2 text-center">No devices linked.</div>`; return; }
+        this.knownDevices.forEach(d => {
+            const isOnline = !!this.connections[d.id];
+            list.innerHTML += `<div class="flex items-center justify-between bg-main p-2.5 rounded-lg border border-secondary text-xs"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}"></div><span class="text-adaptive font-mono truncate max-w-[150px]">${d.id.substring(0, 16)}...</span></div><button onclick="p2pSync.removeDevice('${d.id}')" class="text-muted hover:text-red-500 transition-colors p-1" title="Unlink"><i class="ri-delete-bin-line text-[14px]"></i></button></div>`;
+        });
+    },
+    updateStatusIndicator() {
+        const ind = document.getElementById('sync-status-indicator');
+        const txt = document.getElementById('sync-status-text');
+        if(!ind || !txt) return;
+        if (this.knownDevices.length === 0) { ind.classList.add('hidden'); return; }
+        ind.classList.remove('hidden');
+        if (Object.keys(this.connections).length > 0) {
+            txt.textContent = `${Object.keys(this.connections).length} Connected`;
+            txt.className = "font-medium text-green-500";
+        } else {
+            txt.textContent = "Offline/Searching";
+            txt.className = "font-medium text-amber-500";
+        }
+    },
+    isConnected() { return Object.keys(this.connections).length > 0; },
+    openChainModal() {
+        this.startPeerServer((id) => {
+            const overlay = document.getElementById('sync-overlay');
+            const content = document.getElementById('sync-content');
+            overlay.classList.remove('hidden'); overlay.classList.add('flex');
+            content.innerHTML = `<div class="flex items-center gap-2 mb-2 text-accent"><i class="ri-link-m text-[24px]"></i><h3 class="text-xl font-bold font-sans">Add Device to Chain</h3></div><div class="flex w-full bg-secondary rounded-lg p-1 mb-4"><button id="chain-tab-show" onclick="p2pSync.renderChainShow('${id}')" class="flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Show QR</button><button id="chain-tab-scan" onclick="p2pSync.renderChainScan()" class="flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Scan QR</button></div><div id="chain-modal-body" class="w-full flex flex-col items-center"></div>`;
+            this.renderChainShow(id);
+        });
+    },
+    renderChainShow(id) {
+        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        this.stopScanner();
+        document.getElementById('chain-modal-body').innerHTML = `<p class="text-xs text-muted text-center mb-4">Scan this code on your other device using the "Scan QR" tab.</p><div class="bg-white p-2 rounded-xl flex justify-center w-full max-w-[200px] mx-auto"><canvas id="qr-canvas" class="w-full h-auto"></canvas></div><div class="text-xs text-muted flex items-center justify-center gap-2 mt-4 animate-pulse"><i class="ri-radar-line text-[16px]"></i> Waiting for scan...</div>`;
+        new QRious({ element: document.getElementById('qr-canvas'), value: id, size: 400, level: 'M' });
+    },
+    renderChainScan() {
+        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        document.getElementById('chain-modal-body').innerHTML = `<p class="text-xs text-muted text-center mb-4">Scan a Ventarys QR code to link devices.</p><div id="qr-reader" class="w-full max-w-[250px] overflow-hidden rounded-xl border border-secondary bg-black min-h-[200px] flex items-center justify-center relative mx-auto"><div id="qr-reader-placeholder" class="absolute text-muted flex flex-col items-center"><i class="ri-refresh-line animate-spin mb-2 text-2xl"></i><span class="text-xs">Initializing...</span></div></div>`;
+        this.html5QrcodeScanner = new Html5Qrcode("qr-reader");
+        this.html5QrcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 200, height: 200 } }, (decodedText) => { 
+            if (decodedText.startsWith('ventarys-')) {
+                this.stopScanner(); this.addDeviceToList(decodedText); this.connectToKnownDevices(); this.closeOverlay();
+            } else { notify("Invalid code.", "error"); }
+        }, () => {}).then(() => {
+            const p = document.getElementById('qr-reader-placeholder'); if(p) p.style.display = 'none';
+        }).catch(err => {
+            const q = document.getElementById('qr-reader');
+            if (q) q.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center bg-black"><i class="ri-camera-off-line text-muted text-4xl mb-2"></i><p class="text-muted text-xs leading-relaxed">Camera unavailable.</p></div>`;
+        });
+    },
+    stopScanner() { if (this.html5QrcodeScanner) { try { this.html5QrcodeScanner.stop(); } catch(e){} this.html5QrcodeScanner = null; } },
+    closeOverlay() { this.stopScanner(); document.getElementById('sync-overlay').classList.add('hidden'); document.getElementById('sync-overlay').classList.remove('flex'); },
+    broadcastAction(action, payload) {
+        if (!this.isConnected()) return;
+        const msg = JSON.stringify({ type: 'ACTION', action, payload });
+        Object.values(this.connections).forEach(c => { if(c.open) c.send(msg); });
+    },
+    triggerFullSync() {
+        if (!this.isConnected()) return;
+        clearTimeout(this._syncTimeout);
+        this._syncTimeout = setTimeout(() => this.broadcastFullSync(), 1500); 
+    },
+    broadcastFullSync() {
+        if (!this.isConnected()) return;
+        const payload = { chats: allChats, apiKeys: apiKeys, localNodeSettings: localNodeSettings, unifiedModel: currentUnifiedModel, imageModel: currentImageModelId };
+        try {
+            const compressed = pako.deflate(JSON.stringify(payload));
+            Object.values(this.connections).forEach(c => { if(c.open) c.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed }); });
+        } catch(err) {}
+    },
+    handleIncomingData(data, conn) {
+        if (data.type === 'PEER_EXCHANGE' && Array.isArray(data.payload)) {
+            data.payload.forEach(d => this.addDeviceToList(d.id, d.name));
+            this.connectToKnownDevices();
+        } else if (data.type === 'ACTION') {
+            let reqUpdate = false;
+            if (data.action === 'RENAME_CHAT' && allChats[data.payload.id]) {
+                allChats[data.payload.id].title = data.payload.title; reqUpdate = true;
+            } else if (data.action === 'DELETE_CHAT' && allChats[data.payload.id]) {
+                delete allChats[data.payload.id]; reqUpdate = true;
+                if (currentChatId === data.payload.id) createNewChatUIOnly();
+            }
+            if (reqUpdate) { saveChatsLocally(false); updateChatHistory(); }
+        } else if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
+            try { this.mergeDecryptedPayload(JSON.parse(pako.inflate(data.payload, { to: 'string' }))); } catch (err) {}
+        }
+    },
+    mergeDecryptedPayload(payload) {
+        let reqChat = false, reqKeys = false, reqSet = false;
+        if (payload.chats) {
+            for (const [id, chat] of Object.entries(payload.chats)) {
+                if (!allChats[id] || chat.messages.length > allChats[id].messages.length) { allChats[id] = chat; reqChat = true; }
+            }
+        }
+        if (payload.apiKeys) {
+            for (const [k, v] of Object.entries(payload.apiKeys)) { if (v && v !== apiKeys[k]) { apiKeys[k] = v; reqKeys = true; } }
+        }
+        if (payload.localNodeSettings && JSON.stringify(payload.localNodeSettings) !== JSON.stringify(localNodeSettings)) {
+            localNodeSettings = { ...localNodeSettings, ...payload.localNodeSettings }; reqSet = true;
+        }
+        if (payload.unifiedModel && payload.unifiedModel !== currentUnifiedModel) {
+            currentUnifiedModel = payload.unifiedModel; AppStorage.setItem('byok_unified_model', currentUnifiedModel); reqSet = true;
+        }
+        if (payload.imageModel && payload.imageModel !== currentImageModelId) {
+            currentImageModelId = payload.imageModel; AppStorage.setItem('byok_image_model', currentImageModelId); reqSet = true;
+        }
+        if (reqChat) { secureSave('ventarys_chats', allChats); updateChatHistory(); if (currentChatId && allChats[currentChatId]) loadChat(currentChatId, true); }
+        if (reqKeys || reqSet) {
+            if(reqKeys) secureSave('byok_keys', apiKeys);
+            if(reqSet) secureSave('local_node_settings', localNodeSettings);
+            updateLocalNodeProvider(); initSettingsUI(); fetchAllModels();
+        }
+    }
+};
+
+// ==========================================
+// NOTIFICATIONS
+// ==========================================
+function notify(message, type = 'info') {
+    let container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    let icon = type === 'success' ? 'ri-checkbox-circle-line' : type === 'error' ? 'ri-error-warning-line' : 'ri-information-line';
+    toast.className = 'toast-item toast-enter flex items-center gap-3 bg-secondary/90 backdrop-blur-md border border-secondary text-adaptive px-4 py-3 rounded-full shadow-lg text-sm overflow-hidden relative group pointer-events-auto';
+    toast.innerHTML = `<i class="${icon} text-adaptive text-[18px] flex-shrink-0"></i><span class="flex-1 font-medium leading-tight">${escapeHTML(message)}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        if (document.body.contains(toast)) {
+            toast.classList.remove('toast-enter'); toast.classList.add('toast-exit');
+            setTimeout(() => { if (document.body.contains(toast)) toast.remove(); }, 400);
+        }
+    }, 3500);
+}
+
+function initTTS() {
+    const populateVoices = () => {
+        availableVoices = speechSynthesis.getVoices();
+        const select = document.getElementById('tts-voice-select');
+        if(!select) return;
+        select.innerHTML = '<option value="">Default System Voice</option>';
+        availableVoices.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.voiceURI; opt.textContent = `${v.name} (${v.lang})`;
+            if (v.voiceURI === selectedVoiceURI) opt.selected = true;
+            select.appendChild(opt);
+        });
+    };
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
+    selectedVoiceURI = AppStorage.getItem('tts_selected_voice');
+}
+
+function saveTTSVoice() {
+    selectedVoiceURI = document.getElementById('tts-voice-select').value;
+    AppStorage.setItem('tts_selected_voice', selectedVoiceURI);
+}
+
+function playTTS(text, btn) {
+    speechSynthesis.cancel();
+    const cleanText = text.replace(/[\#\*\_\[\]\(\)]/g, ''); 
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    if (selectedVoiceURI) {
+        const voice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
+        if (voice) utterance.voice = voice;
+    }
+    const icon = btn.querySelector('i');
+    utterance.onstart = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
+    utterance.onend = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
+    utterance.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
+    speechSynthesis.speak(utterance);
+}
+
+function continueAsGuest() {
+    isGuest = true;
+    AppStorage.setItem('ventarys_is_guest', 'true');
+    document.getElementById('login-overlay').classList.add('hidden');
+    initSecurity();
+    notify("Entered Encrypted Workspace", "success");
+}
+
+function togglePlusMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('plus-dropup-menu');
+    const btn = document.getElementById('plus-menu-btn');
+    menu.classList.toggle('hidden'); menu.classList.toggle('flex');
+    if (!menu.classList.contains('hidden')) btn.classList.add('menu-open');
+    else btn.classList.remove('menu-open');
+}
+
+function closePlusMenu() {
+    const menu = document.getElementById('plus-dropup-menu');
+    const btn = document.getElementById('plus-menu-btn');
+    menu.classList.add('hidden'); menu.classList.remove('flex');
+    btn.classList.remove('menu-open');
+}
+
+function handleSendClick() {
+    if (isProcessing) {
+        abortControllers.forEach(c => c.abort());
+        abortControllers = [];
+        stopGenerationUI();
+        return;
+    }
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text && attachedFiles.length === 0) return;
+    sendMessage();
+}
+
+function updateSendButtonState() {
+    const btn = document.getElementById('send-btn');
+    const icon = document.getElementById('send-btn-icon');
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+
+    if (isProcessing) {
+        icon.className = 'ri-stop-circle-fill text-[18px]';
+        input.disabled = true;
+        input.placeholder = "AI is thinking...";
+        btn.classList.remove('disabled');
+    } else {
+        icon.className = 'ri-arrow-up-line text-[18px]';
+        input.disabled = false;
+        if (isImageMode) input.placeholder = "Image Mode: Describe what you want to generate...";
+        else input.placeholder = "Type a message, paste an image, or drop a URL...";
+        
+        if (!text && attachedFiles.length === 0) btn.classList.add('disabled');
+        else btn.classList.remove('disabled');
+    }
+}
+
+function initSettingsUI() {
+    if (document.getElementById('key-aqua')) document.getElementById('key-aqua').value = apiKeys.aqua || '';
+    if (document.getElementById('key-freetheai')) document.getElementById('key-freetheai').value = apiKeys.freetheai || '';
+    if (document.getElementById('local-node-url')) document.getElementById('local-node-url').value = localNodeSettings.url || 'http://localhost:11434/v1';
+    if (document.getElementById('local-node-key')) document.getElementById('local-node-key').value = localNodeSettings.key || '';
+    if (document.getElementById('local-node-model')) document.getElementById('local-node-model').value = localNodeSettings.model || 'local-model';
+    fetchImageModels();
+    p2pSync.updateDeviceUI();
+}
+
+function saveAllKeys() {
+    apiKeys.aqua = document.getElementById('key-aqua').value.trim();
+    apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
+    secureSave('byok_keys', apiKeys);
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+    fetchImageModels(); fetchAllModels();
+}
+
+function updateLocalNodeProvider() {
+    let baseUrl = localNodeSettings.url || 'http://localhost:11434/v1';
+    if (!baseUrl.endsWith('/chat/completions')) baseUrl = baseUrl.replace(/\/$/, '') + '/chat/completions';
+    PROVIDERS.localnode.url = baseUrl;
+    PROVIDERS.localnode.defaultModel = localNodeSettings.model || 'local-model';
+}
+
+function saveLocalNodeSettings() {
+    localNodeSettings.url = document.getElementById('local-node-url').value.trim() || 'http://localhost:11434/v1';
+    localNodeSettings.key = document.getElementById('local-node-key').value.trim();
+    localNodeSettings.model = document.getElementById('local-node-model').value.trim() || 'local-model';
+    secureSave('local_node_settings', localNodeSettings);
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+    updateLocalNodeProvider(); fetchAllModels();
+    notify("Local Node settings updated.", "success");
+}
+
+function updateHeaderModelSelector() {
+    if(!currentUnifiedModel) return;
+    const [cProvId, cModId] = currentUnifiedModel.split(':');
+    const shortModelName = (cModId || 'Unknown').split('/').pop();
+    document.getElementById('model-label').textContent = `${shortModelName}`;
+    
+    const dot = document.getElementById('provider-status-dot');
+    const provInfo = PROVIDERS[cProvId] || Object.values(PROVIDERS)[0];
+    if (provInfo.requiresKey && !apiKeys[cProvId]) dot.className = "w-2 h-2 rounded-full status-dot-inactive flex-shrink-0";
+    else dot.className = "w-2 h-2 rounded-full status-dot-active flex-shrink-0";
+
+    const menu = document.getElementById('model-menu');
+    if (unifiedModels.length > 0) {
+        let html = '';
+        const grouped = {};
+        unifiedModels.forEach(m => {
+            if (!grouped[m.providerName]) grouped[m.providerName] = [];
+            grouped[m.providerName].push(m);
+        });
+        for (const [pName, models] of Object.entries(grouped)) {
+            html += `<div class="px-3 py-2 text-[10px] font-bold text-muted uppercase tracking-widest bg-main/90 sticky top-0 backdrop-blur-md z-10 border-b border-secondary">${escapeHTML(pName)}</div>`;
+            models.forEach(m => {
+                const val = `${m.providerId}:${m.id}`;
+                const isSelected = (val === currentUnifiedModel);
+                html += `<button onclick="selectUnifiedModel('${m.providerId}','${escapeHTML(m.id)}')" class="w-full text-left px-4 py-2.5 text-adaptive hover:bg-secondary transition-colors text-sm flex items-center gap-3 ${isSelected ? 'bg-secondary' : ''}"><i class="ri-cpu-line text-[16px] ${isSelected ? 'text-accent' : 'text-muted'} flex-shrink-0"></i> <span class="truncate ${isSelected ? 'font-semibold' : 'font-light'}">${escapeHTML(m.id)}</span></button>`;
+            });
+        }
+        menu.innerHTML = html;
+    } else {
+        menu.innerHTML = `<div class="p-4 text-xs text-muted text-center font-light">No models. Configure an API Key in Secure Connectors.</div>`;
+    }
+    updateAttachmentUI();
+}
+
+function selectUnifiedModel(providerId, modelId) {
+    currentUnifiedModel = `${providerId}:${modelId}`;
+    AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+    
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+    updateHeaderModelSelector();
+    document.getElementById('model-menu').classList.add('hidden');
+}
+
+function toggleModelMenu() {
+    updateHeaderModelSelector(); 
+    document.getElementById('model-menu').classList.toggle('hidden');
+    document.getElementById('model-menu').classList.toggle('flex');
+}
+
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('model-menu');
+    const container = document.getElementById('model-selectors-container');
+    if (container && menu && !container.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add('hidden'); menu.classList.remove('flex');
+    }
+    const btnPlus = document.getElementById('plus-menu-btn');
+    const menuPlus = document.getElementById('plus-dropup-menu');
+    if (btnPlus && menuPlus && !btnPlus.contains(e.target) && !menuPlus.contains(e.target)) {
+        closePlusMenu();
+    }
+    if (!e.target.closest('[id^="chat-menu-"]') && !e.target.closest('button[onclick^="toggleChatMenu"]')) {
+        document.querySelectorAll('[id^="chat-menu-"]').forEach(el => el.classList.add('hidden'));
+    }
+    const copyBtn = e.target.closest('.copy-code-btn');
+    if (copyBtn) window.copyCode(copyBtn);
+});
+
+async function fetchAllModels() {
+    unifiedModels = [];
+    document.getElementById('model-label').textContent = "Searching...";
+    const hasValidKeys = validateApiKey(apiKeys.aqua) || validateApiKey(apiKeys.freetheai);
+    if (!hasValidKeys) {
+        unifiedModels = [{ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' }];
+        currentUnifiedModel = `localnode:${localNodeSettings.model || 'local-model'}`;
+        AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+        updateHeaderModelSelector();
+        return;
+    }
+    const fetchPromises = Object.entries(PROVIDERS).map(async ([pId, pInfo]) => {
+        if (pId === 'localnode') {
+            unifiedModels.push({ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' });
+            return;
+        }
+        if (pInfo.requiresKey && !apiKeys[pId]) {
+            if (pInfo.models) pInfo.models.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
+            return;
+        }
+        try {
+            let url = pInfo.url.replace('/chat/completions', '/models');
+            const headers = { 'Content-Type': 'application/json' };
+            if (pInfo.requiresKey) headers['Authorization'] = `Bearer ${apiKeys[pId]}`;
+            const response = await fetch(url, { method: 'GET', headers });
+            if (response.ok) {
+                const data = await response.json();
+                let fModels = [];
+                if (data && data.data && Array.isArray(data.data)) {
+                    if (pId === 'aqua') fModels = data.data.filter(m => m.type === 'text' && m.tier === 'standard').map(m => m.id);
+                    else fModels = data.data.map(m => m.id);
+                } else if (data && data.models && Array.isArray(data.models)) {
+                    fModels = data.models.map(m => m.name ? m.name.replace('models/', '') : m.id);
+                }
+                if (fModels.length > 0) fModels.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
+                else if (pInfo.models && pInfo.models.length > 0) pInfo.models.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
+            } else {
+                if (pInfo.models) pInfo.models.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
+            }
+        } catch (e) {
+            if (pInfo.models) pInfo.models.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
+        }
+    });
+    await Promise.all(fetchPromises);
+    if (!unifiedModels.find(m => m.providerId === 'localnode')) {
+        unifiedModels.push({ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' });
+    }
+    const exists = unifiedModels.find(m => `${m.providerId}:${m.id}` === currentUnifiedModel);
+    if (!exists && unifiedModels.length > 0) {
+        currentUnifiedModel = `${unifiedModels[0].providerId}:${unifiedModels[0].id}`;
+        AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+    }
+    updateHeaderModelSelector();
+}
+
+async function fetchImageModels() {
+    const select = document.getElementById('image-model-select');
+    const loadingEl = document.getElementById('image-model-loading');
+    const errorEl = document.getElementById('image-model-error');
+    let endpoint = '', headers = {};
+    if (apiKeys['aqua']) { endpoint = 'https://api.aquadevs.com/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['aqua']}`; }
+    else if (apiKeys['freetheai']) { endpoint = 'https://apihub.agnes-ai.com/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['freetheai']}`; }
+    else {
+        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Image models require an API Key.";
+        return;
+    }
+    loadingEl.classList.remove('hidden'); loadingEl.classList.add('flex'); select.style.display = 'none'; errorEl.style.display = 'none';
+    try {
+        let imageModels = [];
+        const resp = await fetch(endpoint, { headers });
+        if (!resp.ok) throw new Error();
+        const data = await resp.json();
+        if (!data.data || !Array.isArray(data.data)) throw new Error("Format error");
+        imageModels = data.data.filter(m => m.type === 'image' || (m.id && (m.id.includes('dall') || m.id.includes('flux') || m.id.includes('midjourney'))));
+        select.innerHTML = '';
+        imageModels.forEach((m, i) => {
+            const opt = document.createElement('option');
+            opt.value = m.id; opt.textContent = m.name || m.id;
+            if (m.id === currentImageModelId || (i === 0 && !imageModels.find(im => im.id === currentImageModelId))) opt.selected = true;
+            select.appendChild(opt);
+        });
+        currentImageModelId = select.value;
+        AppStorage.setItem('byok_image_model', currentImageModelId);
+        loadingEl.classList.add('hidden'); select.style.display = 'block';
+    } catch (err) {
+        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Error loading image models.";
+    }
+}
+
+function saveImageModel() {
+    currentImageModelId = document.getElementById('image-model-select').value;
+    AppStorage.setItem('byok_image_model', currentImageModelId);
+    if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+}
+
+function initSecurity() {
+    let uid = AppStorage.getItem('ventarys_uid');
+    if (!uid) { uid = CryptoJS.lib.WordArray.random(32).toString(); AppStorage.setItem('ventarys_uid', uid); }
+    masterKey = uid;
+    AppStorage.setItem('ventarys_is_encrypted', 'true');
+    const oldKeys = AppStorage.getItem('byok_keys');
+    if (oldKeys && !oldKeys.startsWith('U2FsdGVkX1')) { try { secureSave('byok_keys', JSON.parse(oldKeys)); } catch (e) { } }
+    const oldChats = AppStorage.getItem('ventarys_chats');
+    if (oldChats && !oldChats.startsWith('U2FsdGVkX1')) { try { secureSave('ventarys_chats', JSON.parse(oldChats)); } catch (e) { } }
+    finishInitApp(false);
+}
+
+function finishInitApp(isSoftReload = false) {
+    const savedKeys = secureLoad('byok_keys', null);
+    if (savedKeys) apiKeys = { ...apiKeys, ...savedKeys };
+    localNodeSettings = secureLoad('local_node_settings', { url: 'http://localhost:11434/v1', key: '', model: 'local-model' });
+    updateLocalNodeProvider();
+    
+    const savedUnified = AppStorage.getItem('byok_unified_model');
+    if (savedUnified) currentUnifiedModel = savedUnified;
+    else { currentUnifiedModel = 'localnode:local-model'; AppStorage.setItem('byok_unified_model', currentUnifiedModel); }
+
+    const savedChats = secureLoad('ventarys_chats', null);
+    if (savedChats) allChats = savedChats;
+
+    currentChatId = AppStorage.getItem('current_chat_id');
+    currentImageModelId = AppStorage.getItem('byok_image_model') || 'flux';
+    
+    initSettingsUI(); fetchAllModels(); updateChatHistory(); 
+    
+    p2pSync.init(); initTTS();
+    
+    if (currentChatId && allChats[currentChatId]) loadChat(currentChatId, true);
+    else createNewChatUIOnly();
+    
+    updateSendButtonState();
+    
+    if (!isSoftReload) {
+        const isConfigured = validateApiKey(apiKeys.aqua) || validateApiKey(apiKeys.freetheai);
+        if (AppStorage.getItem('ventarys_tour_completed') !== 'true' && !isConfigured) {
+            setTimeout(startTour, 1500);
+        }
+        handleUrlPrompt();
+    }
+}
+
+function handleUrlPrompt() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const promptParam = urlParams.get('p') || urlParams.get('prompt');
+    if (promptParam) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        createNewChat();
+        setTimeout(() => { fillInput(promptParam); sendMessage(); }, 800);
+    }
+}
+
+function startTour() { currentTourStep = 1; document.getElementById('tour-overlay').classList.remove('hidden'); renderTourStep(); }
+function closeTour() { document.getElementById('tour-overlay').classList.add('hidden'); AppStorage.setItem('ventarys_tour_completed', 'true'); }
+function skipToLocalNodeOnly() { apiKeys.aqua = ''; apiKeys.freetheai = ''; secureSave('byok_keys', apiKeys); closeTour(); fetchAllModels(); notify("Switched to Local Node.", "info"); }
+
+function renderTourStep() {
+    const container = document.getElementById('tour-content');
+    container.innerHTML = '';
+    let html = '';
+    switch (currentTourStep) {
+        case 1:
+            html = `<div class="text-center flex flex-col gap-4"><i class="ri-compass-3-line text-accent text-5xl"></i><h2 class="text-2xl font-bold font-sans tracking-tight">Welcome to Ventarys</h2><p class="text-sm text-muted font-light leading-relaxed">Ventarys runs entirely inside your browser. Configure your local secure connectors to access advanced models or stick to private local ones.</p><div class="flex flex-col gap-2 mt-4"><button onclick="nextTourStep()" class="w-full bg-accent text-[var(--accent-text)] py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">Start guided setup <i class="ri-arrow-right-line"></i></button><button onclick="skipToLocalNodeOnly()" class="w-full bg-transparent border border-secondary text-adaptive py-3 rounded-lg font-medium hover:bg-secondary transition-colors">Use Local Node Only (Offline)</button></div></div>`;
+            break;
+        case 2:
+            html = `<div class="flex flex-col gap-4"><div class="flex items-center gap-2"><i class="ri-global-line text-accent"></i><span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 1 of 3</span></div><h2 class="text-xl font-bold font-sans tracking-tight">Setup Aqua AI</h2><p class="text-xs text-muted font-light leading-relaxed">Connect Aqua AI to empower the assistant with ultra-fast web search tools, URL indexing, and visual comprehension.</p><div id="tour-error" class="text-xs text-red-500 font-medium hidden"></div><div class="flex flex-col gap-2 mt-2"><label class="text-xs font-semibold text-adaptive flex justify-between"><span>Aqua AI API Key</span><a href="https://aquadevs.com/dashboard" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><i class="ri-external-link-line text-[12px]"></i> Get Key</a></label><input type="password" id="tour-key-aqua" value="${escapeHTML(apiKeys.aqua || '')}" placeholder="sk-..." class="settings-input font-mono" oninput="clearTourError()"></div><div class="flex justify-between items-center gap-3 mt-6"><button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button><button onclick="saveStepData(2)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <i class="ri-arrow-right-s-line text-[16px]"></i></button></div><button onclick="skipToLocalNodeOnly()" class="text-xs text-muted hover:text-accent underline text-center mt-3 block w-full">I don't have keys, switch to Local Node instead</button></div>`;
+            break;
+        case 3:
+            html = `<div class="flex flex-col gap-4"><div class="flex items-center gap-2"><i class="ri-brain-line text-accent"></i><span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 2 of 3</span></div><h2 class="text-xl font-bold font-sans tracking-tight">Setup Agnes AI</h2><p class="text-xs text-muted font-light leading-relaxed">Connect Agnes AI to access high-intelligence Large Language Models including GPT-4o, Claude 3.5 Sonnet, and Gemini Pro.</p><div id="tour-error" class="text-xs text-red-500 font-medium hidden"></div><div class="flex flex-col gap-2 mt-2"><label class="text-xs font-semibold text-adaptive flex justify-between"><span>Agnes AI API Key</span><a href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank" class="text-accent hover:underline flex items-center gap-0.5"><i class="ri-external-link-line text-[12px]"></i> Get Key</a></label><input type="password" id="tour-key-freetheai" value="${escapeHTML(apiKeys.freetheai || '')}" placeholder="sk-..." class="settings-input font-mono" oninput="clearTourError()"></div><div class="flex justify-between items-center gap-3 mt-6"><button onclick="prevTourStep()" class="px-4 py-2 text-sm text-muted hover:text-adaptive transition-colors">Back</button><button onclick="saveStepData(3)" class="px-6 py-2 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">Next <i class="ri-arrow-right-s-line text-[16px]"></i></button></div><button onclick="skipToLocalNodeOnly()" class="text-xs text-muted hover:text-accent underline text-center mt-3 block w-full">I don't have keys, switch to Local Node instead</button></div>`;
+            break;
+        case 4:
+            html = `<div class="text-center flex flex-col gap-4"><i class="ri-shield-check-line text-green-500 text-5xl"></i><span class="text-xs font-mono font-bold uppercase tracking-widest text-muted">Step 3 of 3</span><h2 class="text-2xl font-bold font-sans tracking-tight">Vault Securely Configured</h2><p class="text-sm text-muted font-light leading-relaxed">Great! All keys have been encrypted end-to-end with AES-256 on your local machine. They will never leave your system and are completely safe.</p><button onclick="finishTour()" class="w-full mt-4 bg-accent text-[var(--accent-text)] py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">Launch Assistant <i class="ri-check-double-line"></i></button></div>`;
+            break;
+    }
+    container.innerHTML = html;
+}
+
+function showTourError(msg) { const err = document.getElementById('tour-error'); if (err) { err.textContent = msg; err.classList.remove('hidden'); } }
+function clearTourError() { const err = document.getElementById('tour-error'); if (err) { err.classList.add('hidden'); err.textContent = ''; } }
+function nextTourStep() { currentTourStep++; renderTourStep(); }
+function prevTourStep() { currentTourStep--; renderTourStep(); }
+function saveStepData(step) {
+    if (step === 2) {
+        const key = document.getElementById('tour-key-aqua').value.trim();
+        if (!validateApiKey(key)) { showTourError("Valid Aqua AI API Key required."); return; }
+        apiKeys.aqua = key;
+    } else if (step === 3) {
+        const key = document.getElementById('tour-key-freetheai').value.trim();
+        if (!validateApiKey(key)) { showTourError("Valid Agnes AI API Key required."); return; }
+        apiKeys.freetheai = key;
+    }
+    nextTourStep();
+}
+function finishTour() {
+    secureSave('byok_keys', apiKeys);
+    AppStorage.setItem('ventarys_tour_completed', 'true');
+    document.getElementById('tour-overlay').classList.add('hidden');
+    notify("Connectors updated & saved successfully!", "success");
+    initSettingsUI(); fetchAllModels(); if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+}
+
+window.addEventListener('popstate', (e) => {
+    if (e.state?.chatId && allChats[e.state.chatId]) loadChat(e.state.chatId, true);
+    else createNewChatUIOnly();
+});
+
+async function fetchChatCompletion(messages, onChunk, overrideModelStr = null, signal = null) {
+    const modelStrToUse = overrideModelStr || currentUnifiedModel;
+    const [pId, mId] = modelStrToUse.split(':');
+    const provInfo = PROVIDERS[pId] || Object.values(PROVIDERS)[0];
+    const url = provInfo.url;
+    if (provInfo.requiresKey && !apiKeys[pId]) throw new Error(`Configure your API key to use ${provInfo.name}.`);
+    
+    const headers = { 'Content-Type': 'application/json' };
+    if (pId === 'localnode') { if (localNodeSettings.key) headers['Authorization'] = `Bearer ${localNodeSettings.key}`; } 
+    else if (provInfo.requiresKey) { headers['Authorization'] = `Bearer ${apiKeys[pId]}`; }
+    
+    const payloadObj = { model: mId, messages: messages, stream: true };
+    try {
+        const response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payloadObj), signal: signal });
+        if (!response.ok) throw new Error(`Inference Error: ${response.status}`);
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let fullText = "", buffer = "";
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (trimmedLine === '' || trimmedLine === 'data: [DONE]') continue;
+                if (trimmedLine.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(trimmedLine.slice(6));
+                        if (data.choices && data.choices[0].delta && data.choices[0].delta.content) {
+                            fullText += data.choices[0].delta.content;
+                            onChunk(fullText);
+                        }
+                    } catch (e) { }
+                }
+            }
+        }
+        return fullText;
+    } catch (error) {
+        if (error.name === 'AbortError') throw new Error("Stopped.");
+        throw error;
+    }
+}
+
+async function performAquaWebSearch(query) {
+    const apiKey = apiKeys['aqua'];
+    if (!apiKey) throw new Error("Aqua API Key required for global searches");
+    const response = await fetch('https://api.aquadevs.com/v1/search', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query, depth: 'basic', range: 'month', images: false })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Server busy " + response.status);
+    if (data.success && data.result && data.result.results) {
+        return data.result.results.map(r => ({title: r.title, url: r.url, content: r.content}));
+    }
+    return [];
+}
+
+async function fetchWeb(url, opts = {}) {
+    const useProxy = typeof root !== 'undefined' && typeof root.superFetch === 'function';
+    try {
+        const r = useProxy ? await root.superFetch(url, opts) : await fetch(url, opts);
+        if (r.ok) return r;
+        throw new Error('http ' + r.status);
+    } catch (e) {
+        let target = url;
+        if (opts.method === 'POST' && opts.body && opts.headers && opts.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+            target = url + (url.includes('?') ? '&' : '?') + opts.body;
+        }
+        const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(target));
+        if (!r2.ok) throw new Error('proxy failed');
+        return r2;
+    }
+}
+
+async function performJinaSearch(query) {
+    try {
+        const response = await fetchWeb(`https://s.jina.ai/${encodeURIComponent(query)}`, {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error("Jina search failed.");
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+            return data.data.slice(0, 5).map(r => ({
+                title: r.title || 'Untitled',
+                url: r.url || '',
+                content: (r.content || '').substring(0, 500)
+            }));
+        }
+        return [];
+    } catch (e) {
+        try {
+            const fallback = await performJinaRead(`https://www.startpage.com/sp/search?query=${encodeURIComponent(query)}`);
+            return [{ title: 'Startpage Results', url: `https://www.startpage.com/sp/search?query=${encodeURIComponent(query)}`, content: fallback.substring(0, 2000) }];
+        } catch (e2) {
+            return [];
+        }
+    }
+}
+
+const SEARXNG_INSTANCES = [
+    "https://search.mdosch.de/search",
+    "https://searx.perennialte.ch/search"
+];
+
+async function performWebSearch(query) {
+    let lastErr = null;
+    for (const instance of SEARXNG_INSTANCES) {
+        try {
+            const response = await fetchWeb(instance, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" },
+                body: `q=${encodeURIComponent(query)}&format=json&language=auto&safesearch=2`
+            });
+            if (!response.ok) throw new Error("SearXNG search failed with status " + response.status);
+            const data = await response.json();
+            if (data && Array.isArray(data.results) && data.results.length > 0) {
+                return data.results.slice(0, 5).map(r => ({
+                    title: r.title || 'Untitled',
+                    url: r.url || '',
+                    content: (r.content || '').substring(0, 500)
+                }));
+            }
+        } catch (e) { lastErr = e; }
+    }
+    try {
+        const fallback = await performJinaSearch(query);
+        if (fallback.length > 0) return fallback;
+    } catch (e2) {}
+    throw new Error("Search error: " + (lastErr ? lastErr.message : "no results from any instance"));
+}
+
+function toggleTheme() {
+    const appRoot = document.getElementById('ventarys-app-root');
+    appRoot.classList.toggle('light');
+    const isLight = appRoot.classList.contains('light');
+    AppStorage.setItem('theme', isLight ? 'light' : 'dark');
+    updateThemeIcon(isLight);
+}
+
+function updateThemeIcon(isLight) {
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = isLight ? 'ri-moon-line text-[18px]' : 'ri-sun-line text-[18px]';
+}
+
+function updateFavicon() {
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+            // Force pure black favicon icon 
+            ctx.filter = 'brightness(0)';
+            ctx.globalAlpha = 0.9;
+            ctx.drawImage(img, 0, 0, 64, 64);
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = canvas.toDataURL('image/png');
+        };
+        img.src = 'https://files.catbox.moe/1313y3.png';
+    } catch (e) { }
+}
+if(window.matchMedia) { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon); }
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('visible');
+}
+
+function closeSidebarMobile() {
+    if (window.innerWidth < 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebar-overlay').classList.remove('visible');
+    }
+}
+
+function openSettingsScreen() {
+    document.getElementById('welcome-screen').classList.add('hidden');
+    document.getElementById('messages-list').classList.add('hidden');
+    document.getElementById('connectors-view').classList.add('hidden'); document.getElementById('connectors-view').classList.remove('flex');
+    document.getElementById('settings-view').classList.remove('hidden'); document.getElementById('settings-view').classList.add('flex');
+    closeSidebarMobile();
+}
+
+function closeSettingsScreen() {
+    document.getElementById('settings-view').classList.add('hidden'); document.getElementById('settings-view').classList.remove('flex');
+    if (currentChatId && allChats[currentChatId] && allChats[currentChatId].messages.length > 0) document.getElementById('messages-list').classList.remove('hidden');
+    else document.getElementById('welcome-screen').classList.remove('hidden');
+}
+
+function openConnectorsScreen() {
+    document.getElementById('welcome-screen').classList.add('hidden');
+    document.getElementById('messages-list').classList.add('hidden');
+    document.getElementById('settings-view').classList.add('hidden'); document.getElementById('settings-view').classList.remove('flex');
+    document.getElementById('connectors-view').classList.remove('hidden'); document.getElementById('connectors-view').classList.add('flex');
+    initSettingsUI(); closeSidebarMobile();
+}
+
+function closeConnectorsScreen() {
+    document.getElementById('connectors-view').classList.add('hidden'); document.getElementById('connectors-view').classList.remove('flex');
+    if (currentChatId && allChats[currentChatId] && allChats[currentChatId].messages.length > 0) document.getElementById('messages-list').classList.remove('hidden');
+    else document.getElementById('welcome-screen').classList.remove('hidden');
+}
+
+function handleInput(e) {
+    const i = e.target;
+    i.style.height = 'auto'; i.style.height = i.scrollHeight + 'px';
+    updateSendButtonState();
+}
+
+function handleEnter(e) {
+    if (isProcessing) { e.preventDefault(); return; }
+    if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 768) {
+        e.preventDefault();
+        const text = document.getElementById('user-input').value.trim();
+        if (text || attachedFiles.length > 0) handleSendClick();
+    }
+}
+
+function fillInput(t) {
+    const i = document.getElementById('user-input');
+    i.value = t; i.focus(); handleInput({ target: i });
+}
+
+async function handleFileSelect(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+    for (const file of files) {
+        const tempId = 'loading-' + Date.now() + Math.floor(Math.random() * 1000);
+        let fType = 'text';
+        if (file.type === 'application/pdf') fType = 'pdf';
+        else if (file.type.startsWith('image/')) fType = 'image';
+
+        attachedFiles.push({ id: tempId, name: file.name, type: fType, processing: true });
+        renderAttachments();
+
+        try {
+            const idx = attachedFiles.findIndex(f => f.id === tempId);
+            if (idx !== -1) {
+                if (fType === 'pdf') {
+                    let text = "";
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        const maxP = Math.min(pdf.numPages, 30);
+                        for (let i = 1; i <= maxP; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(' ') + '\n';
+                        }
+                    } catch(e) { }
+                    attachedFiles[idx] = { name: file.name, type: 'pdf', text: `Document: ${file.name}\n\n${text}`, processing: false };
+                } else if (fType === 'image') {
+                    const base64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader(); reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject; reader.readAsDataURL(file);
+                    });
+                    attachedFiles[idx] = { name: file.name, type: 'image', base64: base64, processing: false };
+                } else {
+                    let text = ""; try { text = await file.text(); } catch(e){}
+                    attachedFiles[idx] = { name: file.name, type: 'text', text: `Document: ${file.name}\n\n${text}`, processing: false };
+                }
+            }
+        } catch (e) {
+            attachedFiles = attachedFiles.filter(f => f.id !== tempId);
+            notify("Error parsing local file", "error");
+        }
+        renderAttachments();
+    }
+    updateSendButtonState();
+    event.target.value = '';
+}
+
+function renderAttachments() {
+    const container = document.getElementById('attachment-previews');
+    container.innerHTML = '';
+    attachedFiles.forEach((file, idx) => {
+        let icon = file.type === 'pdf' ? 'ri-file-pdf-line' : (file.type === 'image' ? 'ri-image-line' : (file.processing ? 'ri-loader-4-line' : 'ri-file-text-line'));
+        container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><i class="${icon} text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}"></i><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><i class="ri-close-line text-[14px]"></i></button></div>`;
+    });
+}
+
+function removeAttachment(idx) { attachedFiles.splice(idx, 1); renderAttachments(); updateSendButtonState(); }
+
+function updateAttachmentUI() {
+    const fileInput = document.getElementById('file-upload-input');
+    if (fileInput) fileInput.accept = "image/*,application/pdf,text/*";
+}
+
+function hydrateLocalImages(container) {
+    const imgs = container.querySelectorAll('.lazy-local-img:not(.loaded)');
+    imgs.forEach(async (img) => {
+        const id = img.getAttribute('data-img-id');
+        if (id) {
+            try {
+                const base64 = await localforage.getItem(id);
+                if (base64) { img.src = base64; img.classList.add('loaded'); }
+                else { img.alt = "Disconnected"; img.classList.add('loaded'); }
+            } catch (e) { }
+        }
+    });
+}
+
+// ---------------------------------------------------------
+// CORE MESSAGING LOGIC
+// ---------------------------------------------------------
+async function sendMessage() {
+    if (isProcessing) { abortControllers.forEach(c => c.abort()); abortControllers = []; stopGenerationUI(); return; }
+    
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text && attachedFiles.length === 0) return;
+    
+    let apiContent = text, hasImages = false, imagePayloads = [];
+    attachedFiles.forEach(f => {
+        if (f.type === 'pdf' || f.type === 'text') apiContent += `\n\n[Doc ${f.name}]:\n${f.text}`;
+        else if (f.type === 'image') { hasImages = true; imagePayloads.push({ type: "image_url", image_url: { url: f.tempBase64 || f.base64 } }); }
+    });
+    
+    const uiFiles = [...attachedFiles]; attachedFiles = []; renderAttachments();
+    input.value = ''; input.style.height = 'auto';
+    
+    if (!currentChatId) {
+        currentChatId = CryptoJS.lib.WordArray.random(16).toString();
+        allChats[currentChatId] = { title: text.substring(0, 30) || "New Chat", messages: [], memory: "" };
+    }
+    
+    document.getElementById('welcome-screen').classList.add('hidden');
+    document.getElementById('messages-list').classList.remove('hidden');
+    
+    const formattedUserContent = escapeHTML(text).replace(/\n/g, '<br>');
+    addMessageUI('user', formattedUserContent, uiFiles, null, true);
+    
+    const savedFiles = uiFiles.map(f => { let fCopy = { ...f }; if (fCopy.type === 'image') delete fCopy.tempBase64; return fCopy; });
+    allChats[currentChatId].messages.push({ role: 'user', content: text, apiContent: apiContent, formattedContent: formattedUserContent, files: savedFiles });
+    saveChatsLocally();
+    
+    isProcessing = true; updateSendButtonState();
+
+    let context = [{ role: 'system', content: SYSTEM_MESSAGE.content }];
+    
+    if (isImageMode) {
+        context.push({ role: 'system', content: 'IMAGE MODE OVERRIDE: The user wants to generate an image. You MUST ONLY output a single [GENERATE_IMAGE: <prompt>] command corresponding exactly to their request and describe the visual aspects. DO NOT write anything else.' });
+    }
+
+    // Add rolling memory if it exists
+    if (allChats[currentChatId].memory) {
+        context.push({ role: 'system', content: `[COMPACTED PAST MEMORY OF THIS CONVERSATION]:\n${allChats[currentChatId].memory}` });
+    }
+
+    for (let i = 0; i < allChats[currentChatId].messages.length - 1; i++) {
+        const m = allChats[currentChatId].messages[i];
+        context.push({ role: m.role, content: typeof m.apiContent === 'string' ? m.apiContent : m.content });
+    }
+    let currentApiMsg = { role: 'user', content: apiContent };
+    if (hasImages) currentApiMsg.content = [{ type: "text", text: apiContent }, ...imagePayloads];
+    context.push(currentApiMsg);
+    
+    const msgId = 'msg-' + Date.now();
+    
+    const [pId] = currentUnifiedModel.split(':');
+    addMessageUI('ai', '', [], msgId, true, PROVIDERS[pId]?.name);
+    const msgContainer = document.getElementById(msgId).querySelector('.prose');
+    const chipsContainer = msgContainer.querySelector('.tool-chips-container');
+    const contentEl = msgContainer.querySelector('.msg-content');
+    let maxIterations = 4, iteration = 0, finalSaveApiText = "";
+    
+    const ctrl = new AbortController(); abortControllers.push(ctrl);
+    
+    while (iteration < maxIterations && !ctrl.signal.aborted) {
+        iteration++;
+        let finalContent = "", fullyFormattedContent = "";
+        contentEl.innerHTML = `<div class="dot-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+        try {
+            await fetchChatCompletion(context, (chunk) => {
+                finalContent = chunk;
+                let displayContent = finalContent
+                    .replace(/\[SEARCH\]:\s*([^\]\n]+)/gi, '')
+                    .replace(/\[READ_WEBPAGE\]:\s*(https?:\/\/[^\s\]\n]+)/gi, '')
+                    .replace(/\[SEARCH_IMAGE\]:\s*([^\]\n]+)/gi, '')
+                    .replace(/\[CONSULT_MEMORY\]/gi, '');
+                
+                fullyFormattedContent = formatMarkdown(displayContent);
+                contentEl.innerHTML = DOMPurify.sanitize(fullyFormattedContent, PURIFY_CONFIG);
+                scrollToBottom();
+            }, currentUnifiedModel, ctrl.signal);
+            
+            // --- TOOL EXECUTION CHECKS ---
+
+            // Tool: Memory Request
+            const memoryMatch = finalContent.match(/\[CONSULT_MEMORY\]/i);
+            if (memoryMatch) {
+                chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-brain-line text-[14px] text-accent"></i><span class="font-medium">Consulting Memory...</span></div>`;
+                context.push({ role: 'assistant', content: finalContent });
+                finalSaveApiText += finalContent + "\n\n";
+                const memData = allChats[currentChatId].memory || "No compacted memories have been established yet for this conversation.";
+                context.push({ role: 'user', content: `[MEMORY DATA]:\n${memData}\n\nContinue analyzing or responding based on this.` });
+                continue;
+            }
+
+            // Tool: Web Search
+            const searchMatch = finalContent.match(/\[SEARCH\]:\s*([^\]\n]+)/i);
+            if (searchMatch) {
+                const query = searchMatch[1].trim();
+                chipsContainer.innerHTML += `<div class="search-agent-ui border border-secondary rounded-xl bg-tertiary overflow-hidden animate-[fadeIn_0.3s] shadow-sm mb-3"><div class="px-4 py-2.5 bg-secondary flex items-center justify-between cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')"><div class="flex items-center gap-2 text-xs font-medium text-adaptive"><i class="ri-global-line text-accent animate-pulse"></i> Searching Web: "${escapeHTML(query)}"</div><i class="ri-arrow-down-s-line text-muted"></i></div><div class="p-4 text-xs text-muted max-h-48 overflow-y-auto custom-scrollbar hidden" id="search-results-${msgId}-${iteration}"><ul class="space-y-3"><li><i class="ri-loader-4-line animate-spin"></i> Fetching real-time data...</li></ul></div></div>`;
+                
+                try {
+                    let searchResults;
+                    try {
+                        searchResults = await performWebSearch(query);
+                    } catch (keylessErr) {
+                        if (apiKeys['aqua']) {
+                            searchResults = await performAquaWebSearch(query);
+                        } else {
+                            throw keylessErr;
+                        }
+                    }
+                    const resContainer = document.getElementById(`search-results-${msgId}-${iteration}`);
+                    if (searchResults.length > 0) {
+                        resContainer.innerHTML = '<ul class="space-y-3">' + searchResults.map(r => `<li><a href="${r.url}" target="_blank" class="text-accent hover:underline font-medium block truncate">${r.title}</a><p class="text-[11px] mt-0.5 line-clamp-2">${r.content}</p></li>`).join('') + '</ul>';
+                    } else {
+                        resContainer.innerHTML = 'No relevant results found.';
+                    }
+                    
+                    const formattedResultsStr = searchResults.map(r => `- ${r.title}\n(${r.url})\nDetail: ${r.content}`).join('\n\n');
+                    chipsContainer.querySelector('.animate-pulse')?.classList.remove('animate-pulse');
+                    
+                    context.push({ role: 'assistant', content: finalContent });
+                    finalSaveApiText += finalContent + "\n\n";
+                    context.push({ role: 'user', content: `[Web results for "${query}"]:\n${formattedResultsStr}\n\nWith this, give your definitive answer without using search again. You may open any of the result URLs above with [READ_WEBPAGE]: <url> (one at a time) to read the full page content before answering — do this whenever a snippet is vague or you need exact details.` });
+                    continue;
+                } catch (e) {
+                    chipsContainer.innerHTML += `<div class="text-[11px] text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 mb-3">Web error: ${e.message}</div>`;
+                    context.push({ role: 'assistant', content: finalContent });
+                    finalSaveApiText += finalContent + "\n\n";
+                    context.push({ role: 'user', content: `Error searching "${query}": ${e.message}. Answer with your existing knowledge.` });
+                    continue;
+                }
+            }
+
+            // Tool: Webpage Reader (Jina)
+            const readMatch = finalContent.match(/\[READ_WEBPAGE\]:\s*(https?:\/\/[^\s\]\n]+)/i);
+            if (readMatch) {
+                const url = readMatch[1].trim();
+                chipsContainer.innerHTML += `<div class="search-agent-ui border border-secondary rounded-xl bg-tertiary overflow-hidden animate-[fadeIn_0.3s] shadow-sm mb-3"><div class="px-4 py-2.5 bg-secondary flex items-center justify-between cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')"><div class="flex items-center gap-2 text-xs font-medium text-adaptive"><i class="ri-article-line text-accent animate-pulse"></i> Reading Webpage: "${escapeHTML(url)}"</div><i class="ri-arrow-down-s-line text-muted"></i></div><div class="p-4 text-xs text-muted max-h-64 overflow-y-auto custom-scrollbar hidden" id="read-results-${msgId}-${iteration}"><ul class="space-y-3"><li><i class="ri-loader-4-line animate-spin"></i> Extracting via Jina AI...</li></ul></div></div>`;
+
+                try {
+                    const readContent = await performJinaRead(url);
+                    const resContainer = document.getElementById(`read-results-${msgId}-${iteration}`);
+                    resContainer.innerHTML = '<div class="whitespace-pre-wrap text-[10px]">' + escapeHTML(readContent.substring(0, 800)) + '...</div>';
+
+                    chipsContainer.querySelector('.animate-pulse')?.classList.remove('animate-pulse');
+
+                    context.push({ role: 'assistant', content: finalContent });
+                    finalSaveApiText += finalContent + "\n\n";
+                    context.push({ role: 'user', content: `[Webpage Content from ${url}]:\n${readContent.substring(0, 15000)}\n\nRead this and continue answering.` });
+                    continue;
+                } catch (e) {
+                    chipsContainer.innerHTML += `<div class="text-[11px] text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 mb-3">Reader error: ${e.message}</div>`;
+                    context.push({ role: 'assistant', content: finalContent });
+                    finalSaveApiText += finalContent + "\n\n";
+                    context.push({ role: 'user', content: `Error reading "${url}": ${e.message}. Answer with your existing knowledge.` });
+                    continue;
+                }
+            }
+            
+            finalSaveApiText += finalContent;
+            
+            // Tool: Generate Image
+            const imageMatch = finalContent.match(/\[GENERATE_IMAGE:\s*(.*?)\]/i);
+            if (imageMatch) {
+                const imgPrompt = escapeHTML(imageMatch[1]);
+                contentEl.innerHTML = '';
+                const imgLoaderId = 'gen-img-loader-' + Date.now();
+                chipsContainer.innerHTML += `<div id="${imgLoaderId}" class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Creating image...</span></div>`;
+                try {
+                    let finalImgUrl = "", base64Data = null, imgProv = null;
+                    if (apiKeys['aqua']) imgProv = 'aqua'; else if (apiKeys['freetheai']) imgProv = 'freetheai';
+                    if (!imgProv) throw new Error("Image generation requires Aqua or Agnes API key.");
+                    
+                    let endpoint = imgProv === 'freetheai' ? 'https://apihub.agnes-ai.com/v1/images/generations' : 'https://api.aquadevs.com/v1/images/generations';
+                    let payload = { prompt: imgPrompt, n: 1 }; if (currentImageModelId) payload.model = currentImageModelId;
+                    
+                    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys[imgProv]}` };
+                    const resp = await fetch(endpoint, { method: 'POST', headers: headers, body: JSON.stringify(payload) });
+                    if (!resp.ok) throw new Error(`API Error (${resp.status})`);
+                    const data = await resp.json();
+                    
+                    if (data.data && data.data.length > 0) {
+                        if (data.data[0].b64_json) base64Data = "data:image/png;base64," + data.data[0].b64_json;
+                        else if (data.data[0].url) finalImgUrl = data.data[0].url;
+                    } else if (data.url) finalImgUrl = data.url;
+                    else if (data.success && data.result && data.result.url) finalImgUrl = data.result.url;
+                    else throw new Error("Invalid response");
+                    
+                    const loader = document.getElementById(imgLoaderId);
+                    if (loader) loader.remove();
+                    
+                    const finalImageSrc = base64Data ? base64Data : finalImgUrl;
+                    const imgReplacement = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><i class="ri-alert-line text-[14px]"></i> Image link expires in 24h.</div></div>`;
+                    finalContent = finalContent.replace(imageMatch[0], imgReplacement);
+                        
+                    chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-image-line text-[14px] text-accent"></i><span class="font-medium">Generated image</span></div>`;
+                } catch (imgErr) {
+                    const loader = document.getElementById(imgLoaderId);
+                    if (loader) loader.remove();
+                    finalContent = finalContent.replace(imageMatch[0], `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> ${escapeHTML(imgErr.message)}</span>`);
+                }
+            }
+
+            // Tool: Wikimedia Free Image Search
+            const imgSearchMatch = finalContent.match(/\[SEARCH_IMAGE\]:\s*([^\]\n]+)/i);
+            if (imgSearchMatch) {
+                const query = imgSearchMatch[1].trim();
+                const wikiLoaderId = 'wiki-loader-' + Date.now();
+                chipsContainer.innerHTML += `<div id="${wikiLoaderId}" class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Finding images for: ${escapeHTML(query)}...</span></div>`;
+
+                try {
+                    const images = await performWikiImageSearch(query);
+                    const loader = document.getElementById(wikiLoaderId);
+                    if (loader) loader.remove();
+                    
+                    let imgReplacement = '';
+                    if (images.length > 0) {
+                        imgReplacement = `<div class="flex gap-3 overflow-x-auto custom-scrollbar py-2 my-3">` + images.map(img => `<a href="${img.pageUrl}" target="_blank" class="relative min-w-[200px] max-w-[240px] block group"><img src="${img.url}" alt="${escapeHTML(img.title)}" class="rounded-xl border border-secondary shadow-md w-full h-36 object-cover group-hover:opacity-80 transition-opacity"><div class="text-[11px] truncate text-muted mt-1.5 px-1">${escapeHTML(img.title)}</div></a>`).join('') + `</div>`;
+                    } else {
+                        imgReplacement = `<div class="text-xs text-muted italic my-2"><i class="ri-image-line"></i> No free images found for "${escapeHTML(query)}".</div>`;
+                    }
+
+                    finalContent = finalContent.replace(imgSearchMatch[0], imgReplacement);
+                    chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-image-line text-[14px] text-accent"></i><span class="font-medium">Web images retrieved</span></div>`;
+                } catch (imgErr) {
+                     const loader = document.getElementById(wikiLoaderId);
+                     if (loader) loader.remove();
+                     finalContent = finalContent.replace(imgSearchMatch[0], `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> Image search failed: ${escapeHTML(imgErr.message)}</span>`);
+                }
+            }
+            
+            // Final Display cleanup
+            let displayContent = finalContent
+                .replace(/\[SEARCH\]:\s*([^\]\n]+)/gi, '')
+                .replace(/\[READ_WEBPAGE\]:\s*(https?:\/\/[^\s\]\n]+)/gi, '')
+                .replace(/\[SEARCH_IMAGE\]:\s*([^\]\n]+)/gi, '')
+                .replace(/\[CONSULT_MEMORY\]/gi, '');
+                
+            fullyFormattedContent = formatMarkdown(displayContent);
+            contentEl.innerHTML = DOMPurify.sanitize(fullyFormattedContent, PURIFY_CONFIG);
+            setTimeout(() => hydrateLocalImages(contentEl), 10);
+            
+            allChats[currentChatId].messages.push({
+                role: 'assistant', content: finalContent, apiContent: stripBase64ForAPI(finalSaveApiText),
+                formattedContent: fullyFormattedContent, providerId: pId
+            });
+            saveChatsLocally();
+            break;
+        } catch (err) {
+            if (err.message !== "Stopped.") contentEl.innerHTML = `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> ${escapeHTML(err.message)}</span>`;
+            break;
+        }
+    }
+    stopGenerationUI();
+
+    // Trigger auto compaction in background
+    compactConversation(currentChatId);
+}
+
+// Background memory compaction
+async function compactConversation(chatId) {
+    const chat = allChats[chatId];
+    if (!chat || chat.isSummarizing || chat.messages.length <= 15) return;
+    chat.isSummarizing = true;
+    try {
+        const msgsToCompact = chat.messages.slice(0, chat.messages.length - 6);
+        if (msgsToCompact.length < 5) { chat.isSummarizing = false; return; }
+
+        const textToCompact = msgsToCompact.map(m => `${m.role}: ${m.apiContent || m.content}`).join('\n');
+        const prompt = `As Ventarys, your task is to heavily compress and summarize this past conversation segment. Retain ALL crucial facts, your FOSS principles, code snippets, architectural decisions, and user preferences. Drop pleasantries.\n\nOld Memory Summary: ${chat.memory || 'None'}\n\nNew Conversation Segment to Compress:\n${textToCompact}`;
+
+        let summaryText = "";
+        const ctrl = new AbortController();
+        await fetchChatCompletion([{role: 'user', content: prompt}], (chunk) => {
+            summaryText = chunk;
+        }, currentUnifiedModel, ctrl.signal);
+
+        if (summaryText.length > 50) {
+            chat.memory = summaryText;
+            chat.messages.splice(0, msgsToCompact.length);
+            saveChatsLocally(false); 
+        }
+    } catch(e) { }
+    chat.isSummarizing = false;
+}
+
+function stopGenerationUI() { isProcessing = false; updateSendButtonState(); }
+
+function scrollToBottom() { const c = document.getElementById('chat-container'); c.scrollTop = c.scrollHeight; }
+
+function addMessageUI(role, text, files = [], id = null, isPreFormatted = false, customHeaderTitle = null) {
+    const list = document.getElementById('messages-list');
+    const div = document.createElement('div');
+    if (id) div.id = id;
+    div.className = `flex w-full ${role === 'user' ? 'justify-end' : 'justify-start'} fade-in msg-container-group relative`;
+    let filesHtml = '';
+    if (files.length > 0) {
+        filesHtml = '<div class="flex flex-wrap gap-2 mb-3">';
+        files.forEach(f => {
+            if (f.type === 'image') {
+                if (f.tempBase64) filesHtml += `<img data-img-id="${f.localImgId}" src="${DOMPurify.sanitize(f.tempBase64)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm lazy-local-img loaded">`;
+                else if (f.localImgId) filesHtml += `<img data-img-id="${f.localImgId}" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23222'/%3E%3C/svg%3E" class="w-48 rounded-lg border border-secondary object-cover shadow-sm lazy-local-img">`;
+                else if (f.base64) filesHtml += `<img src="${DOMPurify.sanitize(f.base64)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm">`;
+            } else { filesHtml += `<div class="bg-main px-3 py-1.5 rounded-lg text-xs font-medium border border-secondary flex items-center gap-1.5 shadow-sm"><i class="ri-file-text-line text-[16px] text-muted"></i> ${escapeHTML(f.name)}</div>`; }
+        });
+        filesHtml += '</div>';
+    }
+    const contentHtml = isPreFormatted ? DOMPurify.sanitize(text, PURIFY_CONFIG) : (role === 'user' ? escapeHTML(text).replace(/\n/g, '<br>') : DOMPurify.sanitize(formatMarkdown(text), PURIFY_CONFIG));
+    if (role === 'user') {
+        div.innerHTML = `<div class="bg-message-user px-5 py-4 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm text-adaptive border border-secondary selectable-text">${filesHtml}<div class="text-[15px] font-light leading-relaxed">${contentHtml}</div></div>`;
+    } else {
+        const titleHeader = customHeaderTitle || 'Ventarys AI';
+        const ttsBtn = `<button class="action-btn tts-btn mt-2" onclick="playTTS(this.closest('.msg-container-group').querySelector('.msg-content').innerText, this)"><i class="ri-volume-up-line text-[14px]"></i> Read Aloud</button>`;
+        div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="https://files.catbox.moe/1313y3.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-col gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div><div class="msg-actions flex gap-2 opacity-0 transition-opacity absolute -bottom-8 left-0">${ttsBtn}</div></div>`;
+    }
+    list.appendChild(div); scrollToBottom();
+    setTimeout(() => hydrateLocalImages(div), 50);
+    if (isPreFormatted && role !== 'user') setTimeout(() => { div.querySelectorAll('pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
+}
+
+function formatMarkdown(text) {
+    if (!text) return '';
+    text = text.replace(/Ġ/g, ' ').replace(/Ċ/g, '\n');
+    text = text.replace(/<think>([\s\S]*?)(?:<\/think>|$)/gi, function (match, thoughts) {
+        return `<details class="mb-4 border border-secondary rounded-xl overflow-hidden shadow-sm"><summary class="bg-secondary px-4 py-2.5 cursor-pointer text-xs font-semibold text-adaptive flex items-center gap-2 hover:bg-tertiary outline-none select-none transition-colors"><i class="ri-brain-line text-[18px] text-muted"></i>Analytical Process</summary><div class="p-4 bg-main text-[13px] text-muted whitespace-pre-wrap font-mono font-light border-t border-secondary">${escapeHTML(thoughts.trim())}</div></details>`;
+    });
+    marked.setOptions({ breaks: true, gfm: true });
+    const renderer = new marked.Renderer();
+    renderer.code = function (token) {
+        const code = typeof token === 'object' ? token.text : token;
+        const lang = typeof token === 'object' ? token.lang : arguments[1];
+        const languageClass = lang ? `language-${escapeHTML(lang)}` : '';
+        let runBtn = '';
+        if (lang === 'html' || lang === 'javascript' || lang === 'js' || lang === 'css') {
+            runBtn = `<button class="action-btn" onclick="window.runCode(this)"><i class="ri-layout-masonry-line text-[14px] text-accent"></i> Preview</button>`;
+        }
+        return `<div class="code-block-wrapper"><div class="code-actions">${runBtn}<button class="action-btn copy-code-btn"><i class="ri-clipboard-line text-[14px]"></i> Copy</button></div><pre><code class="${languageClass}">${escapeHTML(code)}</code></pre></div>`;
+    };
+    const html = marked.parse(text, { renderer: renderer });
+    setTimeout(() => { document.querySelectorAll('#messages-list pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
+    return html;
+}
+
+window.copyCode = function (btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').textContent;
+    const textArea = document.createElement("textarea"); textArea.value = code;
+    textArea.style.position = "fixed"; textArea.style.opacity = "0"; document.body.appendChild(textArea);
+    textArea.focus(); textArea.select();
+    try {
+        document.execCommand('copy');
+        const original = btn.innerHTML; btn.innerHTML = '<i class="ri-check-line text-[14px] text-accent"></i> Done';
+        setTimeout(() => btn.innerHTML = original, 2000);
+    } catch (err) { }
+    document.body.removeChild(textArea);
+}
+
+window.runCode = function (btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').textContent;
+    if (window.innerWidth >= 1024) {
+        const appletPanel = document.getElementById('applet-panel');
+        appletPanel.classList.remove('hidden'); appletPanel.classList.remove('w-0'); appletPanel.classList.add('flex');
+        document.getElementById('applet-iframe').srcdoc = code; document.getElementById('applet-code-editor').value = code;
+        switchAppletTab('preview');
+    } else {
+        const modal = document.getElementById('preview-modal'); const iframe = document.getElementById('preview-iframe');
+        modal.classList.remove('hidden'); modal.classList.add('flex'); iframe.srcdoc = code;
+    }
+};
+
+window.closeApplet = function () {
+    const appletPanel = document.getElementById('applet-panel');
+    appletPanel.classList.add('hidden'); appletPanel.classList.add('w-0'); appletPanel.classList.remove('flex');
+    document.getElementById('applet-iframe').srcdoc = ''; document.getElementById('applet-code-editor').value = '';
+};
+
+window.switchAppletTab = function (tab) {
+    const btnPreview = document.getElementById('tab-btn-preview'); const btnCode = document.getElementById('tab-btn-code');
+    const iframe = document.getElementById('applet-iframe'); const editor = document.getElementById('applet-code-editor');
+    if (tab === 'preview') {
+        btnPreview.className = "px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        btnCode.className = "px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        iframe.classList.remove('hidden'); iframe.classList.add('z-10'); editor.classList.add('hidden'); editor.classList.remove('z-10');
+    } else {
+        btnCode.className = "px-3 py-1 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
+        btnPreview.className = "px-3 py-1 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
+        editor.classList.remove('hidden'); editor.classList.add('z-10'); iframe.classList.add('hidden'); iframe.classList.remove('z-10');
+    }
+};
+
+window.updateAppletPreview = function () {
+    document.getElementById('applet-iframe').srcdoc = document.getElementById('applet-code-editor').value;
+};
+
+function closePreviewModal() {
+    const modal = document.getElementById('preview-modal');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+    document.getElementById('preview-iframe').srcdoc = '';
+}
+
+function saveChatsLocally(broadcast = true) {
+    try {
+        secureSave('ventarys_chats', allChats);
+        AppStorage.setItem('current_chat_id', currentChatId);
+        updateChatHistory();
+        if (broadcast && p2pSync.isConnected()) p2pSync.triggerFullSync();
+    } catch (e) {
+        if (e.name === 'QuotaExceededError') notify("Local storage full.", "error");
+    }
+}
+
+function exportData() {
+    const backup = {
+        allChats, currentChatId, apiKeys, localNodeSettings, currentUnifiedModel, currentImageModelId
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
+    const a = document.createElement('a'); a.href = dataStr; a.download = "ventarys_backup.json";
+    document.body.appendChild(a); a.click(); a.remove();
+}
+
+function exportChatMD(id) {
+    const chat = allChats[id]; if (!chat) return;
+    let md = `# ${chat.title}\n\n`;
+    chat.messages.forEach(m => {
+        if (m.role !== 'system') { md += `**${m.role === 'user' ? 'You' : 'Ventarys AI'}:**\n${m.content}\n\n---\n\n`; }
+    });
+    const dataStr = "data:text/markdown;charset=utf-8," + encodeURIComponent(md);
+    const a = document.createElement('a'); a.href = dataStr; a.download = `${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+    document.body.appendChild(a); a.click(); a.remove();
+    notify("Exported to Markdown", "success");
+}
+
+function triggerImport() { document.getElementById('backup-upload-input').click(); }
+
+function importData(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const parsed = JSON.parse(e.target.result);
+            if (parsed.allChats) allChats = parsed.allChats;
+            if (parsed.currentChatId) currentChatId = parsed.currentChatId;
+            if (parsed.apiKeys) apiKeys = { ...apiKeys, ...parsed.apiKeys };
+            if (parsed.localNodeSettings) localNodeSettings = { ...localNodeSettings, ...parsed.localNodeSettings };
+            if (parsed.currentUnifiedModel) currentUnifiedModel = parsed.currentUnifiedModel;
+            if (parsed.currentImageModelId) currentImageModelId = parsed.currentImageModelId;
+            
+            saveChatsLocally();
+            secureSave('byok_keys', apiKeys);
+            secureSave('local_node_settings', localNodeSettings);
+            AppStorage.setItem('byok_unified_model', currentUnifiedModel);
+            AppStorage.setItem('byok_image_model', currentImageModelId);
+            
+            updateLocalNodeProvider(); initSettingsUI(); fetchAllModels();
+            if (currentChatId && allChats[currentChatId]) loadChat(currentChatId, true);
+            else createNewChatUIOnly();
+            
+            if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+            notify("Backup imported and settings restored.", "success");
+        } catch (err) { notify("Unsupported format.", "error"); }
+    };
+    reader.readAsText(file); event.target.value = '';
+}
+
+function createNewChat() { 
+    if (isProcessing) { abortControllers.forEach(c => c.abort()); abortControllers = []; stopGenerationUI(); }
+    currentChatId = null; createNewChatUIOnly(); 
+}
+
+function createNewChatUIOnly() {
+    document.getElementById('messages-list').innerHTML = ''; document.getElementById('messages-list').classList.add('hidden');
+    document.getElementById('welcome-screen').classList.remove('hidden'); document.getElementById('settings-view').classList.add('hidden');
+    document.getElementById('connectors-view').classList.add('hidden'); closeSidebarMobile();
+}
+
+function updateChatHistory(filterText = '') {
+    const container = document.getElementById('chat-history'); const title = container.querySelector('.text-muted');
+    container.innerHTML = ''; if (title) container.appendChild(title); else container.innerHTML = '<div class="px-2 py-2 text-[10px] font-bold text-muted uppercase tracking-widest opacity-70 mb-2">History</div>';
+    const lowerFilter = filterText.toLowerCase();
+    Object.entries(allChats).reverse().forEach(([id, chat]) => {
+        if (filterText && !chat.title.toLowerCase().includes(lowerFilter)) return;
+        container.innerHTML += `<div class="group relative flex items-center justify-between px-2 py-1.5 hover:bg-secondary rounded-lg border border-transparent transition-colors"><div onclick="loadChat('${id}')" class="flex items-center gap-2 cursor-pointer flex-1 min-w-0 px-1 py-1"><i class="ri-chat-3-line text-muted text-[16px]"></i><span class="truncate text-sm font-medium opacity-80 group-hover:opacity-100 text-adaptive">${escapeHTML(chat.title)}</span></div><button onclick="toggleChatMenu(event, '${id}')" class="p-1 rounded text-muted hover:text-adaptive hover:bg-tertiary opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-colors"><i class="ri-more-2-line text-[18px]"></i></button><div id="chat-menu-${id}" class="hidden absolute right-2 top-8 bg-main border border-secondary rounded-lg shadow-xl z-50 w-36 p-1 flex flex-col"><button onclick="renameChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-pencil-line text-[16px] text-muted"></i> Rename</button><button onclick="exportChatMD('${id}')" class="w-full text-left px-3 py-2.5 text-adaptive hover:bg-secondary rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-download-line text-[16px] text-muted"></i> Export</button><button onclick="deleteChat(event, '${id}')" class="w-full text-left px-3 py-2.5 text-red-500 hover:bg-red-500/10 rounded transition-colors text-xs font-medium flex items-center gap-2"><i class="ri-delete-bin-line text-[16px]"></i> Delete</button></div></div>`;
+    });
+}
+
+function toggleChatMenu(e, id) {
+    e.stopPropagation();
+    document.querySelectorAll('[id^="chat-menu-"]').forEach(el => { if (el.id !== `chat-menu-${id}`) el.classList.add('hidden'); });
+    document.getElementById(`chat-menu-${id}`).classList.toggle('hidden');
+}
+
+function renameChat(e, id) {
+    e.stopPropagation(); document.getElementById(`chat-menu-${id}`).classList.add('hidden');
+    showCustomDialog({
+        title: "Rename Chat", message: "Enter the new title:", showInput: true, inputValue: allChats[id].title,
+        onConfirm: (v) => {
+            if (v && v.trim()) {
+                allChats[id].title = escapeHTML(v.trim()); saveChatsLocally(false); 
+                p2pSync.broadcastAction('RENAME_CHAT', { id, title: allChats[id].title });
+            }
+        }
+    });
+}
+
+function deleteChat(e, id) {
+    e.stopPropagation(); document.getElementById(`chat-menu-${id}`).classList.add('hidden');
+    delete allChats[id]; saveChatsLocally(false); p2pSync.broadcastAction('DELETE_CHAT', { id });
+    if (currentChatId === id) createNewChatUIOnly();
+}
+
+function loadChat(id, noPush = false) {
+    if (!allChats[id]) return;
+    if (isProcessing) { abortControllers.forEach(c => c.abort()); abortControllers = []; stopGenerationUI(); }
+    currentChatId = id; AppStorage.setItem('current_chat_id', id);
+    document.getElementById('welcome-screen').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); document.getElementById('connectors-view').classList.add('hidden');
+    const list = document.getElementById('messages-list'); list.classList.remove('hidden'); list.innerHTML = '';
+    allChats[id].messages.forEach(m => {
+        if (m.role !== 'system') {
+            addMessageUI(m.role, m.formattedContent || (m.role === 'user' ? escapeHTML(m.content).replace(/\n/g, '<br>') : DOMPurify.sanitize(formatMarkdown(m.content), PURIFY_CONFIG)), m.files || [], null, true, PROVIDERS[m.providerId]?.name);
+        }
+    });
+    closeSidebarMobile();
+}
+
+function showCustomDialog({ title, message, isDanger = false, showInput = false, inputValue = '', onConfirm = null }) {
+    const overlay = document.getElementById('dialog-overlay');
+    document.getElementById('dialog-title').textContent = title; document.getElementById('dialog-message').textContent = message;
+    const inputEl = document.getElementById('dialog-input');
+    if (showInput) { inputEl.classList.remove('hidden'); inputEl.value = inputValue; setTimeout(() => inputEl.focus(), 100); }
+    else { inputEl.classList.add('hidden'); }
+    const btnContainer = document.getElementById('dialog-buttons'); btnContainer.innerHTML = '';
+    const cancelBtn = document.createElement('button'); cancelBtn.className = 'px-4 py-2 rounded-lg text-sm font-medium text-muted hover:bg-secondary transition-colors'; cancelBtn.textContent = 'Cancel'; cancelBtn.onclick = () => overlay.classList.replace('active', 'hidden');
+    btnContainer.appendChild(cancelBtn);
+    if (onConfirm) {
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = `px-5 py-2 rounded-lg text-sm font-medium transition-colors ${isDanger ? 'bg-transparent border border-red-500 text-red-500 hover:bg-red-500/10' : 'bg-accent text-[var(--accent-text)]'}`;
+        confirmBtn.textContent = isDanger ? 'Delete All' : 'Confirm';
+        confirmBtn.onclick = () => { onConfirm(showInput ? inputEl.value : null); overlay.classList.replace('active', 'hidden'); };
+        btnContainer.appendChild(confirmBtn);
+    }
+    overlay.classList.replace('hidden', 'active');
+}
+
+function confirmDeleteAll() {
+    showCustomDialog({
+        title: "Delete and reset vault?", message: "This will locally delete all your chats, preferences, and the master encryption key.", isDanger: true,
+        onConfirm: async () => { await AppStorage.clearAll(); location.reload(); }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateFavicon();
+    const encrypted = AppStorage.getItem('ventarys_is_encrypted');
+    if (encrypted === 'true') { document.getElementById('login-overlay').classList.add('hidden'); initSecurity(); }
+    if (AppStorage.getItem('theme') === 'light') { document.getElementById('ventarys-app-root').classList.add('light'); updateThemeIcon(true); }
+});
+</script>
+</body>
+</html>
