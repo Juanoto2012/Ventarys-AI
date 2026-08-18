@@ -5,10 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <!-- AdSense Configuration -->
-    <meta name="google-adsense-account" content="ca-pub-9019277340139989">
-    <meta name="google-site-verification" content="EeMgkcs5cYmcmJCKopP83X24f5b-ZszEioBZ6bCxldA" />
-
     <!-- SEO and Advanced Metadata -->
     <title>Ventarys | Private AI & Autonomous IDE</title>
     <meta name="description"
@@ -238,6 +234,17 @@
             }
         }
 
+        /* Tailwind arbitrary-value utilities (perchance-safe) */
+        .top-80 { top: 80px; }
+        .fs-10 { font-size: 10px; }
+        .fs-14 { font-size: 14px; }
+        .fs-16 { font-size: 16px; }
+        .fs-18 { font-size: 18px; }
+        .fs-20 { font-size: 20px; }
+        .min-h-150 { min-height: 150px; }
+        .max-w-320 { max-width: 320px; }
+        @media (min-width: 768px) { .max-w-400 { max-width: 400px; } }
+
         /* Ultra subtle Grid Background */
         .bg-grid {
             background-size: 60px 60px;
@@ -287,7 +294,7 @@
 
         <!-- Mobile Menu -->
         <div id="mobile-menu"
-            class="hidden md:hidden absolute top-[80px] left-0 w-full bg-white/95 dark:bg-ventarys-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-2xl transition-all translate-yes">
+            class="hidden md:hidden absolute top-80 left-0 w-full bg-white/95 dark:bg-ventarys-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-2xl transition-all translate-yes">
             <div class="flex flex-col p-6 gap-6 font-sans text-lg">
                 <a href="#ecosystem" class="font-medium text-gray-800 dark:text-gray-200"
                     onclick="document.getElementById('mobile-menu').classList.add('hidden')">Ecosystem</a>
@@ -330,13 +337,104 @@
                     <a href="#ventarys-idx"
                         class="group flex items-center justify-center gap-2 h-14 px-8 text-sm font-medium border border-gray-200 dark:border-gray-800 rounded hover:border-black dark:hover:border-white transition-all w-full sm:w-auto bg-white dark:bg-black">
                         Download IDX <md-icon
-                            class="text-[18px] group-hover:translate-y-1 transition-transform notranslate"
+                            class="fs-18 group-hover:translate-y-1 transition-transform notranslate"
                             translate="no">south</md-icon>
                     </a>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- [ABOUT / DESCRIPTION] -->
+    <section id="about"
+        class="py-32 relative z-10 translate-yes border-t border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-ventarys-900/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center reveal">
+                <div
+                    class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase mb-10 text-gray-500 dark:text-gray-400">
+                    <span class="w-2 h-2 rounded-full bg-black dark:bg-white animate-pulse"></span>
+                    About Ventarys AI
+                </div>
+
+                <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-6">Ventarys AI 🚀</h2>
+                <p class="text-xl md:text-2xl font-sans font-light text-gray-800 dark:text-gray-200 mb-8 leading-relaxed">
+                    Minimalist Ecosystem for Private AI: Chat, Code Generation, and Autonomous Automation.
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-lg font-light leading-relaxed max-w-3xl mx-auto mb-16">
+                    Ventarys AI is a lightweight platform built with HTML5, CSS3, and pure JavaScript. Designed for
+                    developers seeking power without heavy dependencies, it allows them to run AI securely.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="minimal-card p-8 reveal group">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">shield</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">Total Privacy</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        Data is processed in your local environment.
+                    </p>
+                </div>
+
+                <div class="minimal-card p-8 reveal group" style="transition-delay: 50ms;">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">code</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">Code Generation</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        Optimized to assist in development and refactoring.
+                    </p>
+                </div>
+
+                <div class="minimal-card p-8 reveal group" style="transition-delay: 100ms;">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">terminal</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">Standalone IDE (Ventarys IDX)</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        An integrated environment for working with AI agents.
+                    </p>
+                </div>
+
+                <div class="minimal-card p-8 reveal group" style="transition-delay: 150ms;">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">architecture</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">Vanilla Architecture</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        No frameworks (React/Vue), ensuring maximum speed and portability.
+                    </p>
+                </div>
+
+                <div class="minimal-card p-8 reveal group" style="transition-delay: 200ms;">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">crop_square</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">Minimalist Interface</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        Focused on productivity and low resource consumption.
+                    </p>
+                </div>
+
+                <div class="minimal-card p-8 reveal group" style="transition-delay: 250ms;">
+                    <div
+                        class="w-12 h-12 rounded border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors">
+                        <md-icon class="text-2xl notranslate" translate="no">cloud_sync</md-icon>
+                    </div>
+                    <h3 class="text-lg font-sans font-medium mb-3">P2P Sync</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed">
+                        Sync your chats across devices without login!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- [VENTARYS IDX SECTION - PRODUCT HIGHLIGHT] -->
     <section id="ventarys-idx"
@@ -347,8 +445,8 @@
                 <!-- IDX Information -->
                 <div class="lg:col-span-5 reveal">
                     <div
-                        class="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase mb-6 text-gray-400">
-                        <md-icon class="text-[16px] notranslate" translate="no">terminal</md-icon> Autonomous Environment
+                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-6 text-gray-400">
+                        <md-icon class="fs-16 notranslate" translate="no">terminal</md-icon> Autonomous Environment
                     </div>
                     <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">Ventarys IDX</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-lg mb-10 font-light leading-relaxed">
@@ -396,7 +494,7 @@
                                 x64</span>
                         </div>
 
-                        <div id="idx-downloads-container" class="min-h-[150px] flex flex-col justify-center">
+                        <div id="idx-downloads-container" class="min-h-150 flex flex-col justify-center">
                             <!-- Initial Loader -->
                             <div class="flex flex-col items-center justify-center py-8 opacity-50">
                                 <div class="loader mb-6"></div>
@@ -408,7 +506,7 @@
                         <div class="mt-8 pt-6 text-center">
                             <a href="https://github.com/Juanoto2012/Ventarys-IDX" target="_blank"
                                 class="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest">
-                                <md-icon class="text-[14px] notranslate" translate="no">open_in_new</md-icon> Source Code
+                                <md-icon class="fs-14 notranslate" translate="no">open_in_new</md-icon> Source Code
                             </a>
                         </div>
                     </div>
@@ -506,7 +604,7 @@
             <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 reveal">
                 <div>
                     <div
-                        class="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase mb-4 text-gray-500">
+                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-4 text-gray-500">
                         <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                         Live AI Radar
                     </div>
@@ -532,8 +630,8 @@
             <div class="grid lg:grid-cols-2 gap-16 items-center">
                 <div class="reveal">
                     <div
-                        class="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase mb-6 text-gray-400">
-                        <md-icon class="text-[16px] notranslate" translate="no">diamond</md-icon> Philosophy
+                        class="inline-flex items-center gap-2 fs-10 font-bold tracking-widest uppercase mb-6 text-gray-400">
+                        <md-icon class="fs-16 notranslate" translate="no">diamond</md-icon> Philosophy
                     </div>
                     <h2 class="text-4xl md:text-5xl font-sans font-semibold tracking-tight mb-8">The power of
                         local.<br><span class="text-gray-400">No strings attached.</span></h2>
@@ -546,7 +644,7 @@
                         <li class="flex items-start gap-5">
                             <div
                                 class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white text-[20px] notranslate"
+                                <md-icon class="text-black dark:text-white fs-20 notranslate"
                                     translate="no">verified_user</md-icon>
                             </div>
                             <div>
@@ -559,7 +657,7 @@
                         <li class="flex items-start gap-5">
                             <div
                                 class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white text-[20px] notranslate"
+                                <md-icon class="text-black dark:text-white fs-20 notranslate"
                                     translate="no">speed</md-icon>
                             </div>
                             <div>
@@ -572,7 +670,7 @@
                         <li class="flex items-start gap-5">
                             <div
                                 class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center flex-shrink-0">
-                                <md-icon class="text-black dark:text-white text-[20px] notranslate"
+                                <md-icon class="text-black dark:text-white fs-20 notranslate"
                                     translate="no">extension</md-icon>
                             </div>
                             <div>
@@ -587,7 +685,7 @@
 
                 <div class="reveal flex justify-center items-center" style="transition-delay: 200ms;">
                     <div
-                        class="w-full max-w-[320px] md:max-w-[400px] aspect-square bg-gray-50 dark:bg-ventarys-900 rounded-full flex items-center justify-center p-6 md:p-10 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+                        class="w-full max-w-320 md:max-w-400 aspect-square bg-gray-50 dark:bg-ventarys-900 rounded-full flex items-center justify-center p-6 md:p-10 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
                         <div class="absolute inset-0 bg-grid opacity-30"></div>
                         <div
                             class="w-full h-full bg-white dark:bg-black rounded-full shadow-2xl flex items-center justify-center border border-gray-200 dark:border-gray-800 relative z-10 overflow-hidden group">
@@ -636,7 +734,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <span class="font-mono tracking-widest uppercase text-[10px] text-gray-400 mb-2">Platform</span>
+                    <span class="font-mono tracking-widest uppercase fs-10 text-gray-400 mb-2">Platform</span>
                     <a href="https://ventarys.net/chat"
                         class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Ventarys
                         AI</a>
@@ -646,7 +744,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <span class="font-mono tracking-widest uppercase text-[10px] text-gray-400 mb-2">Community</span>
+                    <span class="font-mono tracking-widest uppercase fs-10 text-gray-400 mb-2">Community</span>
                     <a href="https://github.com/Juanoto2012" target="_blank"
                         class="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">GitHub</a>
                     <a href="forum.html"
@@ -673,9 +771,9 @@
 
     <!-- Minimalist Cookie Banner -->
     <div id="cookie-consent"
-        class="translate-yes fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-xl bg-white dark:bg-ventarys-950 border border-gray-200 dark:border-gray-800 p-4 rounded z-[60] hidden flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-700 translate-y-10 opacity-0">
+        class="translate-yes fixed bottom-6 left-1/2 transform -translate-x-1/2 max-w-xl bg-white dark:bg-ventarys-950 border border-gray-200 dark:border-gray-800 p-4 rounded hidden flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-700 translate-y-10 opacity-0" style="width: 90%; z-index: 60;">
         <p class="text-xs text-gray-500 text-center sm:text-left font-light leading-relaxed">
-            We maintain the service with minimal advertising. <b>No abusive trackers.</b>
+            Your privacy is absolute. <b>No advertising. No trackers.</b>
         </p>
         <button onclick="acceptCookies()"
             class="flex-shrink-0 text-xs font-medium uppercase tracking-widest border border-black dark:border-white px-6 py-2 rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
