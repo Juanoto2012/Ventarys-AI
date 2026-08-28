@@ -273,18 +273,6 @@
 
                     <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Voice Engine (TTS)</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-4 mb-8 flex flex-col gap-2">
-                        <label class="text-xs font-medium text-adaptive flex items-center justify-between cursor-pointer">
-                            <span>FreeTheAI voices <span class="text-muted font-light">(needs key)</span></span>
-                            <input type="checkbox" id="fta-tts-toggle" onchange="saveFTATTS()" class="w-4 h-4 accent-[var(--accent)]">
-                        </label>
-                        <select id="fta-tts-voice" onchange="saveFTATTS()" class="settings-input settings-select w-full">
-                            <option value="alloy">Alloy</option>
-                            <option value="echo">Echo</option>
-                            <option value="fable">Fable</option>
-                            <option value="onyx">Onyx</option>
-                            <option value="nova">Nova</option>
-                            <option value="shimmer">Shimmer</option>
-                        </select>
                         <label class="text-xs font-medium text-adaptive">System Voice</label>
                         <select id="tts-voice-select" onchange="saveTTSVoice()" class="settings-input settings-select w-full"></select>
                     </div>
@@ -338,14 +326,6 @@
                             </label>
                             <input type="password" id="key-freetheai" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-xs font-medium text-adaptive flex justify-between">
-                                <span>FreeTheAI API Key <span class="text-muted font-light">(Free Tier)</span></span>
-                                <a href="https://discord.gg/secrets" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-discord-fill text-[14px]"></i>Get</a>
-                            </label>
-                            <input type="password" id="key-fta" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
-                            <p class="text-[11px] text-muted font-light leading-relaxed">Obtenla en el servidor de Discord: ejecuta <code class="text-adaptive">/signup</code> si aún no tienes cuenta, <code class="text-adaptive">/checkin</code> cada día y <code class="text-adaptive">/resetkey</code> si perdiste tu key, en el canal <span class="text-adaptive">#commands</span>.</p>
-                        </div>
                         <div id="provider-image-config" class="pt-6 border-t border-[var(--border-secondary)]">
                             <div class="flex justify-between items-center mb-3">
                                 <label class="text-xs font-medium text-adaptive">Image Model</label>
@@ -361,20 +341,37 @@
                         </div>
                     </div>
                     
-                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-6">Local Node (Offline Integration)</div>
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-6">Local AI (WebGPU / Offline)</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-6 mb-8 space-y-6">
                         <div class="flex flex-col gap-2">
-                            <label class="text-xs font-medium text-adaptive">Local Endpoint URL (OpenAI-compatible)</label>
-                            <input type="text" id="local-node-url" placeholder="http://localhost:11434/v1" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
-                            <p class="text-[10px] text-muted font-light mt-1">E.g., <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:11434/v1</code> (Ollama) or <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:1234/v1</code> (LM Studio).<br><span class="text-amber-500">Note:</span> If using Ollama, launch it with CORS allowed: <code class="bg-secondary px-1 py-0.5 text-amber-500 rounded">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                            <label class="text-xs font-medium text-adaptive">Engine</label>
+                            <select id="local-engine-select" onchange="saveLocalNodeSettings()" class="settings-input settings-select w-full">
+                                <option value="webgpu">WebGPU — In-Browser (fastest, Chrome/Edge)</option>
+                                <option value="external">External server (Ollama / LM Studio)</option>
+                            </select>
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-xs font-medium text-adaptive">Local Node API Key (Optional)</label>
-                            <input type="password" id="local-node-key" placeholder="Bearer Token (if configured)" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                        <div id="webgpu-settings" class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-medium text-adaptive">Model (WebGPU)</label>
+                                <select id="webgpu-model-select" onchange="saveLocalNodeSettings()" class="settings-input settings-select w-full"></select>
+                            </div>
+                            <div id="webgpu-status" class="text-[10px] text-muted font-light leading-relaxed">Runs the model directly in your browser via WebGPU — similar efficiency to llama.cpp (no server needed, fully private). Models marked <b>f32</b> work on any WebGPU GPU; <b>f16</b> ones need a modern GPU. The first run downloads the weights to your browser cache (~0.4–1 GB).</div>
+                            <button id="webgpu-load-btn" onclick="loadWebGPUEngine()" class="w-full py-2.5 bg-accent text-[var(--accent-text)] rounded-lg font-semibold hover:opacity-90 transition-opacity text-sm flex items-center justify-center gap-2"><i class="ri-download-cloud-2-line text-[15px]"></i>Download / Load model</button>
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-xs font-medium text-adaptive">Local Model Identifier</label>
-                            <input type="text" id="local-node-model" placeholder="llama3" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                        <div id="external-settings" class="flex flex-col gap-4 hidden">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-medium text-adaptive">Local Endpoint URL (OpenAI-compatible)</label>
+                                <input type="text" id="local-node-url" placeholder="http://localhost:11434/v1" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                                <p class="text-[10px] text-muted font-light mt-1">E.g., <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:11434/v1</code> (Ollama) or <code class="bg-secondary px-1 py-0.5 rounded">http://localhost:1234/v1</code> (LM Studio).<br><span class="text-amber-500">Note:</span> If using Ollama, launch it with CORS allowed: <code class="bg-secondary px-1 py-0.5 text-amber-500 rounded">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-medium text-adaptive">Local Node API Key (Optional)</label>
+                                <input type="password" id="local-node-key" placeholder="Bearer Token (if configured)" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-medium text-adaptive">Local Model Identifier</label>
+                                <input type="text" id="local-node-model" placeholder="llama3" class="settings-input font-mono" onchange="saveLocalNodeSettings()">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -520,12 +517,21 @@ let isImageMode = false;
 
 const PROVIDERS = {
     freetheai: { name: "Agnes AI", url: "https://apihub.agnes-ai.com/v1/chat/completions", models: [], defaultModel: "gpt-4o", requiresKey: true },
-    fta: { name: "FreeTheAI", url: "https://api.freetheai.xyz/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: true },
-    localnode: { name: "Local Node", url: "", models: [], defaultModel: "local-model", requiresKey: false }
+    localnode: { name: "Local AI", url: "", models: [], defaultModel: "local-model", requiresKey: false }
 }
 
-let apiKeys = { freetheai: '', fta: '' };
-let localNodeSettings = { url: 'http://localhost:11434/v1', key: '', model: 'local-model' };
+let apiKeys = { freetheai: '' };
+let localNodeSettings = { url: 'http://localhost:11434/v1', key: '', model: 'local-model', engine: 'webgpu', webgpuModel: 'Llama-3.2-1B-Instruct-q4f32_1-MLC' };
+let webllmModule = null;
+let webgpuEngine = null;
+const WEBGPU_MODELS = [
+    { id: 'Llama-3.2-1B-Instruct-q4f32_1-MLC', name: 'Llama 3.2 1B (f32, ~1.1 GB VRAM)', f32: true },
+    { id: 'Qwen2.5-0.5B-Instruct-q4f32_1-MLC', name: 'Qwen 2.5 0.5B (f32, ~1 GB VRAM)', f32: true },
+    { id: 'SmolLM-360M-Instruct-q4f32_1-MLC', name: 'SmolLM 360M (f32, ~420 MB VRAM)', f32: true },
+    { id: 'gemma-2-2b-it-q4f32_1-MLC', name: 'Gemma 2 2B (f32, ~2.5 GB VRAM)', f32: true },
+    { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 1B (f16, ~880 MB, needs modern GPU)', f32: false },
+    { id: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 1.5B (f16, ~1.6 GB, needs modern GPU)', f32: false }
+];
 let unifiedModels = [];
 let currentUnifiedModel = 'localnode:local-model';
 let currentImageModelId = 'flux';
@@ -537,9 +543,6 @@ let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
 
 let availableVoices = [];
 let selectedVoiceURI = null;
-let ftaTtsEnabled = false;
-let ftaTtsVoice = 'alloy';
-let ttsAudio = null;
 
 function validateApiKey(key) {
     if (!key) return false;
@@ -876,21 +879,6 @@ function initTTS() {
     populateVoices();
     if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
     selectedVoiceURI = AppStorage.getItem('tts_selected_voice');
-    ftaTtsEnabled = AppStorage.getItem('fta_tts_enabled') === 'true';
-    ftaTtsVoice = AppStorage.getItem('fta_tts_voice') || 'alloy';
-    const ftToggle = document.getElementById('fta-tts-toggle');
-    if (ftToggle) ftToggle.checked = ftaTtsEnabled;
-    const ftVoice = document.getElementById('fta-tts-voice');
-    if (ftVoice) ftVoice.value = ftaTtsVoice;
-}
-
-function saveFTATTS() {
-    const ftToggle = document.getElementById('fta-tts-toggle');
-    const ftVoice = document.getElementById('fta-tts-voice');
-    ftaTtsEnabled = ftToggle ? ftToggle.checked : false;
-    ftaTtsVoice = ftVoice ? ftVoice.value : 'alloy';
-    AppStorage.setItem('fta_tts_enabled', String(ftaTtsEnabled));
-    AppStorage.setItem('fta_tts_voice', ftaTtsVoice);
 }
 
 function saveTTSVoice() {
@@ -900,44 +888,17 @@ function saveTTSVoice() {
 
 function playTTS(text, btn) {
     speechSynthesis.cancel();
-    if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
-    const icon = btn.querySelector('i');
-    if (ftaTtsEnabled && apiKeys['fta']) { playFTATTS(text, icon); return; }
     const cleanText = text.replace(/[\#\*\_\[\]\(\)]/g, ''); 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     if (selectedVoiceURI) {
         const voice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
         if (voice) utterance.voice = voice;
     }
+    const icon = btn.querySelector('i');
     utterance.onstart = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
     utterance.onend = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
     utterance.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
     speechSynthesis.speak(utterance);
-}
-
-async function playFTATTS(text, icon) {
-    icon.className = 'ri-loader-4-line text-accent animate-spin text-[14px]';
-    try {
-        const res = await root.superFetch('https://api.freetheai.xyz/v1/audio/speech', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys['fta']}` },
-            body: JSON.stringify({ model: 'tts-1', voice: ftaTtsVoice || 'alloy', input: text })
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const blob = await res.blob();
-        if (!blob.size) throw new Error('Empty audio response');
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        ttsAudio = audio;
-        const done = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; URL.revokeObjectURL(url); if (ttsAudio === audio) ttsAudio = null; };
-        audio.onplay = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
-        audio.onended = done;
-        audio.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; URL.revokeObjectURL(url); if (ttsAudio === audio) ttsAudio = null; };
-        await audio.play();
-    } catch(e) {
-        icon.className = 'ri-volume-up-line text-muted text-[14px]';
-        notify('FreeTheAI TTS error: ' + e.message, 'error');
-    }
 }
 
 function continueAsGuest() {
@@ -1001,17 +962,28 @@ function updateSendButtonState() {
 
 function initSettingsUI() {
     if (document.getElementById('key-freetheai')) document.getElementById('key-freetheai').value = apiKeys.freetheai || '';
-    if (document.getElementById('key-fta')) document.getElementById('key-fta').value = apiKeys.fta || '';
+    const engSel = document.getElementById('local-engine-select');
+    if (engSel) engSel.value = localNodeSettings.engine === 'external' ? 'external' : 'webgpu';
+    const wmSel = document.getElementById('webgpu-model-select');
+    if (wmSel) {
+        wmSel.innerHTML = '';
+        WEBGPU_MODELS.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.id; opt.textContent = m.name;
+            if (m.id === localNodeSettings.webgpuModel) opt.selected = true;
+            wmSel.appendChild(opt);
+        });
+    }
     if (document.getElementById('local-node-url')) document.getElementById('local-node-url').value = localNodeSettings.url || 'http://localhost:11434/v1';
     if (document.getElementById('local-node-key')) document.getElementById('local-node-key').value = localNodeSettings.key || '';
     if (document.getElementById('local-node-model')) document.getElementById('local-node-model').value = localNodeSettings.model || 'local-model';
+    showLocalSettings();
     fetchImageModels();
     p2pSync.updateDeviceUI();
 }
 
 function saveAllKeys() {
     apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
-    apiKeys.fta = document.getElementById('key-fta').value.trim();
     secureSave('byok_keys', apiKeys);
     if (p2pSync.isConnected()) p2pSync.triggerFullSync();
     fetchImageModels(); fetchAllModels();
@@ -1024,14 +996,109 @@ function updateLocalNodeProvider() {
     PROVIDERS.localnode.defaultModel = localNodeSettings.model || 'local-model';
 }
 
+function showLocalSettings() {
+    const engine = document.getElementById('local-engine-select') ? document.getElementById('local-engine-select').value : localNodeSettings.engine;
+    const webEl = document.getElementById('webgpu-settings');
+    const extEl = document.getElementById('external-settings');
+    if (webEl) webEl.classList.toggle('hidden', engine !== 'webgpu');
+    if (extEl) extEl.classList.toggle('hidden', engine !== 'external');
+}
+
 function saveLocalNodeSettings() {
+    localNodeSettings.engine = document.getElementById('local-engine-select').value || 'webgpu';
     localNodeSettings.url = document.getElementById('local-node-url').value.trim() || 'http://localhost:11434/v1';
     localNodeSettings.key = document.getElementById('local-node-key').value.trim();
     localNodeSettings.model = document.getElementById('local-node-model').value.trim() || 'local-model';
+    const wmSel = document.getElementById('webgpu-model-select');
+    if (wmSel && wmSel.value) localNodeSettings.webgpuModel = wmSel.value;
     secureSave('local_node_settings', localNodeSettings);
     if (p2pSync.isConnected()) p2pSync.triggerFullSync();
+    showLocalSettings();
     updateLocalNodeProvider(); fetchAllModels();
-    notify("Local Node settings updated.", "success");
+    notify("Local AI settings updated.", "success");
+}
+
+async function gpuSupportsF16() {
+    try {
+        const adapter = await navigator.gpu.requestAdapter();
+        if (!adapter) return false;
+        const device = await adapter.requestDevice();
+        return device.features.has('shader-f16');
+    } catch (e) { return false; }
+}
+
+async function loadWebGPUEngine() {
+    const btn = document.getElementById('webgpu-load-btn');
+    const statusEl = document.getElementById('webgpu-status');
+    try {
+        if (!navigator.gpu) {
+            if (statusEl) statusEl.innerHTML = '<span class="text-amber-500">WebGPU no está disponible en este navegador. Usa Chrome o Edge.</span>';
+            return;
+        }
+        if (!webllmModule) {
+            if (statusEl) statusEl.textContent = 'Cargando motor WebLLM...';
+            webllmModule = await import("https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.73/lib/index.js");
+        }
+        let modelId = localNodeSettings.webgpuModel || WEBGPU_MODELS[0].id;
+        const f16 = await gpuSupportsF16();
+        const wmSel = document.getElementById('webgpu-model-select');
+        if (wmSel) {
+            wmSel.innerHTML = '';
+            WEBGPU_MODELS.filter(m => f16 || m.f32).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id; opt.textContent = m.name;
+                wmSel.appendChild(opt);
+            });
+            if (!f16 && WEBGPU_MODELS.find(m => m.id === modelId && !m.f32)) {
+                modelId = WEBGPU_MODELS.find(m => m.f32).id;
+                localNodeSettings.webgpuModel = modelId;
+                secureSave('local_node_settings', localNodeSettings);
+            }
+            wmSel.value = modelId;
+        }
+        if (webgpuEngine && webgpuEngine.modelId === modelId) {
+            if (statusEl) statusEl.innerHTML = '<span class="text-emerald-500">Modelo ya cargado en memoria.</span>';
+            notify("Model already loaded in memory.", "success");
+            return;
+        }
+        btn.disabled = true; btn.innerHTML = '<i class="ri-loader-4-line animate-spin text-[15px]"></i>Loading model...';
+        if (statusEl) statusEl.innerHTML = 'Descargando pesos y compilando shaders WebGPU... La primera vez tarda varios minutos, luego queda en caché.';
+        const progressCb = (r) => {
+            const el = document.getElementById('webgpu-status');
+            if (el) el.textContent = r.text;
+        };
+        webgpuEngine = await Promise.race([
+            webllmModule.CreateMLCEngine(modelId, { initProgressCallback: progressCb }),
+            new Promise(res => setTimeout(() => res(null), 120000))
+        ]);
+        if (!webgpuEngine) {
+            throw new Error("WebGPU no respondió al compilar los shaders. Tu GPU puede ser incompatible; prueba un modelo más pequeño (SmolLM 360M f32).");
+        }
+        if (statusEl) statusEl.innerHTML = '<span class="text-emerald-500">Modelo listo (WebGPU).</span>';
+        notify("Local model loaded and ready (WebGPU).", "success");
+    } catch (e) {
+        console.error(e);
+        if (statusEl) statusEl.innerHTML = '<span class="text-red-500">Error al cargar: ' + escapeHTML(e.message) + '</span>';
+        notify("Local model failed to load: " + e.message, "error");
+    } finally {
+        btn.disabled = false; btn.innerHTML = '<i class="ri-download-cloud-2-line text-[15px]"></i>Download / Load model';
+    }
+}
+
+async function webgpuChatCompletion(modelId, messages, onChunk, signal) {
+    if (!navigator.gpu) throw new Error("WebGPU no está disponible en este navegador.");
+    if (!webgpuEngine || webgpuEngine.modelId !== modelId) {
+        await loadWebGPUEngine();
+    }
+    if (!webgpuEngine) throw new Error("No se pudo inicializar el motor WebGPU.");
+    const stream = await webgpuEngine.chat.completions.create({ messages, stream: true });
+    let text = "";
+    for await (const chunk of stream) {
+        if (signal && signal.aborted) break;
+        const delta = chunk && chunk.choices && chunk.choices[0] && chunk.choices[0].delta && chunk.choices[0].delta.content;
+        if (delta) { text += delta; onChunk(text); }
+    }
+    return text;
 }
 
 function updateHeaderModelSelector() {
@@ -1114,20 +1181,28 @@ function isVideoModel(m) {
     return t === 'video' || vh.some(h => id.includes(h) || t.includes(h));
 }
 
+function pushLocalNodeModels() {
+    if (localNodeSettings.engine === 'webgpu') {
+        WEBGPU_MODELS.forEach(m => unifiedModels.push({ id: m.id, providerId: 'localnode', providerName: 'Local AI (WebGPU)' }));
+    } else {
+        unifiedModels.push({ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local AI' });
+    }
+}
+
 async function fetchAllModels() {
     unifiedModels = [];
     document.getElementById('model-label').textContent = "Searching...";
-    const hasValidKeys = validateApiKey(apiKeys.freetheai) || validateApiKey(apiKeys.fta);
+    const hasValidKeys = validateApiKey(apiKeys.freetheai);
     if (!hasValidKeys) {
-        unifiedModels = [{ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' }];
-        currentUnifiedModel = `localnode:${localNodeSettings.model || 'local-model'}`;
+        pushLocalNodeModels();
+        currentUnifiedModel = `localnode:${unifiedModels[0].id}`;
         AppStorage.setItem('byok_unified_model', currentUnifiedModel);
         updateHeaderModelSelector();
         return;
     }
     const fetchPromises = Object.entries(PROVIDERS).map(async ([pId, pInfo]) => {
         if (pId === 'localnode') {
-            unifiedModels.push({ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' });
+            pushLocalNodeModels();
             return;
         }
         if (pInfo.requiresKey && !apiKeys[pId]) {
@@ -1158,7 +1233,7 @@ async function fetchAllModels() {
     });
     await Promise.all(fetchPromises);
     if (!unifiedModels.find(m => m.providerId === 'localnode')) {
-        unifiedModels.push({ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' });
+        pushLocalNodeModels();
     }
     const exists = unifiedModels.find(m => `${m.providerId}:${m.id}` === currentUnifiedModel);
     if (!exists && unifiedModels.length > 0) {
@@ -1174,9 +1249,8 @@ async function fetchImageModels() {
     const errorEl = document.getElementById('image-model-error');
     let endpoint = '', headers = {};
     if (apiKeys['freetheai']) { endpoint = 'https://apihub.agnes-ai.com/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['freetheai']}`; }
-    else if (apiKeys['fta']) { endpoint = 'https://api.freetheai.xyz/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['fta']}`; }
     else {
-        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Image models require an API Key.";
+        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Image models require an Agnes AI API Key.";
         return;
     }
     loadingEl.classList.remove('hidden'); loadingEl.classList.add('flex'); select.style.display = 'none'; errorEl.style.display = 'none';
@@ -1223,7 +1297,7 @@ function initSecurity() {
 function finishInitApp(isSoftReload = false) {
     const savedKeys = secureLoad('byok_keys', null);
     if (savedKeys) apiKeys = { ...apiKeys, ...savedKeys };
-    localNodeSettings = secureLoad('local_node_settings', { url: 'http://localhost:11434/v1', key: '', model: 'local-model' });
+    localNodeSettings = { url: 'http://localhost:11434/v1', key: '', model: 'local-model', engine: 'webgpu', webgpuModel: 'Llama-3.2-1B-Instruct-q4f32_1-MLC', ...secureLoad('local_node_settings', {}) };
     updateLocalNodeProvider();
     
     const savedUnified = AppStorage.getItem('byok_unified_model');
@@ -1246,7 +1320,7 @@ function finishInitApp(isSoftReload = false) {
     updateSendButtonState();
     
     if (!isSoftReload) {
-        const isConfigured = validateApiKey(apiKeys.freetheai) || validateApiKey(apiKeys.fta);
+        const isConfigured = validateApiKey(apiKeys.freetheai);
         if (AppStorage.getItem('ventarys_tour_completed') !== 'true' && !isConfigured) {
             setTimeout(startTour, 1500);
         }
@@ -1266,7 +1340,7 @@ function handleUrlPrompt() {
 
 function startTour() { currentTourStep = 1; document.getElementById('tour-overlay').classList.remove('hidden'); renderTourStep(); }
 function closeTour() { document.getElementById('tour-overlay').classList.add('hidden'); AppStorage.setItem('ventarys_tour_completed', 'true'); }
-function skipToLocalNodeOnly() { apiKeys.freetheai = ''; apiKeys.fta = ''; secureSave('byok_keys', apiKeys); closeTour(); fetchAllModels(); notify("Switched to Local Node.", "info"); }
+function skipToLocalNodeOnly() { apiKeys.freetheai = ''; secureSave('byok_keys', apiKeys); closeTour(); fetchAllModels(); notify("Switched to Local Node.", "info"); }
 
 function renderTourStep() {
     const container = document.getElementById('tour-content');
@@ -1316,6 +1390,9 @@ async function fetchChatCompletion(messages, onChunk, overrideModelStr = null, s
     const [pId, mId] = modelStrToUse.split(':');
     const provInfo = PROVIDERS[pId] || Object.values(PROVIDERS)[0];
     const url = provInfo.url;
+    if (pId === 'localnode' && localNodeSettings.engine === 'webgpu') {
+        return await webgpuChatCompletion(mId, messages, onChunk, signal);
+    }
     if (provInfo.requiresKey && !apiKeys[pId]) throw new Error(`Configure your API key to use ${provInfo.name}.`);
     
     const headers = { 'Content-Type': 'application/json' };
@@ -1754,14 +1831,13 @@ async function sendMessage() {
                 const imgLoaderId = 'gen-img-loader-' + Date.now();
                 chipsContainer.innerHTML += `<div id="${imgLoaderId}" class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Creating image...</span></div>`;
                 try {
-                    let finalImgUrl = "", base64Data = null, imgProv = null, endpoint = '';
-                    if (apiKeys['freetheai']) { imgProv = 'freetheai'; endpoint = 'https://apihub.agnes-ai.com/v1/images/generations'; }
-                    else if (apiKeys['fta']) { imgProv = 'fta'; endpoint = 'https://api.freetheai.xyz/v1/images/generations'; }
-                    if (!imgProv) throw new Error("Image generation requires an Agnes AI or FreeTheAI API key.");
+                    let finalImgUrl = "", base64Data = null;
+                    if (!apiKeys['freetheai']) throw new Error("Image generation requires an Agnes AI API key.");
                     
+                    const endpoint = 'https://apihub.agnes-ai.com/v1/images/generations';
                     let payload = { prompt: imgPrompt, n: 1 }; if (currentImageModelId) payload.model = currentImageModelId;
                     
-                    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys[imgProv]}` };
+                    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys['freetheai']}` };
                     const resp = await fetch(endpoint, { method: 'POST', headers: headers, body: JSON.stringify(payload) });
                     if (!resp.ok) throw new Error(`API Error (${resp.status})`);
                     const data = await resp.json();
