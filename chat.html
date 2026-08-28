@@ -273,6 +273,18 @@
 
                     <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Voice Engine (TTS)</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-4 mb-8 flex flex-col gap-2">
+                        <label class="text-xs font-medium text-adaptive flex items-center justify-between cursor-pointer">
+                            <span>FreeTheAI voices <span class="text-muted font-light">(needs key)</span></span>
+                            <input type="checkbox" id="fta-tts-toggle" onchange="saveFTATTS()" class="w-4 h-4 accent-[var(--accent)]">
+                        </label>
+                        <select id="fta-tts-voice" onchange="saveFTATTS()" class="settings-input settings-select w-full">
+                            <option value="alloy">Alloy</option>
+                            <option value="echo">Echo</option>
+                            <option value="fable">Fable</option>
+                            <option value="onyx">Onyx</option>
+                            <option value="nova">Nova</option>
+                            <option value="shimmer">Shimmer</option>
+                        </select>
                         <label class="text-xs font-medium text-adaptive">System Voice</label>
                         <select id="tts-voice-select" onchange="saveTTSVoice()" class="settings-input settings-select w-full"></select>
                     </div>
@@ -525,6 +537,9 @@ let SYSTEM_MESSAGE = { role: 'system', content: DEFAULT_SYSTEM };
 
 let availableVoices = [];
 let selectedVoiceURI = null;
+let ftaTtsEnabled = false;
+let ftaTtsVoice = 'alloy';
+let ttsAudio = null;
 
 function validateApiKey(key) {
     if (!key) return false;
@@ -861,6 +876,21 @@ function initTTS() {
     populateVoices();
     if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
     selectedVoiceURI = AppStorage.getItem('tts_selected_voice');
+    ftaTtsEnabled = AppStorage.getItem('fta_tts_enabled') === 'true';
+    ftaTtsVoice = AppStorage.getItem('fta_tts_voice') || 'alloy';
+    const ftToggle = document.getElementById('fta-tts-toggle');
+    if (ftToggle) ftToggle.checked = ftaTtsEnabled;
+    const ftVoice = document.getElementById('fta-tts-voice');
+    if (ftVoice) ftVoice.value = ftaTtsVoice;
+}
+
+function saveFTATTS() {
+    const ftToggle = document.getElementById('fta-tts-toggle');
+    const ftVoice = document.getElementById('fta-tts-voice');
+    ftaTtsEnabled = ftToggle ? ftToggle.checked : false;
+    ftaTtsVoice = ftVoice ? ftVoice.value : 'alloy';
+    AppStorage.setItem('fta_tts_enabled', String(ftaTtsEnabled));
+    AppStorage.setItem('fta_tts_voice', ftaTtsVoice);
 }
 
 function saveTTSVoice() {
@@ -870,17 +900,44 @@ function saveTTSVoice() {
 
 function playTTS(text, btn) {
     speechSynthesis.cancel();
+    if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
+    const icon = btn.querySelector('i');
+    if (ftaTtsEnabled && apiKeys['fta']) { playFTATTS(text, icon); return; }
     const cleanText = text.replace(/[\#\*\_\[\]\(\)]/g, ''); 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     if (selectedVoiceURI) {
         const voice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
         if (voice) utterance.voice = voice;
     }
-    const icon = btn.querySelector('i');
     utterance.onstart = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
     utterance.onend = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
     utterance.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; };
     speechSynthesis.speak(utterance);
+}
+
+async function playFTATTS(text, icon) {
+    icon.className = 'ri-loader-4-line text-accent animate-spin text-[14px]';
+    try {
+        const res = await root.superFetch('https://api.freetheai.xyz/v1/audio/speech', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys['fta']}` },
+            body: JSON.stringify({ model: 'tts-1', voice: ftaTtsVoice || 'alloy', input: text })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const blob = await res.blob();
+        if (!blob.size) throw new Error('Empty audio response');
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        ttsAudio = audio;
+        const done = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; URL.revokeObjectURL(url); if (ttsAudio === audio) ttsAudio = null; };
+        audio.onplay = () => { icon.className = 'ri-volume-up-fill text-accent animate-pulse text-[14px]'; };
+        audio.onended = done;
+        audio.onerror = () => { icon.className = 'ri-volume-up-line text-muted text-[14px]'; URL.revokeObjectURL(url); if (ttsAudio === audio) ttsAudio = null; };
+        await audio.play();
+    } catch(e) {
+        icon.className = 'ri-volume-up-line text-muted text-[14px]';
+        notify('FreeTheAI TTS error: ' + e.message, 'error');
+    }
 }
 
 function continueAsGuest() {
