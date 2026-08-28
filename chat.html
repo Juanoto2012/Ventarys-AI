@@ -1032,6 +1032,19 @@ document.addEventListener('click', (e) => {
     if (copyBtn) window.copyCode(copyBtn);
 });
 
+function isImageLikeId(id) {
+    id = (id || '').toLowerCase();
+    return id.includes('image') || id.includes('dall') || id.includes('flux') || id.includes('midjourney');
+}
+
+function isVideoModel(m) {
+    if (!m) return false;
+    const t = (m.type || '').toLowerCase();
+    const id = (m.id || '').toLowerCase();
+    const vh = ['video', 'sora', 'kling', 'veo', 'runway', 'pika', 'luma', 'hailuo', 'cogvideo', 'wan2'];
+    return t === 'video' || vh.some(h => id.includes(h) || t.includes(h));
+}
+
 async function fetchAllModels() {
     unifiedModels = [];
     document.getElementById('model-label').textContent = "Searching...";
@@ -1061,9 +1074,9 @@ async function fetchAllModels() {
                 const data = await response.json();
                 let fModels = [];
                 if (data && data.data && Array.isArray(data.data)) {
-                    fModels = data.data.filter(m => m.type !== 'image' && !(m.id && (m.id.toLowerCase().includes('image') || m.id.includes('dall') || m.id.includes('flux') || m.id.includes('midjourney')))).map(m => m.id);
+                    fModels = data.data.filter(m => m.id && m.type !== 'image' && !isImageLikeId(m.id) && !isVideoModel(m)).map(m => m.id);
                 } else if (data && data.models && Array.isArray(data.models)) {
-                    fModels = data.models.map(m => m.name ? m.name.replace('models/', '') : m.id).filter(id => id && !(id.toLowerCase().includes('image') || id.includes('dall') || id.includes('flux') || id.includes('midjourney')));
+                    fModels = data.models.map(m => m.name ? m.name.replace('models/', '') : m.id).filter(id => id && !isImageLikeId(id) && !isVideoModel({ id }));
                 }
                 if (fModels.length > 0) fModels.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
                 else if (pInfo.models && pInfo.models.length > 0) pInfo.models.forEach(m => unifiedModels.push({ id: m, providerId: pId, providerName: pInfo.name }));
@@ -1103,7 +1116,7 @@ async function fetchImageModels() {
         if (!resp.ok) throw new Error();
         const data = await resp.json();
         if (!data.data || !Array.isArray(data.data)) throw new Error("Format error");
-        imageModels = data.data.filter(m => m.type === 'image' || (m.id && (m.id.toLowerCase().includes('image') || m.id.includes('dall') || m.id.includes('flux') || m.id.includes('midjourney'))));
+        imageModels = data.data.filter(m => m.id && !isVideoModel(m) && (m.type === 'image' || isImageLikeId(m.id)));
         select.innerHTML = '';
         imageModels.forEach((m, i) => {
             const opt = document.createElement('option');
