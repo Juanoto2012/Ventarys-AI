@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>Ventarys AI - Chat</title>
-    <link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 64 64'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeColorMatrix in='SourceGraphic' type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Cimage href='/logo.png' xlink:href='/logo.png' x='0' y='0' width='64' height='64' preserveAspectRatio='xMidYMid meet' filter='url(%23w)'/%3E%3C/svg%3E">
-    <link rel="icon" type="image/svg+xml" media="(prefers-color-scheme: light)" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 64 64'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeColorMatrix in='SourceGraphic' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Cimage href='/logo.png' xlink:href='/logo.png' x='0' y='0' width='64' height='64' preserveAspectRatio='xMidYMid meet' filter='url(%23b)'/%3E%3C/svg%3E">
-    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="icon" type="image/png" id="favicon-link" href="https://user.uploads.dev/file/bba63c28092407f244da807eecb732bc.png">
     
     <!-- Core & UI Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1369,6 +1367,7 @@ function toggleTheme() {
     const isLight = appRoot.classList.contains('light');
     AppStorage.setItem('theme', isLight ? 'light' : 'dark');
     updateThemeIcon(isLight);
+    updateFaviconTheme();
 }
 
 function updateThemeIcon(isLight) {
@@ -1376,30 +1375,12 @@ function updateThemeIcon(isLight) {
     if (icon) icon.className = isLight ? 'ri-moon-line text-[18px]' : 'ri-sun-line text-[18px]';
 }
 
-function updateFavicon() {
-    try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64; canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.onload = () => {
-            // Force pure black favicon icon 
-            ctx.filter = 'brightness(0)';
-            ctx.globalAlpha = 0.9;
-            ctx.drawImage(img, 0, 0, 64, 64);
-            let link = document.querySelector("link[rel~='icon']");
-            if (!link) {
-                link = document.createElement('link');
-                link.rel = 'icon';
-                document.head.appendChild(link);
-            }
-            link.href = canvas.toDataURL('image/png');
-        };
-        img.src = '/logo.png';
-    } catch (e) { }
+function updateFaviconTheme() {
+    const appRoot = document.getElementById('ventarys-app-root');
+    const isLight = appRoot ? appRoot.classList.contains('light') : false;
+    const link = document.getElementById('favicon-link');
+    if (link) link.href = isLight ? 'https://user.uploads.dev/file/9d6d0336df528153d0fdde0866873055.png' : 'https://user.uploads.dev/file/bba63c28092407f244da807eecb732bc.png';
 }
-if(window.matchMedia) { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon); }
 
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
@@ -2084,10 +2065,10 @@ function confirmDeleteAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    updateFavicon();
     const encrypted = AppStorage.getItem('ventarys_is_encrypted');
     if (encrypted === 'true') { document.getElementById('login-overlay').classList.add('hidden'); initSecurity(); }
     if (AppStorage.getItem('theme') === 'light') { document.getElementById('ventarys-app-root').classList.add('light'); updateThemeIcon(true); }
+    updateFaviconTheme();
 });
 </script>
 </body>
