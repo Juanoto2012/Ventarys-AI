@@ -326,6 +326,14 @@
                             </label>
                             <input type="password" id="key-freetheai" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
                         </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-medium text-adaptive flex justify-between">
+                                <span>FreeTheAI API Key <span class="text-muted font-light">(Free Tier)</span></span>
+                                <a href="https://discord.gg/secrets" target="_blank" class="text-muted hover:text-adaptive flex items-center gap-1 transition-colors"><i class="ri-discord-fill text-[14px]"></i>Get</a>
+                            </label>
+                            <input type="password" id="key-fta" placeholder="sk-..." class="settings-input font-mono" onchange="saveAllKeys()">
+                            <p class="text-[11px] text-muted font-light leading-relaxed">Obtenla en el servidor de Discord: ejecuta <code class="text-adaptive">/signup</code> si aún no tienes cuenta, <code class="text-adaptive">/checkin</code> cada día y <code class="text-adaptive">/resetkey</code> si perdiste tu key, en el canal <span class="text-adaptive">#commands</span>.</p>
+                        </div>
                         <div id="provider-image-config" class="pt-6 border-t border-[var(--border-secondary)]">
                             <div class="flex justify-between items-center mb-3">
                                 <label class="text-xs font-medium text-adaptive">Image Model</label>
@@ -500,10 +508,11 @@ let isImageMode = false;
 
 const PROVIDERS = {
     freetheai: { name: "Agnes AI", url: "https://apihub.agnes-ai.com/v1/chat/completions", models: [], defaultModel: "gpt-4o", requiresKey: true },
+    fta: { name: "FreeTheAI", url: "https://api.freetheai.xyz/v1/chat/completions", models: [], defaultModel: "gpt-4o-mini", requiresKey: true },
     localnode: { name: "Local Node", url: "", models: [], defaultModel: "local-model", requiresKey: false }
 }
 
-let apiKeys = { freetheai: '' };
+let apiKeys = { freetheai: '', fta: '' };
 let localNodeSettings = { url: 'http://localhost:11434/v1', key: '', model: 'local-model' };
 let unifiedModels = [];
 let currentUnifiedModel = 'localnode:local-model';
@@ -935,6 +944,7 @@ function updateSendButtonState() {
 
 function initSettingsUI() {
     if (document.getElementById('key-freetheai')) document.getElementById('key-freetheai').value = apiKeys.freetheai || '';
+    if (document.getElementById('key-fta')) document.getElementById('key-fta').value = apiKeys.fta || '';
     if (document.getElementById('local-node-url')) document.getElementById('local-node-url').value = localNodeSettings.url || 'http://localhost:11434/v1';
     if (document.getElementById('local-node-key')) document.getElementById('local-node-key').value = localNodeSettings.key || '';
     if (document.getElementById('local-node-model')) document.getElementById('local-node-model').value = localNodeSettings.model || 'local-model';
@@ -944,6 +954,7 @@ function initSettingsUI() {
 
 function saveAllKeys() {
     apiKeys.freetheai = document.getElementById('key-freetheai').value.trim();
+    apiKeys.fta = document.getElementById('key-fta').value.trim();
     secureSave('byok_keys', apiKeys);
     if (p2pSync.isConnected()) p2pSync.triggerFullSync();
     fetchImageModels(); fetchAllModels();
@@ -1049,7 +1060,7 @@ function isVideoModel(m) {
 async function fetchAllModels() {
     unifiedModels = [];
     document.getElementById('model-label').textContent = "Searching...";
-    const hasValidKeys = validateApiKey(apiKeys.freetheai);
+    const hasValidKeys = validateApiKey(apiKeys.freetheai) || validateApiKey(apiKeys.fta);
     if (!hasValidKeys) {
         unifiedModels = [{ id: localNodeSettings.model || 'local-model', providerId: 'localnode', providerName: 'Local Node' }];
         currentUnifiedModel = `localnode:${localNodeSettings.model || 'local-model'}`;
@@ -1106,8 +1117,9 @@ async function fetchImageModels() {
     const errorEl = document.getElementById('image-model-error');
     let endpoint = '', headers = {};
     if (apiKeys['freetheai']) { endpoint = 'https://apihub.agnes-ai.com/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['freetheai']}`; }
+    else if (apiKeys['fta']) { endpoint = 'https://api.freetheai.xyz/v1/models'; headers['Authorization'] = `Bearer ${apiKeys['fta']}`; }
     else {
-        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Image models require an Agnes AI API Key.";
+        loadingEl.classList.add('hidden'); errorEl.style.display = 'block'; errorEl.textContent = "Image models require an API Key.";
         return;
     }
     loadingEl.classList.remove('hidden'); loadingEl.classList.add('flex'); select.style.display = 'none'; errorEl.style.display = 'none';
@@ -1177,7 +1189,7 @@ function finishInitApp(isSoftReload = false) {
     updateSendButtonState();
     
     if (!isSoftReload) {
-        const isConfigured = validateApiKey(apiKeys.freetheai);
+        const isConfigured = validateApiKey(apiKeys.freetheai) || validateApiKey(apiKeys.fta);
         if (AppStorage.getItem('ventarys_tour_completed') !== 'true' && !isConfigured) {
             setTimeout(startTour, 1500);
         }
@@ -1197,7 +1209,7 @@ function handleUrlPrompt() {
 
 function startTour() { currentTourStep = 1; document.getElementById('tour-overlay').classList.remove('hidden'); renderTourStep(); }
 function closeTour() { document.getElementById('tour-overlay').classList.add('hidden'); AppStorage.setItem('ventarys_tour_completed', 'true'); }
-function skipToLocalNodeOnly() { apiKeys.freetheai = ''; secureSave('byok_keys', apiKeys); closeTour(); fetchAllModels(); notify("Switched to Local Node.", "info"); }
+function skipToLocalNodeOnly() { apiKeys.freetheai = ''; apiKeys.fta = ''; secureSave('byok_keys', apiKeys); closeTour(); fetchAllModels(); notify("Switched to Local Node.", "info"); }
 
 function renderTourStep() {
     const container = document.getElementById('tour-content');
@@ -1685,13 +1697,14 @@ async function sendMessage() {
                 const imgLoaderId = 'gen-img-loader-' + Date.now();
                 chipsContainer.innerHTML += `<div id="${imgLoaderId}" class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Creating image...</span></div>`;
                 try {
-                    let finalImgUrl = "", base64Data = null;
-                    if (!apiKeys['freetheai']) throw new Error("Image generation requires an Agnes AI API key.");
+                    let finalImgUrl = "", base64Data = null, imgProv = null, endpoint = '';
+                    if (apiKeys['freetheai']) { imgProv = 'freetheai'; endpoint = 'https://apihub.agnes-ai.com/v1/images/generations'; }
+                    else if (apiKeys['fta']) { imgProv = 'fta'; endpoint = 'https://api.freetheai.xyz/v1/images/generations'; }
+                    if (!imgProv) throw new Error("Image generation requires an Agnes AI or FreeTheAI API key.");
                     
-                    const endpoint = 'https://apihub.agnes-ai.com/v1/images/generations';
                     let payload = { prompt: imgPrompt, n: 1 }; if (currentImageModelId) payload.model = currentImageModelId;
                     
-                    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys['freetheai']}` };
+                    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKeys[imgProv]}` };
                     const resp = await fetch(endpoint, { method: 'POST', headers: headers, body: JSON.stringify(payload) });
                     if (!resp.ok) throw new Error(`API Error (${resp.status})`);
                     const data = await resp.json();
