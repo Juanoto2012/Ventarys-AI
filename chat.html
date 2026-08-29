@@ -507,7 +507,7 @@ function escapeHTML(str) {
 
 function stripBase64ForAPI(text) {
     if (typeof text !== 'string') return text;
-    return text.replace(/<img[^>]*>/gi, '[image]');
+    return text.replace(/<img[^>]*>/gi, '[image]').replace(/@@VENTARYS_IMG:[\s\S]*?@@/g, '[image]');
 }
 
 let masterKey = null;
@@ -1667,6 +1667,49 @@ function hydrateLocalImages(container) {
     });
 }
 
+function buildVentarysImgCard(src) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${escapeHTML(src)}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="Generated image" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><i class="ri-alert-line text-[14px]"></i> Image link expires in 24h.</div></div>`;
+    return wrap;
+}
+
+function hydrateVentarysImages(container) {
+    if (!container) return;
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    for (const node of textNodes) {
+        const text = node.nodeValue;
+        if (!text || !text.includes('@@VENTARYS_')) continue;
+        const re = /@@VENTARYS_IMG:([\s\S]*?)@@|@@VENTARYS_HTML:([\s\S]*?)@@/g;
+        let m, lastIndex = 0, found = false;
+        const frag = document.createDocumentFragment();
+        while ((m = re.exec(text)) !== null) {
+            found = true;
+            if (m.index > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+            if (m[1] !== undefined) {
+                const card = buildVentarysImgCard(decodeURIComponent(m[1]));
+                while (card.firstChild) frag.appendChild(card.firstChild);
+            } else if (m[2] !== undefined) {
+                const w = document.createElement('div');
+                w.innerHTML = decodeURIComponent(m[2]);
+                while (w.firstChild) frag.appendChild(w.firstChild);
+            }
+            lastIndex = re.lastIndex;
+        }
+        if (!found) continue;
+        if (lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+        let target = node.parentNode;
+        if (target && (target.tagName === 'CODE' || target.tagName === 'PRE')) {
+            let up = target;
+            while (up.parentNode && (up.tagName === 'CODE' || up.tagName === 'PRE')) up = up.parentNode;
+            up.parentNode.replaceChild(frag, up);
+        } else {
+            target.replaceChild(frag, node);
+        }
+    }
+}
+
 // ---------------------------------------------------------
 // CORE MESSAGING LOGIC
 // ---------------------------------------------------------
@@ -1744,7 +1787,8 @@ async function sendMessage() {
                     .replace(/\[SEARCH\]:\s*([^\]\n]+)/gi, '')
                     .replace(/\[READ_WEBPAGE\]:\s*(https?:\/\/[^\s\]\n]+)/gi, '')
                     .replace(/\[SEARCH_IMAGE\]:\s*([^\]\n]+)/gi, '')
-                    .replace(/\[CONSULT_MEMORY\]/gi, '');
+                    .replace(/\[CONSULT_MEMORY\]/gi, '')
+                    .replace(/\[GENERATE_IMAGE\s*:\s*[^\n\]]*\]|\[GENERATE_IMAGE\]\s*:\s*[^\n\]]*/gi, '');
                 
                 fullyFormattedContent = formatMarkdown(displayContent);
                 contentEl.innerHTML = DOMPurify.sanitize(fullyFormattedContent, PURIFY_CONFIG);
@@ -1824,9 +1868,9 @@ async function sendMessage() {
             finalSaveApiText += finalContent;
             
             // Tool: Generate Image
-            const imageMatch = finalContent.match(/\[GENERATE_IMAGE:\s*(.*?)\]/i);
+            const imageMatch = finalContent.match(/\[GENERATE_IMAGE\s*:\s*([^\n\]]+)\]|\[GENERATE_IMAGE\]\s*:\s*([^\n\]]+)/i);
             if (imageMatch) {
-                const imgPrompt = escapeHTML(imageMatch[1]);
+                const imgPrompt = escapeHTML((imageMatch[1] || imageMatch[2] || '').trim());
                 contentEl.innerHTML = '';
                 const imgLoaderId = 'gen-img-loader-' + Date.now();
                 chipsContainer.innerHTML += `<div id="${imgLoaderId}" class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm"><i class="ri-loader-4-line animate-spin text-[14px] text-accent"></i><span class="font-medium">Creating image...</span></div>`;
@@ -1853,8 +1897,8 @@ async function sendMessage() {
                     if (loader) loader.remove();
                     
                     const finalImageSrc = base64Data ? base64Data : finalImgUrl;
-                    const imgReplacement = `<div class="relative mt-3 mb-2 max-w-md w-full"><img src="${finalImageSrc}" class="rounded-xl border border-secondary shadow-md w-full object-contain" alt="${imgPrompt}" onerror="window.handleExpiredImage(this)"><div class="text-[10px] text-amber-500 mt-2 flex items-center gap-1.5 bg-amber-500/10 px-2 py-1.5 rounded-md border border-amber-500/20 w-fit"><i class="ri-alert-line text-[14px]"></i> Image link expires in 24h.</div></div>`;
-                    finalContent = finalContent.replace(imageMatch[0], imgReplacement);
+                    const imgToken = '@@VENTARYS_IMG:' + encodeURIComponent(finalImageSrc) + '@@';
+                    finalContent = finalContent.replace(imageMatch[0], imgToken);
                         
                     chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-image-line text-[14px] text-accent"></i><span class="font-medium">Generated image</span></div>`;
                 } catch (imgErr) {
@@ -1883,12 +1927,12 @@ async function sendMessage() {
                         imgReplacement = `<div class="text-xs text-muted italic my-2"><i class="ri-image-line"></i> No free images found for "${escapeHTML(query)}".</div>`;
                     }
 
-                    finalContent = finalContent.replace(imgSearchMatch[0], imgReplacement);
+                    finalContent = finalContent.replace(imgSearchMatch[0], '@@VENTARYS_HTML:' + encodeURIComponent(imgReplacement) + '@@');
                     chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-image-line text-[14px] text-accent"></i><span class="font-medium">Web images retrieved</span></div>`;
                 } catch (imgErr) {
                      const loader = document.getElementById(wikiLoaderId);
                      if (loader) loader.remove();
-                     finalContent = finalContent.replace(imgSearchMatch[0], `<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> Image search failed: ${escapeHTML(imgErr.message)}</span>`);
+                     finalContent = finalContent.replace(imgSearchMatch[0], '@@VENTARYS_HTML:' + encodeURIComponent(`<span class="text-muted"><i class="ri-error-warning-line align-middle text-[16px]"></i> Image search failed: ${escapeHTML(imgErr.message)}</span>`) + '@@');
                 }
             }
             
@@ -1897,10 +1941,12 @@ async function sendMessage() {
                 .replace(/\[SEARCH\]:\s*([^\]\n]+)/gi, '')
                 .replace(/\[READ_WEBPAGE\]:\s*(https?:\/\/[^\s\]\n]+)/gi, '')
                 .replace(/\[SEARCH_IMAGE\]:\s*([^\]\n]+)/gi, '')
-                .replace(/\[CONSULT_MEMORY\]/gi, '');
+                .replace(/\[CONSULT_MEMORY\]/gi, '')
+                .replace(/\[GENERATE_IMAGE\s*:\s*[^\n\]]*\]|\[GENERATE_IMAGE\]\s*:\s*[^\n\]]*/gi, '');
                 
             fullyFormattedContent = formatMarkdown(displayContent);
             contentEl.innerHTML = DOMPurify.sanitize(fullyFormattedContent, PURIFY_CONFIG);
+            hydrateVentarysImages(contentEl);
             setTimeout(() => hydrateLocalImages(contentEl), 10);
             
             allChats[currentChatId].messages.push({
@@ -1977,6 +2023,7 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
         div.innerHTML = `<div class="w-8 h-8 rounded-full bg-transparent flex items-center justify-center mr-4 flex-shrink-0 mt-1 border border-secondary shadow-[0_0_15px_rgba(255,255,255,0.05)] dark:shadow-none"><img src="/logo.png" class="w-5 h-5 logo-white" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjwvc3ZnPg=='"></div><div class="max-w-[88%] min-w-0 group w-full relative"><div class="text-[10px] font-bold text-muted mb-1.5 tracking-widest uppercase font-sans">${escapeHTML(titleHeader)}</div><div class="prose text-[15px] text-adaptive leading-relaxed w-full"><div class="tool-chips-container flex flex-col gap-2 mb-2 empty:hidden"></div><div class="msg-content w-full">${contentHtml}</div></div><div class="msg-actions flex gap-2 opacity-0 transition-opacity absolute -bottom-8 left-0">${ttsBtn}</div></div>`;
     }
     list.appendChild(div); scrollToBottom();
+    hydrateVentarysImages(div);
     setTimeout(() => hydrateLocalImages(div), 50);
     if (isPreFormatted && role !== 'user') setTimeout(() => { div.querySelectorAll('pre code:not(.hljs)').forEach((block) => hljs.highlightElement(block)); }, 50);
 }
