@@ -602,8 +602,23 @@
             '</div></div>';
     }
 
+    function getMirrorFromEndpoint(endpoint) {
+        if (!endpoint) return 'aihorde';
+        if (endpoint.indexOf('aihorde.net') !== -1) return 'aihorde';
+        if (endpoint.indexOf('stablehorde.net') !== -1) return 'stablehorde';
+        return 'custom';
+    }
+
+    function setMirror(mirror) {
+        if (mirror === 'aihorde') state.apiSettings.endpoint = 'https://aihorde.net/api/v2/chat/completions';
+        else if (mirror === 'stablehorde') state.apiSettings.endpoint = 'https://stablehorde.net/api/v2/chat/completions';
+        else state.apiSettings.endpoint = state.apiSettings.endpoint || '';
+        render();
+    }
+
     function renderSettingsView() {
         var s = state.apiSettings;
+        var currentMirror = getMirrorFromEndpoint(s.endpoint);
         var puterSection = '';
         if (!state.puterSignedIn) {
             puterSection = '<div class="text-center py-4">' +
@@ -636,7 +651,8 @@
                             '<div><h2 class="font-bold text-base">SYS.Config</h2><p class="text-xs text-white/40">Conexión LLM (IA Horde - Temperatura bloqueada: 0.3)</p></div>' +
                         '</div>' +
                     '<form onsubmit="saveSettings(event)" class="space-y-4">' +
-                        field('Endpoint URL', 'ri-link', '<input type="text" value="' + esc(s.endpoint) + '" oninput="state.apiSettings.endpoint=this.value" class="input" />') +
+                        field('Mirror', 'ri-earth-line', '<select onchange="setMirror(this.value)" class="input appearance-none"><option value="aihorde"' + (currentMirror === 'aihorde' ? ' selected' : '') + '>IA Horde</option><option value="stablehorde"' + (currentMirror === 'stablehorde' ? ' selected' : '') + '>Stable Horde</option><option value="custom"' + (currentMirror === 'custom' ? ' selected' : '') + '>Personalizado</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i>') +
+                        (currentMirror === 'custom' ? field('Endpoint personalizado', 'ri-link', '<input type="text" value="' + esc(s.endpoint) + '" oninput="state.apiSettings.endpoint=this.value" class="input" placeholder="https://..." />') : '') +
                         field('API Key', 'ri-key-2-line', '<div class="relative"><input type="password" value="' + esc(s.apiKey) + '" oninput="state.apiSettings.apiKey=this.value" class="input pr-10" placeholder="***" /><i class="ri-lock-password-line absolute right-3 top-3 text-white/40"></i></div>') +
                         field('Modelo activo', 'ri-cpu-line', '<div class="relative"><select onchange="state.apiSettings.model=this.value" class="input appearance-none"><option value="default">Por defecto (IA Horde)</option><option value="Deliberate">Deliberate (IA Horde)</option><option value="stable_diffusion">Stable Diffusion (IA Horde)</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i></div>') +
                         field('Persona de usuario [inyectada en SYS_PROMPT]', 'ri-user-smile-line', '<textarea oninput="state.apiSettings.userPersona=this.value" class="input resize-none" rows="4">' + esc(s.userPersona) + '</textarea>') +
