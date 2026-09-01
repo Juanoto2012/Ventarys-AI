@@ -32,7 +32,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- React & Babel -->
     <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
     <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
@@ -174,10 +174,10 @@
 
         const fetchAIResponse = async (messages, settings, character, memoryText) => {
             if (!settings.endpoint) throw new Error("Falta configurar el Endpoint.");
-            
+
             const memStr = memoryText ? `\n\n[MEMORIA A LARGO PLAZO / RESUMEN DE HISTORIA:\n${memoryText}\n(Usa esta memoria de forma estricta para mantener la continuidad de la historia)]` : '';
             const sysPrompt = `${character.systemPrompt}\n\n[Contexto del Usuario: ${settings.userPersona || 'Un extraño'}]${memStr}`;
-            
+
             // Filter out internal app messages (like UI "Go On" indicators)
             const cleanMessages = messages.filter(m => !m.isHidden).map(m => ({
                 role: m.sender === 'user' ? 'user' : 'assistant',
@@ -189,11 +189,11 @@
             try {
                 const headers = { 'Content-Type': 'application/json' };
                 if (settings.apiKey) headers['Authorization'] = `Bearer ${settings.apiKey}`;
-                
+
                 const controller = new AbortController();
                 const abortTimer = setTimeout(() => controller.abort(), 60000);
                 let response;
-                
+
                 try {
                     response = await fetch(settings.endpoint, {
                         method: 'POST',
@@ -209,7 +209,7 @@
                 } finally {
                     clearTimeout(abortTimer);
                 }
-                
+
                 if (!response.ok) {
                     const errText = await response.text();
                     throw new Error(`Error API: ${response.status} - ${errText}`);
@@ -255,32 +255,31 @@
             const [adBlockDetected, setAdBlockDetected] = useState(false);
             const [puterSignedIn, setPuterSignedIn] = useState(false);
 
+            // Safe LocalStorage parsing helper
+            const safeParseJSON = (key, fallback) => {
+                const saved = localStorage.getItem(key);
+                if (!saved) return fallback;
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.warn(`Failed to parse localStorage key "${key}". Returning fallback. Data might be corrupted or encrypted by an older version.`, e);
+                    // Optionally clear the corrupted data
+                    localStorage.removeItem(key); 
+                    return fallback;
+                }
+            };
+
             // INSTANT CACHE IMPLEMENTATION (LocalStorage Initialization)
-            const [chats, setChats] = useState(() => {
-                const saved = localStorage.getItem('ventarys_chats');
-                return saved ? JSON.parse(saved) : {};
-            });
-            const [chatMemories, setChatMemories] = useState(() => {
-                const saved = localStorage.getItem('ventarys_memories');
-                return saved ? JSON.parse(saved) : {};
-            });
-            const [userPreferences, setUserPreferences] = useState(() => {
-                const saved = localStorage.getItem('ventarys_prefs');
-                return saved ? JSON.parse(saved) : {};
-            });
-            const [apiSettings, setApiSettings] = useState(() => {
-                const saved = localStorage.getItem('ventarys_settings');
-                return saved ? JSON.parse(saved) : {
-                    endpoint: 'https://api.llm7.io/v1/chat/completions',
-                    apiKey: '',
-                    model: 'default',
-                    userPersona: 'Soy un aventurero solitario.'
-                };
-            });
-            const [hiddenChats, setHiddenChats] = useState(() => {
-                const saved = localStorage.getItem('ventarys_hidden');
-                return saved ? JSON.parse(saved) : [];
-            });
+            const [chats, setChats] = useState(() => safeParseJSON('ventarys_chats', {}));
+            const [chatMemories, setChatMemories] = useState(() => safeParseJSON('ventarys_memories', {}));
+            const [userPreferences, setUserPreferences] = useState(() => safeParseJSON('ventarys_prefs', {}));
+            const [apiSettings, setApiSettings] = useState(() => safeParseJSON('ventarys_settings', {
+                endpoint: 'https://api.llm7.io/v1/chat/completions',
+                apiKey: '',
+                model: 'default',
+                userPersona: 'Soy un aventurero solitario.'
+            }));
+            const [hiddenChats, setHiddenChats] = useState(() => safeParseJSON('ventarys_hidden', []));
 
             // LocalStorage Auto-Sync
             useEffect(() => { localStorage.setItem('ventarys_chats', JSON.stringify(chats)); }, [chats]);
@@ -369,7 +368,7 @@
             const sendMessage = async (text, isHidden = false, rawInput = '') => {
                 if (!text.trim() || !activeCharacter) return;
                 const charId = activeCharacter.id;
-                
+
                 const newUserMsg = { 
                     id: Date.now().toString(), 
                     sender: 'user', 
@@ -378,21 +377,21 @@
                     isHidden: isHidden,
                     timestamp: new Date() 
                 };
-                
+
                 setChats(prev => ({ ...prev, [charId]: [...(prev[charId] || []), newUserMsg] }));
 
                 try {
                     const currentHistory = [...(chats[charId] || []), newUserMsg];
                     const tempId = 'temp-' + Date.now();
-                    
+
                     setChats(prev => ({
                         ...prev,
                         [charId]: [...prev[charId], { id: tempId, sender: 'ai', text: '...', isTyping: true, timestamp: new Date() }]
                     }));
-                    
+
                     const memoryText = chatMemories[charId] || '';
                     const aiResponseText = await fetchAIResponse(currentHistory, apiSettings, activeCharacter, memoryText);
-                    
+
                     setChats(prev => {
                         const newChat = prev[charId].filter(m => m.id !== tempId);
                         return {
@@ -446,13 +445,13 @@
                     if (savedPrefs) setUserPreferences(JSON.parse(savedPrefs));
                     if (savedMemories) setChatMemories(JSON.parse(savedMemories));
                     alert("[SISTEMA]: Datos descargados de Puter correctamente.");
-                } catch (e) { alert("[ERROR]: Fallo al cargar. " + e.message); }
+                } catch (e) { alert("[ERROR]: Fallo al cargar. Asegúrate de que los datos en Puter sean un JSON válido. " + e.message); }
             };
 
             const loginPuter = async () => { await puter.auth.signIn(); setPuterSignedIn(puter.auth.isSignedIn()); };
             const logoutPuter = () => { puter.auth.signOut(); setPuterSignedIn(false); };
             const navigate = (v) => { setView(v); setMobileMenuOpen(false); };
-            
+
             const visibleChats = Object.keys(chats).filter(id => !hiddenChats.includes(id));
 
             if (adBlockDetected) {
@@ -483,13 +482,13 @@
                     <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
                         <NavBtn icon="ri-database-2-line" label="Directorio" active={view === 'home'} onClick={() => navigate('home')} />
                         <NavBtn icon="ri-quill-pen-line" label="Crear entidad" active={view === 'create'} onClick={() => navigate('create')} />
-                        
+
                         <div className="pt-5 pb-1.5 px-3">
                             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/30">Registros</span>
                         </div>
-                        
+
                         {visibleChats.length === 0 && <p className="text-xs text-white/30 px-3 py-2">Sin chats activos.</p>}
-                        
+
                         {visibleChats.map(charId => {
                             const char = characters.find(c => c.id === charId);
                             if (!char) return null;
@@ -619,9 +618,9 @@
             const [search, setSearch] = useState('');
             const [activeCategory, setActiveCategory] = useState('Todos');
             const allCategories = ['Todos', ...Array.from(new Set(characters.flatMap(c => c.tags || [])))];
-            
+
             const getScore = char => (char.tags || []).reduce((sum, tag) => sum + (userPreferences[tag] || 0), 0);
-            
+
             const filteredAndSorted = [...characters].sort((a, b) => getScore(b) - getScore(a)).filter(c => {
                 const matchesCategory = activeCategory === 'Todos' || (c.tags && c.tags.includes(activeCategory));
                 const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) || (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()));
@@ -679,7 +678,7 @@
 
         const CreateCharView = () => {
             const [formData, setFormData] = useState({ name: '', avatar: '', description: '', personality: '', firstMessage: '', systemPrompt: '', tags: '' });
-            
+
             const handleSubmit = e => {
                 e.preventDefault();
                 const newChar = {
@@ -693,7 +692,7 @@
                 const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
                 window.open(`https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`, '_blank');
             };
-            
+
             const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
             return (
@@ -734,19 +733,19 @@
             const [localMemory, setLocalMemory] = useState(memory);
             const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
             const messagesEndRef = useRef(null);
-            
+
             useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
             useEffect(() => setLocalMemory(memory), [memory]);
 
             const handleSend = (e) => {
                 if (e) e.preventDefault();
                 if (!input.trim()) return;
-                
+
                 let formattedInput = input;
                 if (inputMode === 'say') formattedInput = `[Dice]: "${input}"`;
                 else if (inputMode === 'do') formattedInput = `[Acción]: *${input}*`;
                 else if (inputMode === 'story') formattedInput = `[Narrativa]: ${input}`;
-                
+
                 onSendMessage(formattedInput, false, input);
                 setInput('');
             };
@@ -764,13 +763,13 @@
                         { role: 'system', content: 'Eres un asistente analizador de roleplay. Escribe un resumen compacto (máx 200 palabras) de la historia hasta ahora usando viñetas. Incluye detalles clave, el estado de la relación y los últimos eventos ocurridos. Sé directo y objetivo.' },
                         ...history.map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }))
                     ];
-                    
+
                     const response = await fetch(apiSettings.endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', ...(apiSettings.apiKey && {'Authorization': `Bearer ${apiSettings.apiKey}`}) },
                         body: JSON.stringify({ model: apiSettings.model || 'default', messages: payload, temperature: 0.3 })
                     });
-                    
+
                     if (!response.ok) throw new Error("API Falló");
                     const data = await response.json();
                     setLocalMemory(data.choices[0].message.content);
@@ -790,7 +789,7 @@
                             <i className="ri-arrow-left-s-line text-2xl"></i>
                             <span className="text-xs font-bold uppercase tracking-wider">Salir</span>
                         </button>
-                        
+
                         <img src={character.avatar} className="hidden md:block w-9 h-9 rounded-full object-cover border border-white/20" alt={character.name} />
                         <div className="flex-1 min-w-0">
                             <h2 className="font-bold text-sm truncate">{character.name}</h2>
@@ -814,13 +813,13 @@
                                 <p className="text-sm text-white/40 mb-3">{character.description}</p>
                                 <div className="inline-block text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 border border-white/20 rounded-full px-3 py-1">Secuencia iniciada</div>
                             </div>
-                            
+
                             {messages.map((msg, index) => {
                                 if (msg.sender === 'user' && !msg.isHidden) userRoundsCount++;
                                 const isAIResponse = msg.sender === 'ai' && !msg.isTyping;
                                 const isEndOfRound = index === messages.length - 1 || messages[index + 1].sender === 'user';
                                 const showAd = isAIResponse && userRoundsCount > 0 && userRoundsCount % 10 === 0 && isEndOfRound;
-                                
+
                                 if (msg.isHidden) {
                                     return (
                                         <div key={msg.id} className="text-center text-[10px] font-bold text-white/30 uppercase tracking-widest my-2">
@@ -935,7 +934,7 @@
         const SettingsView = ({ settings, onSave, puterSignedIn, onLogin, onLogout, onSyncPush, onSyncPull }) => {
             const [localSettings, setLocalSettings] = useState(settings);
             const [saved, setSaved] = useState(false);
-            
+
             const handleSubmit = e => {
                 e.preventDefault();
                 onSave(localSettings);
@@ -950,7 +949,7 @@
                             <h1 className="font-display text-3xl md:text-4xl tracking-wide mb-1">Configuración</h1>
                             <p className="text-xs text-white/40">Parámetros del sistema y sincronización.</p>
                         </header>
-                        
+
                         <div className="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">
                             <div className="flex items-center gap-3 mb-5">
                                 <div className="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
@@ -961,7 +960,7 @@
                                     <p className="text-xs text-white/40">Respaldo remoto vía Puter.js</p>
                                 </div>
                             </div>
-                            
+
                             {!puterSignedIn ? (
                                 <div className="text-center py-4">
                                     <p className="text-white/40 text-sm mb-4">Inicia sesión para respaldar chats y ajustes en la nube. (Los datos locales se guardan automáticamente).</p>
@@ -986,7 +985,7 @@
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">
                             <div className="flex items-center gap-3 mb-5">
                                 <div className="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
@@ -1038,5 +1037,6 @@
         setTimeout(start, 100);
     })();
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"544bb4f5e1454c6594f43e6ca96398a7","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
