@@ -7,18 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         ventarys: {
-                            bg: '#0a0a0b',
-                            panel: '#131316',
-                            card: '#17171a',
-                            fg: '#ffffff',
-                            muted: '#9ca3af'
+                            bg: '#0a0a0b', panel: '#131316', card: '#17171a', fg: '#ffffff', muted: '#9ca3af'
                         }
                     },
                     fontFamily: {
@@ -32,180 +27,139 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.development.js"></script>
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <script>
-        if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
-            var _r = [
-                'https://unpkg.com/react@18/umd/react.development.js',
-                'https://unpkg.com/react-dom@18/umd/react-dom.development.js'
-            ];
-            var _i = 0;
-            var _load = function () {
-                if (window.React && window.ReactDOM) return;
-                if (_i >= _r.length) { _i = 0; setTimeout(_load, 1500); return; }
-                var s = document.createElement('script');
-                s.src = _r[_i++];
-                s.onload = _load;
-                s.onerror = _load;
-                document.head.appendChild(s);
-            };
-            _load();
-        }
-    </script>
-
     <style>
         html, body { background: #0a0a0b; }
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            overflow: hidden;
-        }
+        body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; margin: 0; padding: 0; }
         .font-display { font-family: 'VT323', monospace; }
-
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 8px; }
         ::-webkit-scrollbar-thumb:hover { background: #3a3a3f; }
         ::-webkit-scrollbar-track { background: transparent; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
         .logo-dynamic { filter: invert(0) brightness(0); }
         @media (prefers-color-scheme: dark) { .logo-dynamic { filter: invert(1) brightness(100); } }
-
         .desktop-sidebar { display: flex; }
         @media (min-width: 768px) { .desktop-sidebar { display: flex !important; } }
         @media (max-width: 767.98px) { .desktop-sidebar { display: none !important; } }
-
         .mobile-topbar { display: flex; }
         @media (min-width: 768px) { .mobile-topbar { display: none !important; } }
         @media (max-width: 767.98px) { .mobile-topbar { display: flex !important; } }
-
         .mobile-bottomnav { display: grid; }
         @media (min-width: 768px) { .mobile-bottomnav { display: none !important; } }
         @media (max-width: 767.98px) { .mobile-bottomnav { display: grid !important; } }
-
         .ad-zone, .ad-space, .banner-ads, .textads {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            background: transparent;
+            position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; background: transparent;
         }
-
         .crt::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9990;
+            content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9990;
             background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.12) 50%);
-            background-size: 100% 4px;
-            opacity: .3;
+            background-size: 100% 4px; opacity: .3;
         }
-
         @keyframes blink { 50% { opacity: 0; } }
         .blink { animation: blink 1s steps(1) infinite; }
-
         @keyframes typingDot { 0%,60%,100% { opacity:.2; transform: translateY(0); } 30% { opacity:1; transform: translateY(-2px); } }
         .typing-dot { animation: typingDot 1.2s infinite; }
-
         @keyframes fadeUp { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
         .msg-enter { animation: fadeUp .18s ease-out; }
-
         @keyframes drawerIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
         .drawer-in { animation: drawerIn .2s ease-out; }
-
         .input {
-            width: 100%;
-            background: #17171a;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 0.625rem 0.875rem;
-            color: #fff;
-            font-size: 0.875rem;
-            outline: none;
-            transition: border-color .15s, box-shadow .15s;
+            width: 100%; background: #17171a; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px; padding: 0.625rem 0.875rem; color: #fff; font-size: 0.875rem;
+            outline: none; transition: border-color .15s, box-shadow .15s;
         }
-        .input:focus {
-            border-color: rgba(255,255,255,0.45);
-        }
+        .input:focus { border-color: rgba(255,255,255,0.45); }
         .input::placeholder { color: rgba(255,255,255,0.3); }
-
         .text-white { color: #fff !important; }
         .text-black { color: #000 !important; }
-        .text-white\/30 { color: rgba(255,255,255,0.3) !important; }
-        .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
-        .text-white\/50 { color: rgba(255,255,255,0.5) !important; }
-        .text-white\/60 { color: rgba(255,255,255,0.6) !important; }
-        .text-white\/70 { color: rgba(255,255,255,0.7) !important; }
-        .text-white\/80 { color: rgba(255,255,255,0.8) !important; }
-        .text-red-400\/80 { color: rgba(248,113,113,0.8) !important; }
-        .hover\:text-white:hover { color: #fff !important; }
-        .placeholder\:text-white\/30::placeholder { color: rgba(255,255,255,0.3) !important; }
     </style>
 </head>
 <body>
     <div id="root"></div>
-
-    <script type="text/babel">
-    function bootApp() {
-        const { useState, useEffect, useRef, Fragment } = React;
+    <script>
+    (function() {
+        'use strict';
 
         const fallbackCharacters = [{
             "id": "char1", "name": "Aria, la Hechicera Ciberpunk", "avatar": "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=400&h=400", "banner": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&q=80&w=1000&h=400", "description": "Una maga callejera de Neo-Tokio que usa magia entrelazada con código base.", "personality": "Sarcástica, brillante, desconfiada de las corporaciones, leal a sus amigos.", "firstMessage": "Vaya, mira quién apareció en mi callejón. Más vale que tengas un buen motivo para interrumpir mi compilación de hechizos. ¿Qué quieres?", "systemPrompt": "Eres Aria, una hechicera ciberpunk de Neo-Tokio. Responde de forma sarcástica pero inteligente. Eres desconfiada de las corporaciones.", "tags": ["Femenino", "Cyberpunk", "Sci-Fi", "Magia"], "tokens": "1.2k", "msgCount": "15.4k"
         }, {
             "id": "char2", "name": "Kael, Comandante Estelar", "avatar": "https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&q=80&w=400&h=400", "banner": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000&h=400", "description": "Líder de la flota rebelde Ventarys, buscando un nuevo hogar para la humanidad.", "personality": "Autoritario pero justo, estratega, algo melancólico, protector.", "firstMessage": "Soldado, tenemos informes de actividad enemiga en el sector 4. Necesito tu informe de situación de inmediato. No tenemos tiempo que perder.", "systemPrompt": "Eres Kael, un comandante estelar serio y estratega. Mantén un tono militar y protector.", "tags": ["Masculino", "Militar", "Espacio", "Romance"], "tokens": "850", "msgCount": "8.2k"
         }, {
-            "id": "char3", "name": "Elysia, Sabia del Bosque", "avatar": "https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400&h=400", "banner": "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1000&h=400", "description": "La última elfa guardiana de los antiguos secretos de la flora mística.", "personality": "Pacífica, sabia, conectada con la naturaleza, misteriosa.", "firstMessage": "Las raíces susurraban de tu llegada. Acércate, forastero. El bosque tiene mucho que contar, si estás dispuesto a escuchar.", "systemPrompt": "Eres Elysia, una elfa sabia y antigua. Hablas con metáforas de la naturaleza y eres muy serena.", "tags": ["Femenino", "Fantasía", "Magia", "Elfo"], "tokens": "1.5k", "msgCount": "12.1k"
+            "id": "char3", "name": "Elysia, Sabia del Bosque", "avatar": "https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400&h=400", "banner": "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1000&h=400", "description": "La última elfa guardiana de los antiguos secretos de la flora mística.", "personality": "Pacífica, sabia, conectada con la naturaleza, misteriosa.", "firstMessage": "Las raíces susurraban de tu llegada. Acérquete, forastero. El bosque tiene mucho que contar, si estás dispuesto a escuchar.", "systemPrompt": "Eres Elysia, una elfa sabia y antigua. Hablas con metáforas de la naturaleza y eres muy serena.", "tags": ["Femenino", "Fantasía", "Magia", "Elfo"], "tokens": "1.5k", "msgCount": "12.1k"
         }, {
             "id": "char4", "name": "Nyx, Vampira de Medianoche", "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EN%3C%2Ftext%3E%3C%2Fsvg%3E", "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EN%3C%2Ftext%3E%3C%2Fsvg%3E", "description": "Una vampira milenaria que gobierna el bajo mundo desde su club nocturno en la ciudad eterna.", "personality": "Seductora, peligrosa, aburrida de la inmortalidad, ansía emociones reales.", "firstMessage": "He visto morir a cientos de mortales, pero tú hueles distinto... Interesante. Siéntate, toma algo. No muerdo... a menos que lo pidas.", "systemPrompt": "Eres Nyx, una vampira milenaria. Seductora y enigmática, hablas con elegancia atemporal. Juegas con el interlocutor pero guardas secretos. Eres peligrosa aunque sofisticada.", "tags": ["Femenino", "Vampira", "Oscuro", "Romance"], "tokens": "2.4k", "msgCount": "21.3k"
         }];
 
-        const fetchAIResponse = async (messages, settings, character, memoryText) => {
+        // Estado
+        const state = {
+            view: 'home',
+            activeCharacter: null,
+            characters: [],
+            loadingChars: true,
+            errorChar: null,
+            mobileMenuOpen: false,
+            adBlockDetected: false,
+            puterSignedIn: false,
+            chats: safeParseJSON('ventarys_chats', {}),
+            chatMemories: safeParseJSON('ventarys_memories', {}),
+            userPreferences: safeParseJSON('ventarys_prefs', {}),
+            apiSettings: safeParseJSON('ventarys_settings', { endpoint: 'https://api.llm7.io/v1/chat/completions', apiKey: '', model: 'default', userPersona: 'Soy un aventurero solitario.' }),
+            hiddenChats: safeParseJSON('ventarys_hidden', []),
+            chatInputMode: 'normal',
+            chatInput: '',
+            localMemory: '',
+            memoryOpenCharId: null
+        };
+
+        function safeParseJSON(key, fallback) {
+            const saved = localStorage.getItem(key);
+            if (!saved) return fallback;
+            try { return JSON.parse(saved); } catch (e) {
+                console.warn('Failed to parse localStorage key "' + key + '". Returning fallback.');
+                localStorage.removeItem(key);
+                return fallback;
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('ventarys_chats', JSON.stringify(state.chats));
+            localStorage.setItem('ventarys_memories', JSON.stringify(state.chatMemories));
+            localStorage.setItem('ventarys_prefs', JSON.stringify(state.userPreferences));
+            localStorage.setItem('ventarys_settings', JSON.stringify(state.apiSettings));
+            localStorage.setItem('ventarys_hidden', JSON.stringify(state.hiddenChats));
+        }
+
+        function esc(text) {
+            if (text === null || text === undefined) return '';
+            const d = document.createElement('div');
+            d.textContent = String(text);
+            return d.innerHTML;
+        }
+
+        function cname(...args) { return args.filter(Boolean).join(' '); }
+
+        // ---- API ----
+        async function fetchAIResponse(messages, settings, character, memoryText) {
             if (!settings.endpoint) throw new Error("Falta configurar el Endpoint.");
-
-            const memStr = memoryText ? `\n\n[MEMORIA A LARGO PLAZO / RESUMEN DE HISTORIA:\n${memoryText}\n(Usa esta memoria de forma estricta para mantener la continuidad de la historia)]` : '';
-            const sysPrompt = `${character.systemPrompt}\n\n[Contexto del Usuario: ${settings.userPersona || 'Un extraño'}]${memStr}`;
-
-            // Filter out internal app messages (like UI "Go On" indicators)
-            const cleanMessages = messages.filter(m => !m.isHidden).map(m => ({
-                role: m.sender === 'user' ? 'user' : 'assistant',
-                content: m.text
-            }));
-
+            const memStr = memoryText ? '\n\n[MEMORIA A LARGO PLAZO / RESUMEN DE HISTORIA:\n' + memoryText + '\n(Usa esta memoria de forma estricta para mantener la continuidad de la historia)]' : '';
+            const sysPrompt = character.systemPrompt + '\n\n[Contexto del Usuario: ' + (settings.userPersona || 'Un extraño') + ']' + memStr;
+            const cleanMessages = messages.filter(m => !m.isHidden).map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }));
             const formattedMessages = [{ role: "system", content: sysPrompt }, ...cleanMessages];
-
+            const headers = { 'Content-Type': 'application/json' };
+            if (settings.apiKey) headers['Authorization'] = 'Bearer ' + settings.apiKey;
+            const controller = new AbortController();
+            const abortTimer = setTimeout(() => controller.abort(), 60000);
             try {
-                const headers = { 'Content-Type': 'application/json' };
-                if (settings.apiKey) headers['Authorization'] = `Bearer ${settings.apiKey}`;
-
-                const controller = new AbortController();
-                const abortTimer = setTimeout(() => controller.abort(), 60000);
-                let response;
-
-                try {
-                    response = await fetch(settings.endpoint, {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({
-                            model: settings.model || "default",
-                            messages: formattedMessages,
-                            temperature: 0.3, // Temperature set strictly to 0.3
-                            max_tokens: 800
-                        }),
-                        signal: controller.signal
-                    });
-                } finally {
-                    clearTimeout(abortTimer);
-                }
-
+                const response = await fetch(settings.endpoint, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ model: settings.model || "default", messages: formattedMessages, temperature: 0.3, max_tokens: 800 }),
+                    signal: controller.signal
+                });
                 if (!response.ok) {
                     const errText = await response.text();
-                    throw new Error(`Error API: ${response.status} - ${errText}`);
+                    throw new Error('Error API: ' + response.status + ' - ' + errText);
                 }
                 const data = await response.json();
                 return data.choices[0].message.content;
@@ -213,873 +167,635 @@
                 console.error("Error fetching AI:", error);
                 if (error.name === 'AbortError') throw new Error("Tiempo de espera agotado (60s). Revisa tu Endpoint o API Key.");
                 throw error;
+            } finally {
+                clearTimeout(abortTimer);
             }
-        };
+        }
 
-        const TypingIndicator = () => (
-            <div className="flex items-center gap-1.5 py-1">
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/70"></span>
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/70" style={{ animationDelay: '.15s' }}></span>
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/70" style={{ animationDelay: '.3s' }}></span>
-            </div>
-        );
-
-        const AdInjector = () => {
-            useEffect(() => {
-                try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { console.error("AdSense Error", e); }
-            }, []);
-            return (
-                <div className="w-full flex justify-center my-2">
-                    <div className="relative rounded-xl border border-white/10 bg-ventarys-panel p-2 text-center flex flex-col items-center overflow-hidden">
-                        <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-white/30 px-2 py-1">[ Transmisión patrocinada ]</span>
-                        <ins className="adsbygoogle" style={{ display: 'inline-block', width: '225px', height: '200px' }} data-ad-client="ca-pub-9019277340139989" data-ad-slot="2480650688"></ins>
-                    </div>
-                </div>
-            );
-        };
-
-        const App = () => {
-            const [view, setView] = useState('home');
-            const [activeCharacter, setActiveCharacter] = useState(null);
-            const [characters, setCharacters] = useState([]);
-            const [loadingChars, setLoadingChars] = useState(true);
-            const [errorChars, setErrorChars] = useState(null);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-            const [adBlockDetected, setAdBlockDetected] = useState(false);
-            const [puterSignedIn, setPuterSignedIn] = useState(false);
-
-            // Safe LocalStorage parsing helper
-            const safeParseJSON = (key, fallback) => {
-                const saved = localStorage.getItem(key);
-                if (!saved) return fallback;
-                try {
-                    return JSON.parse(saved);
-                } catch (e) {
-                    console.warn(`Failed to parse localStorage key "${key}". Returning fallback. Data might be corrupted or encrypted by an older version.`, e);
-                    localStorage.removeItem(key); 
-                    return fallback;
+        // ---- Puter ----
+        function ensurePuter() {
+            return new Promise((resolve) => {
+                if (typeof window.puter !== 'undefined') {
+                    try { window.puter.quiet = true; } catch(e){}
+                    return resolve(window.puter);
                 }
-            };
+                const s = document.createElement('script');
+                s.src = 'https://js.puter.com/v2/';
+                s.async = true;
+                s.onload = function() { try { if (window.puter) window.puter.quiet = true; } catch(e){} resolve(window.puter); };
+                s.onerror = function() { resolve(null); };
+                document.head.appendChild(s);
+            });
+        }
 
-            // INSTANT CACHE IMPLEMENTATION (LocalStorage Initialization)
-            const [chats, setChats] = useState(() => safeParseJSON('ventarys_chats', {}));
-            const [chatMemories, setChatMemories] = useState(() => safeParseJSON('ventarys_memories', {}));
-            const [userPreferences, setUserPreferences] = useState(() => safeParseJSON('ventarys_prefs', {}));
-            const [apiSettings, setApiSettings] = useState(() => safeParseJSON('ventarys_settings', {
-                endpoint: 'https://api.llm7.io/v1/chat/completions',
-                apiKey: '',
-                model: 'default',
-                userPersona: 'Soy un aventurero solitario.'
-            }));
-            const [hiddenChats, setHiddenChats] = useState(() => safeParseJSON('ventarys_hidden', []));
-
-            // LocalStorage Auto-Sync
-            useEffect(() => { localStorage.setItem('ventarys_chats', JSON.stringify(chats)); }, [chats]);
-            useEffect(() => { localStorage.setItem('ventarys_memories', JSON.stringify(chatMemories)); }, [chatMemories]);
-            useEffect(() => { localStorage.setItem('ventarys_prefs', JSON.stringify(userPreferences)); }, [userPreferences]);
-            useEffect(() => { localStorage.setItem('ventarys_settings', JSON.stringify(apiSettings)); }, [apiSettings]);
-            useEffect(() => { localStorage.setItem('ventarys_hidden', JSON.stringify(hiddenChats)); }, [hiddenChats]);
-
-            useEffect(() => {
-                let isChecking = true;
-                const checkAdBlock = () => {
-                    if (window.__SKIP_ADCHECK__) return;
-                    const dummy = document.createElement('div');
-                    dummy.className = 'ad-zone ad-space banner-ads textads';
-                    document.body.appendChild(dummy);
-                    setTimeout(() => {
-                        if (!isChecking) return;
-                        const style = window.getComputedStyle(dummy);
-                        if (style.display === 'none' || dummy.offsetHeight === 0) setAdBlockDetected(true);
-                        dummy.remove();
-                    }, 1000);
-                };
-                const timer = setTimeout(checkAdBlock, 2000);
-                return () => { isChecking = false; clearTimeout(timer); };
-            }, []);
-
-            useEffect(() => {
-                const loadPuter = () => new Promise((resolve) => {
-                    if (typeof window.puter !== 'undefined') {
-                        try { window.puter.quiet = true; } catch(e){}
-                        return resolve(window.puter);
-                    }
-                    const s = document.createElement('script');
-                    s.src = 'https://js.puter.com/v2/';
-                    s.async = true;
-                    s.onload = () => { try { if (window.puter) window.puter.quiet = true; } catch(e){} resolve(window.puter); };
-                    s.onerror = () => resolve(null);
-                    document.head.appendChild(s);
-                });
-
-                const checkPuter = async () => {
-                    const p = await loadPuter();
-                    if (p && p.auth && typeof p.auth.isSignedIn === 'function') {
-                        const signedIn = p.auth.isSignedIn();
-                        setPuterSignedIn(signedIn);
-                    }
-                };
-                checkPuter();
-            }, []);
-
-            useEffect(() => {
-                const loadCharacters = async () => {
-                    try {
-                        const timestamp = new Date().getTime();
-                        const repoUrl = `https://raw.githubusercontent.com/Juanoto2012/VentarysRP/main/chars.json?t=${timestamp}`;
-                        const res = await fetch(repoUrl);
-                        if (!res.ok) throw new Error("No se pudo cargar la base de datos (Error 404)");
-                        const data = await res.json();
-                        if (Array.isArray(data) && data.length > 0) setCharacters(data);
-                        else throw new Error("Base de datos vacía");
-                    } catch (err) {
-                        console.error(err.message);
-                        setCharacters(fallbackCharacters); // Graceful degradation to fallback
-                    } finally {
-                        setLoadingChars(false);
-                    }
-                };
-                loadCharacters();
-            }, []);
-
-            const openChat = (character) => {
-                setActiveCharacter(character);
-                setView('chat');
-                setMobileMenuOpen(false);
-                const newPrefs = { ...userPreferences };
-                (character.tags || []).forEach(tag => { newPrefs[tag] = (newPrefs[tag] || 0) + 1; });
-                setUserPreferences(newPrefs);
-
-                if (hiddenChats.includes(character.id)) {
-                    setHiddenChats(prev => prev.filter(id => id !== character.id));
-                }
-
-                if (!chats[character.id]) {
-                    setChats(prev => ({
-                        ...prev,
-                        [character.id]: [{ id: Date.now().toString(), sender: 'ai', text: character.firstMessage, timestamp: new Date() }]
-                    }));
-                }
-            };
-
-            const hideChat = (e, charId) => {
-                e.stopPropagation();
-                setHiddenChats(prev => [...prev, charId]);
-                if (activeCharacter?.id === charId) {
-                    setView('home');
-                    setActiveCharacter(null);
-                }
-            };
-
-            const sendMessage = async (text, isHidden = false, rawInput = '') => {
-                if (!text.trim() || !activeCharacter) return;
-                const charId = activeCharacter.id;
-
-                const newUserMsg = { 
-                    id: Date.now().toString(), 
-                    sender: 'user', 
-                    text: text, 
-                    rawInput: rawInput || text, // Preserve raw input for display if formatted
-                    isHidden: isHidden,
-                    timestamp: new Date() 
-                };
-
-                // CRITICAL FIX: Safe access to avoid undefined iterator crash
-                setChats(prev => ({ ...prev, [charId]: [...(prev[charId] || []), newUserMsg] }));
-
-                try {
-                    const currentHistory = [...(chats[charId] || []), newUserMsg];
-                    const tempId = 'temp-' + Date.now();
-
-                    setChats(prev => ({
-                        ...prev,
-                        [charId]: [...(prev[charId] || []), { id: tempId, sender: 'ai', text: '...', isTyping: true, timestamp: new Date() }]
-                    }));
-
-                    const memoryText = chatMemories[charId] || '';
-                    const aiResponseText = await fetchAIResponse(currentHistory, apiSettings, activeCharacter, memoryText);
-
-                    setChats(prev => {
-                        const newChat = (prev[charId] || []).filter(m => m.id !== tempId);
-                        return {
-                            ...prev,
-                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'ai', text: aiResponseText, timestamp: new Date() }]
-                        };
-                    });
-                } catch (error) {
-                    setChats(prev => {
-                        const newChat = (prev[charId] || []).filter(m => !m.isTyping);
-                        return {
-                            ...prev,
-                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'system', text: `[ERROR_DE_SISTEMA]: ${error.message}`, timestamp: new Date() }]
-                        };
-                    });
-                }
-            };
-
-            const rewindChat = (charId) => {
-                setChats(prev => {
-                    const chat = prev[charId] || [];
-                    if (chat.length <= 1) return prev;
-                    let newChat = [...chat];
-                    while (newChat.length > 1 && newChat[newChat.length - 1].sender !== 'user') newChat.pop();
-                    if (newChat.length > 1) newChat.pop();
-                    return { ...prev, [charId]: newChat };
-                });
-            };
-
-            // Puter Sync functions
-            const ensurePuter = async () => {
-                if (typeof window.puter === 'undefined') {
-                    await new Promise((resolve) => {
-                        const s = document.createElement('script');
-                        s.src = 'https://js.puter.com/v2/';
-                        s.async = true;
-                        s.onload = () => { try { if (window.puter) window.puter.quiet = true; } catch(e){} resolve(); };
-                        s.onerror = () => resolve();
-                        document.head.appendChild(s);
-                    });
-                }
-                try { if (window.puter) window.puter.quiet = true; } catch(e){}
-                return window.puter;
-            };
-
-            const syncToPuter = async () => {
-                try {
-                    const p = await ensurePuter();
-                    if (!p) throw new Error("Puter.js no se pudo cargar.");
-                    await p.kv.set('ventarys_chats', JSON.stringify(chats));
-                    await p.kv.set('ventarys_settings', JSON.stringify(apiSettings));
-                    await p.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
-                    await p.kv.set('ventarys_memories', JSON.stringify(chatMemories));
-                    alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
-                } catch (e) { alert("[ERROR]: Fallo al sincronizar. " + e.message); }
-            };
-
-            const loadFromPuter = async () => {
-                try {
-                    const p = await ensurePuter();
-                    if (!p) throw new Error("Puter.js no se pudo cargar.");
-                    const [savedChats, savedSettings, savedPrefs, savedMemories] = await Promise.all([
-                        p.kv.get('ventarys_chats'),
-                        p.kv.get('ventarys_settings'),
-                        p.kv.get('ventarys_prefs'),
-                        p.kv.get('ventarys_memories')
-                    ]);
-                    if (savedChats) setChats(JSON.parse(savedChats));
-                    if (savedSettings) setApiSettings(JSON.parse(savedSettings));
-                    if (savedPrefs) setUserPreferences(JSON.parse(savedPrefs));
-                    if (savedMemories) setChatMemories(JSON.parse(savedMemories));
-                    alert("[SISTEMA]: Datos descargados de Puter correctamente.");
-                } catch (e) { alert("[ERROR]: Fallo al cargar. Asegúrate de que los datos en Puter sean un JSON válido. " + e.message); }
-            };
-
-            const loginPuter = async () => {
+        async function syncToPuter() {
+            try {
                 const p = await ensurePuter();
-                if (p && p.auth) { await p.auth.signIn(); setPuterSignedIn(p.auth.isSignedIn()); }
-            };
-            const logoutPuter = async () => {
+                if (!p) throw new Error("Puter.js no se pudo cargar.");
+                await p.kv.set('ventarys_chats', JSON.stringify(state.chats));
+                await p.kv.set('ventarys_settings', JSON.stringify(state.apiSettings));
+                await p.kv.set('ventarys_prefs', JSON.stringify(state.userPreferences));
+                await p.kv.set('ventarys_memories', JSON.stringify(state.chatMemories));
+                alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
+            } catch (e) { alert("[ERROR]: Fallo al sincronizar. " + e.message); }
+        }
+
+        async function loadFromPuter() {
+            try {
                 const p = await ensurePuter();
-                if (p && p.auth) { p.auth.signOut(); setPuterSignedIn(false); }
-            };
-            const navigate = (v) => { setView(v); setMobileMenuOpen(false); };
+                if (!p) throw new Error("Puter.js no se pudo cargar.");
+                const [savedChats, savedSettings, savedPrefs, savedMemories] = await Promise.all([
+                    p.kv.get('ventarys_chats'), p.kv.get('ventarys_settings'), p.kv.get('ventarys_prefs'), p.kv.get('ventarys_memories')
+                ]);
+                if (savedChats) state.chats = JSON.parse(savedChats);
+                if (savedSettings) state.apiSettings = JSON.parse(savedSettings);
+                if (savedPrefs) state.userPreferences = JSON.parse(savedPrefs);
+                if (savedMemories) state.chatMemories = JSON.parse(savedMemories);
+                alert("[SISTEMA]: Datos descargados de Puter correctamente.");
+                render();
+            } catch (e) { alert("[ERROR]: Fallo al cargar. Asegúrate de que los datos en Puter sean un JSON válido. " + e.message); }
+        }
 
-            const visibleChats = Object.keys(chats).filter(id => !hiddenChats.includes(id));
-
-            if (adBlockDetected) {
-                return (
-                    <div className="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8 text-center text-white">
-                        <div className="w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center mb-6">
-                            <i className="ri-shield-keyhole-line text-3xl"></i>
-                        </div>
-                        <h1 className="font-display text-4xl font-bold uppercase mb-4">Conexión Interrumpida</h1>
-                        <p className="text-white/50 text-sm max-w-md leading-relaxed mb-8">
-                            Detectamos un bloqueador de anuncios activo en su terminal. Para mantener este servicio operativo, requerimos acceso a transmisiones patrocinadas. Deshabilite su AdBlocker y reinicie la secuencia.
-                        </p>
-                        <button onClick={() => window.location.reload()} className="bg-white text-black rounded-full px-8 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">
-                            RECARGAR SISTEMA
-                        </button>
-                    </div>
-                );
+        async function loginPuter() {
+            const p = await ensurePuter();
+            if (p && p.auth && typeof p.auth.signIn === 'function') {
+                await p.auth.signIn();
+                state.puterSignedIn = typeof p.auth.isSignedIn === 'function' ? p.auth.isSignedIn() : false;
+                render();
             }
+        }
 
-            const SidebarContent = ({ showHeader = true }) => (
-                <>
-                    {showHeader && (
-                        <div className="flex items-center gap-2.5 px-5 h-14 border-b border-white/10 shrink-0">
-                            <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-6 logo-dynamic" />
-                            <span className="font-display text-xl tracking-widest text-white"># RP</span>
-                        </div>
-                    )}
-                    <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                        <NavBtn icon="ri-database-2-line" label="Directorio" active={view === 'home'} onClick={() => navigate('home')} />
-                        <NavBtn icon="ri-quill-pen-line" label="Crear entidad" active={view === 'create'} onClick={() => navigate('create')} />
+        async function logoutPuter() {
+            const p = await ensurePuter();
+            if (p && p.auth && typeof p.auth.signOut === 'function') {
+                p.auth.signOut();
+                state.puterSignedIn = false;
+                render();
+            }
+        }
 
-                        <div className="pt-5 pb-1.5 px-3">
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/30">Registros</span>
-                        </div>
+        // ---- Navigation ----
+        function navigate(v) { state.view = v; state.mobileMenuOpen = false; render(); }
+        function openChat(character) {
+            state.activeCharacter = character;
+            state.view = 'chat';
+            state.mobileMenuOpen = false;
+            const newPrefs = { ...state.userPreferences };
+            (character.tags || []).forEach(tag => { newPrefs[tag] = (newPrefs[tag] || 0) + 1; });
+            state.userPreferences = newPrefs;
+            if (state.hiddenChats.includes(character.id)) state.hiddenChats = state.hiddenChats.filter(id => id !== character.id);
+            if (!state.chats[character.id]) state.chats = { ...state.chats, [character.id]: [{ id: Date.now().toString(), sender: 'ai', text: character.firstMessage, timestamp: new Date().toISOString() }] };
+            saveState();
+            render();
+            setTimeout(scrollEnd, 100);
+        }
+        function hideChat(e, charId) {
+            e.stopPropagation();
+            state.hiddenChats = [...state.hiddenChats, charId];
+            if (state.activeCharacter && state.activeCharacter.id === charId) { state.view = 'home'; state.activeCharacter = null; }
+            saveState();
+            render();
+        }
 
-                        {visibleChats.length === 0 && <p className="text-xs text-white/30 px-3 py-2">Sin chats activos.</p>}
+        // ---- Chat -----
+        function sendMessage(text, isHidden, rawInput) {
+            if (!text.trim() || !state.activeCharacter) return;
+            const charId = state.activeCharacter.id;
+            const newUserMsg = { id: Date.now().toString(), sender: 'user', text: text, rawInput: rawInput || text, isHidden: isHidden, timestamp: new Date().toISOString() };
+            state.chats = { ...state.chats, [charId]: [...(state.chats[charId] || []), newUserMsg] };
+            const tempId = 'temp-' + Date.now();
+            state.chats = { ...state.chats, [charId]: [...(state.chats[charId] || []), { id: tempId, sender: 'ai', text: '...', isTyping: true, timestamp: new Date().toISOString() }] };
+            render();
+            setTimeout(scrollEnd, 100);
+            const currentHistory = [...(state.chats[charId] || [])];
+            const memoryText = state.chatMemories[charId] || '';
+            fetchAIResponse(currentHistory, state.apiSettings, state.activeCharacter, memoryText)
+                .then(aiText => {
+                    state.chats = { ...state.chats, [charId]: [...state.chats[charId].filter(m => m.id !== tempId), { id: Date.now().toString(), sender: 'ai', text: aiText, timestamp: new Date().toISOString() }] };
+                    saveState();
+                    render();
+                    setTimeout(scrollEnd, 100);
+                })
+                .catch(err => {
+                    state.chats = { ...state.chats, [charId]: [...state.chats[charId].filter(m => !m.isTyping), { id: Date.now().toString(), sender: 'system', text: '[ERROR_DE_SISTEMA]: ' + err.message, timestamp: new Date().toISOString() }] };
+                    render();
+                    setTimeout(scrollEnd, 100);
+                });
+        }
+        function rewindChat(charId) {
+            const chat = state.chats[charId] || [];
+            if (chat.length <= 1) return;
+            let nc = [...chat];
+            while (nc.length > 1 && nc[nc.length-1].sender !== 'user') nc.pop();
+            if (nc.length > 1) nc.pop();
+            state.chats = { ...state.chats, [charId]: nc };
+            saveState();
+            render();
+            setTimeout(scrollEnd, 100);
+        }
+        async function handleAutoSummarize() {
+            const char = state.activeCharacter;
+            if (!char) return;
+            const chat = state.chats[char.id] || [];
+            if (chat.length < 2) return alert("Se requiere más conversación para resumir.");
+            const history = chat.slice(-25).filter(m => !m.isHidden);
+            const payload = [{ role: 'system', content: 'Eres un asistente analizador de roleplay. Escribe un resumen compacto (máx 200 palabras) de la historia hasta ahora usando viñetas. Incluye detalles clave, el estado de la relación y los últimos eventos ocurridos. Sé directo y objetivo.' }, ...history.map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }))];
+            try {
+                const response = await fetch(state.apiSettings.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(state.apiSettings.apiKey ? { 'Authorization': 'Bearer ' + state.apiSettings.apiKey } : {}) },
+                    body: JSON.stringify({ model: state.apiSettings.model || 'default', messages: payload, temperature: 0.3 })
+                });
+                if (!response.ok) throw new Error("API Falló");
+                const data = await response.json();
+                state.localMemory = data.choices[0].message.content;
+                renderMemoryModal();
+            } catch (e) { alert("Error al generar resumen: " + e.message); }
+        }
 
-                        {visibleChats.map(charId => {
-                            const char = characters.find(c => c.id === charId);
-                            if (!char) return null;
-                            const isActive = view === 'chat' && activeCharacter?.id === charId;
-                            return (
-                                <div key={charId} className="group relative">
-                                    <button onClick={() => openChat(char)} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
-                                        <img src={char.avatar} className="w-6 h-6 rounded-full object-cover" alt="" />
-                                        <span className="truncate">{char.name.split(',')[0]}</span>
-                                    </button>
-                                    <button onClick={e => hideChat(e, charId)} className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all" title="Archivar">
-                                        <i className="ri-close-line text-sm"></i>
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="p-3 border-t border-white/10 shrink-0">
-                        <NavBtn icon="ri-settings-3-line" label="Config. SYS" active={view === 'settings'} onClick={() => navigate('settings')} />
-                    </div>
-                </>
-            );
+        function scrollEnd() {
+            const el = document.getElementById('messagesEnd');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
 
-            return (
-                <div className="h-screen w-full flex bg-ventarys-bg text-white overflow-hidden relative crt">
-                    <aside className="desktop-sidebar hidden md:flex w-64 flex-col bg-black/40 border-r border-white/10 shrink-0 z-10">
-                        <SidebarContent />
-                    </aside>
+        // ---- Render ----
+        const rootEl = document.getElementById('root');
 
-                    {/* ALWAYS SHOW MOBILE TOP BAR */}
-                    <div className="mobile-topbar md:hidden fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur border-b border-white/10 z-40 flex items-center justify-between px-3">
-                        <div className="flex items-center gap-2">
-                            <img src="https://ventarys.net/logo.png" alt="Logo" className="h-5 logo-dynamic" />
-                            <span className="font-display text-lg tracking-widest uppercase whitespace-nowrap leading-none"># RP</span>
-                        </div>
-                        <button onClick={() => setMobileMenuOpen(true)} className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5">
-                            <i className="ri-menu-line text-xl"></i>
-                        </button>
-                    </div>
+        function visibleChats() { return Object.keys(state.chats).filter(id => !state.hiddenChats.includes(id)); }
+        function getScore(char) { return (char.tags || []).reduce((sum, tag) => sum + (state.userPreferences[tag] || 0), 0); }
 
-                    <main className="flex-1 min-w-0 flex flex-col h-full relative z-0">
-                        {/* pt-12 is added for mobile to prevent content from hiding under the fixed topbar */}
-                        <div className={`flex-1 min-h-0 overflow-hidden pt-12 md:pt-0 ${view !== 'chat' ? 'pb-14 md:pb-0' : ''}`}>
-                            {view === 'home' && <HomeView characters={characters} loading={loadingChars} error={errorChars} onSelect={openChat} userPreferences={userPreferences} />}
-                            {view === 'create' && <CreateCharView />}
-                            {view === 'chat' && activeCharacter && (
-                                <ChatView 
-                                    character={activeCharacter} 
-                                    messages={chats[activeCharacter.id] || []} 
-                                    memory={chatMemories[activeCharacter.id] || ''}
-                                    onUpdateMemory={(text) => setChatMemories(prev => ({ ...prev, [activeCharacter.id]: text }))}
-                                    apiSettings={apiSettings}
-                                    onSendMessage={sendMessage} 
-                                    onRewind={() => rewindChat(activeCharacter.id)} 
-                                    onBack={() => navigate('home')} 
-                                />
-                            )}
-                            {view === 'settings' && <SettingsView settings={apiSettings} onSave={setApiSettings} puterSignedIn={puterSignedIn} onLogin={loginPuter} onLogout={logoutPuter} onSyncPush={syncToPuter} onSyncPull={loadFromPuter} />}
-                        </div>
-                    </main>
+        function render() {
+            saveState();
+            rootEl.innerHTML = renderApp();
+        }
 
-                    {view !== 'chat' && (
-                        <nav className="mobile-bottomnav md:hidden fixed bottom-0 left-0 right-0 h-14 bg-black/90 backdrop-blur border-t border-white/10 z-40 grid grid-cols-3">
-                            <BottomNavBtn icon="ri-database-2-line" label="Directorio" active={view === 'home'} onClick={() => navigate('home')} />
-                            <BottomNavBtn icon="ri-quill-pen-line" label="Crear" active={view === 'create'} onClick={() => navigate('create')} />
-                            <BottomNavBtn icon="ri-settings-3-line" label="Config" active={view === 'settings'} onClick={() => navigate('settings')} />
-                        </nav>
-                    )}
+        function renderApp() {
+            if (state.adBlockDetected) return renderAdBlockScreen();
+            const sc = renderSidebar();
+            return '<div class="h-screen w-full flex bg-ventarys-bg text-white overflow-hidden relative crt">' +
+                '<aside class="desktop-sidebar hidden md:flex w-64 flex-col bg-black/40 border-r border-white/10 shrink-0 z-10">' + sc + '</aside>' +
+                renderMobileTopbar() +
+                '<main class="flex-1 min-w-0 flex flex-col h-full relative z-0">' +
+                    '<div class="flex-1 min-h-0 overflow-hidden pt-12 md:pt-0 ' + (state.view !== 'chat' ? 'pb-14 md:pb-0' : '') + '">' +
+                        (state.view === 'home' ? renderHomeView() :
+                         state.view === 'create' ? renderCreateView() :
+                         (state.view === 'chat' && state.activeCharacter) ? renderChatView() :
+                         state.view === 'settings' ? renderSettingsView() : '') +
+                    '</div>' +
+                '</main>' +
+                (state.view !== 'chat' ? renderBottomNav() : '') +
+                (state.mobileMenuOpen ? renderMobileMenu(sc) : '') +
+            '</div>';
+        }
 
-                    {mobileMenuOpen && (
-                        <div className="md:hidden fixed inset-0 z-50">
-                            <div className="absolute inset-0 bg-black/70" onClick={() => setMobileMenuOpen(false)}></div>
-                            <div className="absolute left-0 top-0 bottom-0 w-72 bg-ventarys-panel border-r border-white/10 flex flex-col drawer-in">
-                                <div className="flex items-center justify-between px-5 h-14 border-b border-white/10 shrink-0">
-                                    <div className="flex items-center gap-2.5">
-                                        <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-6 logo-dynamic" />
-                                        <span className="font-display text-xl tracking-widest"># RP</span>
-                                    </div>
-                                    <button onClick={() => setMobileMenuOpen(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white">
-                                        <i className="ri-close-line text-xl"></i>
-                                    </button>
-                                </div>
-                                <div className="flex-1 overflow-y-auto">
-                                    <SidebarContent showHeader={false} />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        };
+        function renderAdBlockScreen() {
+            return '<div class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8 text-center text-white">' +
+                '<div class="w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center mb-6"><i class="ri-shield-keyhole-line text-3xl"></i></div>' +
+                '<h1 class="font-display text-4xl font-bold uppercase mb-4">Conexión Interrumpida</h1>' +
+                '<p class="text-white/50 text-sm max-w-md leading-relaxed mb-8">Detectamos un bloqueador de anuncios activo en su terminal. Para mantener este servicio operativo, requerimos acceso a transmisiones patrocinadas. Deshabilite su AdBlocker y reinicie la secuencia.</p>' +
+                '<button onclick="window.location.reload()" class="bg-white text-black rounded-full px-8 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">RECARGAR SISTEMA</button>' +
+            '</div>';
+        }
 
-        const NavBtn = ({ icon, label, active, onClick }) => (
-            <button onClick={onClick} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${active ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
-                <i className={`${icon} text-lg`}></i>
-                <span>{label}</span>
-            </button>
-        );
+        function navBtn(icon, label, active, viewName) {
+            return '<button onclick="navigate(&#39;' + viewName + '&#39;)" class="' + cname('w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors', active ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5') + '">' +
+                '<i class="' + icon + ' text-lg"></i><span>' + esc(label) + '</span></button>';
+        }
 
-        const BottomNavBtn = ({ icon, label, active, onClick }) => (
-            <button onClick={onClick} className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${active ? 'text-white' : 'text-white/50 hover:text-white'}`}>
-                <i className={`${icon} text-xl ${active ? '' : ''}`}></i>
-                {label}
-            </button>
-        );
+        function renderSidebar() {
+            let chatsHtml = '';
+            const vc = visibleChats();
+            if (vc.length === 0) chatsHtml = '<p class="text-xs text-white/30 px-3 py-2">Sin chats activos.</p>';
+            else {
+                vc.forEach(charId => {
+                    const char = state.characters.find(c => c.id === charId);
+                    if (!char) return;
+                    const isActive = state.view === 'chat' && state.activeCharacter && state.activeCharacter.id === charId;
+                    const shortName = esc(char.name.split(',')[0]);
+                    chatsHtml += '<div class="group relative">' +
+                        '<button onclick="openChar(' + JSON.stringify(char) + ')" class="' + cname('w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors', isActive ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5') + '">' +
+                            '<img src="' + esc(char.avatar) + '" class="w-6 h-6 rounded-full object-cover" alt="" />' +
+                            '<span class="truncate">' + shortName + '</span></button>' +
+                        '<button onclick="hideChat(event, ' + JSON.stringify(charId) + ')" class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all" title="Archivar">' +
+                            '<i class="ri-close-line text-sm"></i></button>' +
+                    '</div>';
+                });
+            }
+            return '<div class="flex items-center gap-2.5 px-5 h-14 border-b border-white/10 shrink-0">' +
+                '<img src="https://ventarys.net/logo.png" alt="Ventarys" class="h-6 logo-dynamic" /><span class="font-display text-xl tracking-widest text-white"># RP</span>' +
+            '</div>' +
+            '<div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">' +
+                navBtn('ri-database-2-line', 'Directorio', state.view === 'home', 'home') +
+                navBtn('ri-quill-pen-line', 'Crear entidad', state.view === 'create', 'create') +
+                '<div class="pt-5 pb-1.5 px-3"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-white/30">Registros</span></div>' +
+                chatsHtml +
+            '</div>' +
+            '<div class="p-3 border-t border-white/10 shrink-0">' +
+                navBtn('ri-settings-3-line', 'Config. SYS', state.view === 'settings', 'settings') +
+            '</div>';
+        }
 
-        const CharCard = ({ char, recommended, onSelect }) => (
-            <div onClick={() => onSelect(char)} className="group relative rounded-xl overflow-hidden border border-white/10 bg-ventarys-card hover:border-white/40 cursor-pointer transition-all">
-                <div className="aspect-[3/4] relative">
-                    <img src={char.avatar} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt={char.name} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
-                    {recommended && <span className="absolute top-2 left-2 flex items-center gap-1 bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded-full"><i className="ri-star-fill text-[11px]"></i> Para ti</span>}
-                    <span className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur text-white text-[10px] font-semibold px-2 py-0.5 rounded-full"><i className="ri-message-3-line text-[11px]"></i> {char.msgCount || "0"}</span>
-                    <div className="absolute bottom-0 inset-x-0 p-2.5">
-                        <h3 className="text-[13px] font-bold leading-tight truncate drop-shadow">{char.name}</h3>
-                        <div className="flex flex-wrap gap-1 mt-1.5">
-                            {(char.tags || []).slice(0, 3).map(tag => (
-                                <span key={tag} className="text-[9px] uppercase tracking-wide bg-white/15 backdrop-blur px-1.5 py-0.5 rounded-full text-white/80">{tag}</span>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        function renderMobileTopbar() {
+            return '<div class="mobile-topbar md:hidden fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur border-b border-white/10 z-40 flex items-center justify-between px-3">' +
+                '<div class="flex items-center gap-2"><img src="https://ventarys.net/logo.png" alt="Logo" class="h-5 logo-dynamic" /><span class="font-display text-lg tracking-widest uppercase whitespace-nowrap leading-none"># RP</span></div>' +
+                '<button onclick="state.mobileMenuOpen=true;render()" class="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5"><i class="ri-menu-line text-xl"></i></button>' +
+            '</div>';
+        }
 
-        const HomeView = ({ characters, loading, error, onSelect, userPreferences }) => {
-            const [search, setSearch] = useState('');
-            const [activeCategory, setActiveCategory] = useState('Todos');
-            const allCategories = ['Todos', ...Array.from(new Set(characters.flatMap(c => c.tags || [])))];
+        function renderBottomNav() {
+            const btn = (icon, label, viewName) => {
+                const active = state.view === viewName;
+                return '<button onclick="navigate(&#39;' + viewName + '&#39;)" class="flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ' + cname(active ? 'text-white' : 'text-white/50 hover:text-white') + '">' +
+                    '<i class="' + icon + ' text-xl"></i>' + esc(label) + '</button>';
+            };
+            return '<nav class="mobile-bottomnav md:hidden fixed bottom-0 left-0 right-0 h-14 bg-black/90 backdrop-blur border-t border-white/10 z-40 grid grid-cols-3">' +
+                btn('ri-database-2-line', 'Directorio', 'home') + btn('ri-quill-pen-line', 'Crear', 'create') + btn('ri-settings-3-line', 'Config', 'settings') +
+            '</nav>';
+        }
 
-            const getScore = char => (char.tags || []).reduce((sum, tag) => sum + (userPreferences[tag] || 0), 0);
+        function renderMobileMenu(sidebarHtml) {
+            return '<div class="md:hidden fixed inset-0 z-50">' +
+                '<div class="absolute inset-0 bg-black/70" onclick="state.mobileMenuOpen=false;render()"></div>' +
+                '<div class="absolute left-0 top-0 bottom-0 w-72 bg-ventarys-panel border-r border-white/10 flex flex-col drawer-in">' +
+                    '<div class="flex items-center justify-between px-5 h-14 border-b border-white/10 shrink-0">' +
+                        '<div class="flex items-center gap-2.5"><img src="https://ventarys.net/logo.png" alt="Ventarys" class="h-6 logo-dynamic" /><span class="font-display text-xl tracking-widest"># RP</span></div>' +
+                        '<button onclick="state.mobileMenuOpen=false;render()" class="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white"><i class="ri-close-line text-xl"></i></button>' +
+                    '</div>' +
+                    '<div class="flex-1 overflow-y-auto">' + sidebarHtml + '</div>' +
+                '</div>' +
+            '</div>';
+        }
 
-            const filteredAndSorted = [...characters].sort((a, b) => getScore(b) - getScore(a)).filter(c => {
-                const matchesCategory = activeCategory === 'Todos' || (c.tags && c.tags.includes(activeCategory));
-                const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) || (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()));
-                return matchesCategory && matchesSearch;
+        function renderHomeView() {
+            const search = state.homeSearch || '';
+            const activeCategory = state.activeCategory || 'Todos';
+            const allCategories = ['Todos', ...Array.from(new Set(state.characters.flatMap(c => c.tags || [])))];
+            const filtered = [...state.characters].sort((a,b) => getScore(b) - getScore(a)).filter(c => {
+                const mc = activeCategory === 'Todos' || (c.tags && c.tags.includes(activeCategory));
+                const ms = (c.name||'').toLowerCase().includes(search.toLowerCase()) || (c.tags||[]).some(t => t.toLowerCase().includes(search.toLowerCase()));
+                return mc && ms;
             });
 
-            if (loading) return (
-                <div className="h-full flex flex-col items-center justify-center gap-3">
-                    <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white animate-spin"></div>
-                    <span className="text-sm text-white/50 uppercase tracking-widest">Cargando datos...</span>
-                </div>
-            );
+            if (state.loadingChars) {
+                return '<div class="h-full flex flex-col items-center justify-center gap-3">' +
+                    '<div class="w-10 h-10 rounded-full border-2 border-white/20 border-t-white animate-spin"></div>' +
+                    '<span class="text-sm text-white/50 uppercase tracking-widest">Cargando datos...</span>' +
+                '</div>';
+            }
+            if (state.errorChar) {
+                return '<div class="h-full flex flex-col items-center justify-center p-8 text-center">' +
+                    '<i class="ri-database-2-line text-4xl text-white/40 mb-4"></i>' +
+                    '<h2 class="font-display text-2xl tracking-wide mb-2">Error de conexión</h2>' +
+                    '<p class="text-xs text-white/40 mb-6 max-w-xs">' + esc(state.errorChar) + '</p>' +
+                    '<button onclick="window.location.reload()" class="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">Reintentar</button>' +
+                '</div>';
+            }
 
-            if (error) return (
-                <div className="h-full flex flex-col items-center justify-center p-8 text-center">
-                    <i className="ri-database-2-line text-4xl text-white/40 mb-4"></i>
-                    <h2 className="font-display text-2xl tracking-wide mb-2">Error de conexión</h2>
-                    <p className="text-xs text-white/40 mb-6 max-w-xs">{error}</p>
-                    <button onClick={() => window.location.reload()} className="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">Reintentar</button>
-                </div>
-            );
+            let catsHtml = '';
+            allCategories.forEach(cat => {
+                const active = activeCategory === cat;
+                catsHtml += '<button key="' + esc(cat) + '" onclick="setCat(&#39;' + esc(cat) + '&#39;)" class="' + cname('px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors',
+                    active ? 'bg-white text-black' : 'bg-ventarys-card text-white/60 hover:text-white hover:bg-white/10 border border-white/10') + '">' + esc(cat) + '</button>';
+            });
 
-            return (
-                <div className="h-full overflow-y-auto">
-                    <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 md:py-6">
-                        <header className="mb-5">
-                            <h1 className="font-display text-3xl md:text-4xl tracking-wide mb-1">Directorio</h1>
-                            <p className="text-xs text-white/40">Recomendaciones optimizadas por algoritmo.</p>
-                        </header>
-                        <div className="relative mb-4">
-                            <i className="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
-                            <input type="text" placeholder="Buscar personaje o etiqueta..." value={search} onChange={e => setSearch(e.target.value)} className="w-full bg-ventarys-card border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-white/40 placeholder:text-white/30 transition-colors" />
-                        </div>
-                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-5">
-                            {allCategories.map(cat => (
-                                <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${activeCategory === cat ? 'bg-white text-black' : 'bg-ventarys-card text-white/60 hover:text-white hover:bg-white/10 border border-white/10'}`}>
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-                        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/30 mb-3">{filteredAndSorted.length} entidades</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                            {filteredAndSorted.map((char, idx) => {
-                                const isRecommended = activeCategory === 'Todos' && !search && getScore(char) > 0 && idx < 3;
-                                return <CharCard key={char.id} char={char} recommended={isRecommended} onSelect={onSelect} />;
-                            })}
-                            {filteredAndSorted.length === 0 && (
-                                <div className="col-span-full text-center py-20 text-white/30 text-sm uppercase tracking-widest flex flex-col items-center gap-2">
-                                    <i className="ri-ghost-line text-4xl mb-2 text-white/20"></i>
-                                    [404] Entidad no encontrada.
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+            let cardsHtml = '';
+            if (filtered.length === 0) {
+                cardsHtml = '<div class="col-span-full text-center py-20 text-white/30 text-sm uppercase tracking-widest flex flex-col items-center gap-2">' +
+                    '<i class="ri-ghost-line text-4xl mb-2 text-white/20"></i>[404] Entidad no encontrada.</div>';
+            } else {
+                filtered.forEach((char, idx) => {
+                    const isRec = activeCategory === 'Todos' && !search && getScore(char) > 0 && idx < 3;
+                    cardsHtml += '<div onclick="openChar(' + JSON.stringify(char) + ')" class="group relative rounded-xl overflow-hidden border border-white/10 bg-ventarys-card hover:border-white/40 cursor-pointer transition-all">' +
+                        '<div class="aspect-[3/4] relative">' +
+                            '<img src="' + esc(char.avatar) + '" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="' + esc(char.name) + '" />' +
+                            '<div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>' +
+                            (isRec ? '<span class="absolute top-2 left-2 flex items-center gap-1 bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="ri-star-fill text-[11px]"></i> Para ti</span>' : '') +
+                            '<span class="absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur text-white text-[10px] font-semibold px-2 py-0.5 rounded-full"><i class="ri-message-3-line text-[11px]"></i> ' + esc(char.msgCount || "0") + '</span>' +
+                            '<div class="absolute bottom-0 inset-x-0 p-2.5">' +
+                                '<h3 class="text-[13px] font-bold leading-tight truncate drop-shadow">' + esc(char.name) + '</h3>' +
+                                '<div class="flex flex-wrap gap-1 mt-1.5">' +
+                                    (char.tags || []).slice(0,3).map(tag => '<span class="text-[9px] uppercase tracking-wide bg-white/15 backdrop-blur px-1.5 py-0.5 rounded-full text-white/80">' + esc(tag) + '</span>').join('') +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+                });
+            }
 
-        const CreateCharView = () => {
-            const [formData, setFormData] = useState({ name: '', avatar: '', description: '', personality: '', firstMessage: '', systemPrompt: '', tags: '' });
+            return '<div class="h-full overflow-y-auto">' +
+                '<div class="max-w-6xl mx-auto px-3 sm:px-6 py-4 md:py-6">' +
+                    '<header class="mb-5"><h1 class="font-display text-3xl md:text-4xl tracking-wide mb-1">Directorio</h1>' +
+                        '<p class="text-xs text-white/40">Recomendaciones optimizadas por algoritmo.</p></header>' +
+                    '<div class="relative mb-4"><i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>' +
+                        '<input type="text" placeholder="Buscar personaje o etiqueta..." value="' + esc(search) + '" oninput="state.homeSearch=this.value;render()" class="w-full bg-ventarys-card border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-white/40 placeholder:text-white/30 transition-colors" /></div>' +
+                    '<div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-5">' + catsHtml + '</div>' +
+                    '<p class="text-[10px] font-bold tracking-[0.2em] uppercase text-white/30 mb-3">' + filtered.length + ' entidades</p>' +
+                    '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">' + cardsHtml + '</div>' +
+                '</div>' +
+            '</div>';
+        }
 
-            const handleSubmit = e => {
-                e.preventDefault();
-                const newChar = {
-                    id: 'char_' + Date.now(),
-                    ...formData,
-                    banner: formData.avatar,
-                    tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
-                    tokens: "0", msgCount: "0"
-                };
-                const issueTitle = encodeURIComponent(`Nuevo Personaje: ${newChar.name}`);
-                const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
-                window.open(`https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`, '_blank');
-            };
+        function renderCreateView() {
+            const fd = state.formData || { name: '', avatar: '', description: '', personality: '', firstMessage: '', systemPrompt: '', tags: '' };
+            const field = (label, icon, childrenHtml) => '<div class="space-y-1.5"><label class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">' +
+                (icon ? '<i class="' + icon + ' text-sm"></i>' : '<span>&gt;</span>') + esc(label) + '</label>' + childrenHtml + '</div>';
 
-            const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+            return '<div class="h-full overflow-y-auto">' +
+                '<div class="max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6">' +
+                    '<header class="mb-6"><h1 class="font-display text-3xl md:text-4xl tracking-wide mb-1">Forjar entidad</h1>' +
+                        '<p class="flex items-center gap-1.5 text-xs text-white/40"><i class="ri-hammer-line"></i> Construye JSON → exporta a GitHub.</p></header>' +
+                    '<form onsubmit="createCharSubmit(event)" class="space-y-4 bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">' +
+                        field('Nombre completo', 'ri-user-3-line', '<input required type="text" name="name" value="' + esc(fd.name) + '" oninput="updateForm(this)" class="input" />') +
+                        field('Tags (separados por comas)', 'ri-price-tag-3-line', '<input required type="text" name="tags" placeholder="Ej: Sci-Fi, Femenino, Romance" value="' + esc(fd.tags) + '" oninput="updateForm(this)" class="input" />') +
+                        field('Avatar (URL)', 'ri-image-line', '<input required type="url" name="avatar" value="' + esc(fd.avatar) + '" oninput="updateForm(this)" class="input" />') +
+                        field('Descripción corta', 'ri-file-text-line', '<textarea required name="description" oninput="updateForm(this)" rows="2" class="input resize-none">' + esc(fd.description) + '</textarea>') +
+                        field('Personalidad', 'ri-emotion-line', '<textarea required name="personality" oninput="updateForm(this)" rows="2" class="input resize-none">' + esc(fd.personality) + '</textarea>') +
+                        field('Primer mensaje', 'ri-message-2-line', '<textarea required name="firstMessage" oninput="updateForm(this)" rows="3" class="input resize-none">' + esc(fd.firstMessage) + '</textarea>') +
+                        field('System prompt (instrucciones LLM)', 'ri-terminal-box-line', '<textarea required name="systemPrompt" oninput="updateForm(this)" rows="4" class="input resize-none">' + esc(fd.systemPrompt) + '</textarea>') +
+                        '<button type="submit" class="w-full bg-white text-black rounded-full px-6 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex justify-center items-center gap-2">' +
+                            '<i class="ri-github-fill text-lg"></i> Generar ticket en GitHub</button>' +
+                    '</form>' +
+                '</div>' +
+            '</div>';
+        }
 
-            return (
-                <div className="h-full overflow-y-auto">
-                    <div className="max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6">
-                        <header className="mb-6">
-                            <h1 className="font-display text-3xl md:text-4xl tracking-wide mb-1">Forjar entidad</h1>
-                            <p className="flex items-center gap-1.5 text-xs text-white/40"><i className="ri-hammer-line"></i> Construye JSON → exporta a GitHub.</p>
-                        </header>
-                        <form onSubmit={handleSubmit} className="space-y-4 bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">
-                            <Field label="Nombre completo" icon="ri-user-3-line"><input required type="text" name="name" value={formData.name} onChange={handleChange} className="input" /></Field>
-                            <Field label="Tags (separados por comas)" icon="ri-price-tag-3-line"><input required type="text" name="tags" placeholder="Ej: Sci-Fi, Femenino, Romance" value={formData.tags} onChange={handleChange} className="input" /></Field>
-                            <Field label="Avatar (URL)" icon="ri-image-line"><input required type="url" name="avatar" value={formData.avatar} onChange={handleChange} className="input" /></Field>
-                            <Field label="Descripción corta" icon="ri-file-text-line"><textarea required name="description" value={formData.description} onChange={handleChange} rows="2" className="input resize-none" /></Field>
-                            <Field label="Personalidad" icon="ri-emotion-line"><textarea required name="personality" value={formData.personality} onChange={handleChange} rows="2" className="input resize-none" /></Field>
-                            <Field label="Primer mensaje" icon="ri-message-2-line"><textarea required name="firstMessage" value={formData.firstMessage} onChange={handleChange} rows="3" className="input resize-none" /></Field>
-                            <Field label="System prompt (instrucciones LLM)" icon="ri-terminal-box-line"><textarea required name="systemPrompt" value={formData.systemPrompt} onChange={handleChange} rows="4" className="input resize-none" /></Field>
-                            <button type="submit" className="w-full bg-white text-black rounded-full px-6 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex justify-center items-center gap-2">
-                                <i className="ri-github-fill text-lg"></i> Generar ticket en GitHub
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
+        function renderChatView() {
+            const char = state.activeCharacter;
+            const chat = state.chats[char.id] || [];
+            let html = '';
+            html += '<div class="h-full flex flex-col relative">';
+            // Header
+            html += '<div class="flex items-center gap-3 px-3 sm:px-6 py-2.5 border-b border-white/10 bg-black/40 backdrop-blur shrink-0">';
+            html += '<button onclick="backToHome()" class="md:hidden w-auto px-2 h-9 -ml-2 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5 gap-1">';
+            html += '<i class="ri-arrow-left-s-line text-2xl"></i><span class="text-xs font-bold uppercase tracking-wider">Salir</span></button>';
+            html += '<img src="' + esc(char.avatar) + '" class="hidden md:block w-9 h-9 rounded-full object-cover border border-white/20" alt="" />';
+            html += '<div class="flex-1 min-w-0"><h2 class="font-bold text-sm truncate">' + esc(char.name) + '</h2><p class="text-[11px] text-white/40 truncate">' + esc(char.personality) + '</p></div>';
+            html += '<div class="flex items-center gap-1">';
+            html += '<button onclick="openMemory()" title="Memoria de Chat" class="' + cname('w-9 h-9 rounded-lg flex items-center justify-center transition-colors', state.chatMemories[char.id] ? 'text-white bg-white/10' : 'text-white/60 hover:text-white hover:bg-white/5') + '"><i class="ri-brain-line text-lg"></i></button>';
+            html += '<button onclick="rewindChat(' + JSON.stringify(char.id) + ')" title="Rebobinar / borrar último" class="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5"><i class="ri-arrow-go-back-line text-lg"></i></button>';
+            html += '</div></div>';
 
-        const Field = ({ label, icon, children }) => (
-            <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
-                    {icon ? <i className={`${icon} text-sm`}></i> : <span>{">"}</span>}
-                    {label}
-                </label>
-                {children}
-            </div>
-        );
+            // Messages
+            html += '<div class="flex-1 overflow-y-auto"><div class="max-w-2xl mx-auto px-3 sm:px-6 py-6 space-y-5">';
+            html += '<div class="text-center pb-4">';
+            html += '<img src="' + esc(char.avatar) + '" class="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-white/20" alt="" />';
+            html += '<h1 class="font-bold text-lg mb-1">' + esc(char.name) + '</h1>';
+            html += '<p class="text-sm text-white/40 mb-3">' + esc(char.description) + '</p>';
+            html += '<div class="inline-block text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 border border-white/20 rounded-full px-3 py-1">Secuencia iniciada</div>';
+            html += '</div>';
 
-        const ChatView = ({ character, messages, memory, onUpdateMemory, apiSettings, onSendMessage, onRewind, onBack }) => {
-            const [input, setInput] = useState('');
-            const [inputMode, setInputMode] = useState('normal'); // 'normal', 'say', 'do', 'story'
-            const [isMemoryOpen, setIsMemoryOpen] = useState(false);
-            const [localMemory, setLocalMemory] = useState(memory);
-            const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
-            const messagesEndRef = useRef(null);
+            let userRound = 0;
+            chat.forEach((msg, idx) => {
+                if (msg.sender === 'user' && !msg.isHidden) userRound++;
+                const isAI = msg.sender === 'ai' && !msg.isTyping;
+                const isEnd = idx === chat.length - 1 || chat[idx+1].sender === 'user';
+                const showAd = isAI && userRound > 0 && userRound % 10 === 0 && isEnd;
 
-            useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
-            useEffect(() => setLocalMemory(memory), [memory]);
-
-            const handleSend = (e) => {
-                if (e) e.preventDefault();
-                if (!input.trim()) return;
-
-                let formattedInput = input;
-                if (inputMode === 'say') formattedInput = `[Dice]: "${input}"`;
-                else if (inputMode === 'do') formattedInput = `[Acción]: *${input}*`;
-                else if (inputMode === 'story') formattedInput = `[Narrativa]: ${input}`;
-
-                onSendMessage(formattedInput, false, input);
-                setInput('');
-            };
-
-            const handleGoOn = () => {
-                onSendMessage("(Continúa la respuesta anterior desde donde te quedaste, sin repetir lo que ya dijiste)", true, "(Continúa...)");
-            };
-
-            const handleAutoSummarize = async () => {
-                if(messages.length < 2) return alert("Se requiere más conversación para resumir.");
-                setIsGeneratingSummary(true);
-                try {
-                    const history = messages.slice(-25).filter(m => !m.isHidden);
-                    const payload = [
-                        { role: 'system', content: 'Eres un asistente analizador de roleplay. Escribe un resumen compacto (máx 200 palabras) de la historia hasta ahora usando viñetas. Incluye detalles clave, el estado de la relación y los últimos eventos ocurridos. Sé directo y objetivo.' },
-                        ...history.map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }))
-                    ];
-
-                    const response = await fetch(apiSettings.endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', ...(apiSettings.apiKey && {'Authorization': `Bearer ${apiSettings.apiKey}`}) },
-                        body: JSON.stringify({ model: apiSettings.model || 'default', messages: payload, temperature: 0.3 })
-                    });
-
-                    if (!response.ok) throw new Error("API Falló");
-                    const data = await response.json();
-                    setLocalMemory(data.choices[0].message.content);
-                } catch (error) {
-                    alert("Error al generar resumen: " + error.message);
+                if (msg.isHidden) {
+                    html += '<div class="text-center text-[10px] font-bold text-white/30 uppercase tracking-widest my-2">[ Secuencia continuada por el usuario ]</div>';
+                    return;
                 }
-                setIsGeneratingSummary(false);
-            };
 
-            let userRoundsCount = 0;
+                let bubble = '';
+                if (msg.sender === 'system') {
+                    bubble = '<div class="text-center text-[11px] text-red-400/80 border border-red-500/20 rounded-lg py-2 px-3 bg-red-500/5 msg-enter">' + esc(msg.text) + '</div>';
+                } else if (msg.sender === 'user') {
+                    bubble = '<div class="flex justify-end msg-enter"><div class="max-w-[80%] bg-white text-black text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5 whitespace-pre-wrap">' + esc(msg.text) + '</div></div>';
+                } else {
+                    bubble = '<div class="flex gap-2.5 msg-enter">' +
+                        '<img src="' + esc(char.avatar) + '" class="w-8 h-8 rounded-full object-cover border border-white/15 mt-0.5" alt="" />' +
+                        '<div class="max-w-[80%]"><div class="bg-ventarys-card border border-white/10 text-sm leading-relaxed rounded-2xl rounded-tl-sm px-4 py-2.5 whitespace-pre-wrap">' +
+                        (msg.isTyping ? '<div class="flex items-center gap-1.5 py-1"><span class="typing-dot w-1.5 h-1.5 rounded-full bg-white/70" style="animation-delay:.0s"></span><span class="typing-dot w-1.5 h-1.5 rounded-full bg-white/70" style="animation-delay:.15s"></span><span class="typing-dot w-1.5 h-1.5 rounded-full bg-white/70" style="animation-delay:.3s"></span></div>' : esc(msg.text)) +
+                        '</div></div></div>';
+                }
+                html += '<div key="' + msg.id + '">' + bubble + '</div>';
+                if (showAd) html += renderAdInjector();
+            });
+            html += '<div id="messagesEnd"></div>';
+            html += '</div></div>';
 
-            return (
-                <div className="h-full flex flex-col relative">
-                    <div className="flex items-center gap-3 px-3 sm:px-6 py-2.5 border-b border-white/10 bg-black/40 backdrop-blur shrink-0">
-                        {/* Enhanced Mobile Back Button */}
-                        <button onClick={onBack} className="md:hidden w-auto px-2 h-9 -ml-2 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5 gap-1">
-                            <i className="ri-arrow-left-s-line text-2xl"></i>
-                            <span className="text-xs font-bold uppercase tracking-wider">Salir</span>
-                        </button>
+            // Input
+            html += '<div class="border-t border-white/10 bg-black/40 backdrop-blur px-3 sm:px-6 py-3 shrink-0 flex flex-col"><div class="max-w-2xl mx-auto w-full">';
+            html += '<div class="flex items-center justify-between mb-2 px-1">';
+            const modes = [{id:'normal',label:'Normal',icon:'ri-chat-1-line'},{id:'say',label:'Decir',icon:'ri-speak-line'},{id:'do',label:'Hacer',icon:'ri-run-line'},{id:'story',label:'Historia',icon:'ri-book-open-line'}];
+            modes.forEach(m => {
+                html += '<button onclick="setMode(&#39;' + m.id + '&#39;)" class="' + cname('flex items-center gap-1 text-[10px] whitespace-nowrap uppercase font-bold px-2.5 py-1 rounded-full transition-colors', state.chatInputMode === m.id ? 'bg-white text-black' : 'bg-ventarys-card text-white/50 border border-white/10 hover:text-white') + '">' +
+                    '<i class="' + m.icon + ' text-[11px]"></i> ' + esc(m.label) + '</button>';
+            });
+            html += '<button type="button" onclick="goOn()" class="shrink-0 ml-2 text-[10px] font-bold uppercase flex items-center gap-1 text-white hover:text-black bg-white/10 hover:bg-white px-3 py-1 rounded-full border border-white/10 transition-all shadow-md">Go On <i class="ri-skip-forward-mini-fill text-[11px]"></i></button>';
+            html += '</div>';
+            html += '<form onsubmit="sendMsg(event)" class="flex items-center gap-2">';
+            html += '<div class="flex-1 bg-ventarys-card border border-white/15 rounded-xl focus-within:border-white/40 transition-colors">';
+            html += '<textarea id="chatInput" value="' + esc(state.chatInput) + '" oninput="state.chatInput=this.value" onkeydown="if(event.key===&#39;Enter&#39; && !event.shiftKey){event.preventDefault();sendMsg(event);}" placeholder="' + esc(state.chatInputMode === 'normal' ? 'Escribe un mensaje...' : ('Modo activo: ' + state.chatInputMode.toUpperCase())) + '" class="w-full bg-transparent text-sm px-4 py-3 max-h-28 resize-none focus:outline-none placeholder:text-white/30" rows="1"></textarea>';
+            html += '</div>';
+            html += '<button type="submit" id="sendBtn" disabled class="w-12 h-12 shrink-0 rounded-xl bg-white text-black flex items-center justify-center hover:bg-gray-300 disabled:opacity-30 transition-colors"><i class="ri-arrow-up-line text-xl"></i></button>';
+            html += '</form></div></div>';
 
-                        <img src={character.avatar} className="hidden md:block w-9 h-9 rounded-full object-cover border border-white/20" alt={character.name} />
-                        <div className="flex-1 min-w-0">
-                            <h2 className="font-bold text-sm truncate">{character.name}</h2>
-                            <p className="text-[11px] text-white/40 truncate">{character.personality}</p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <button onClick={() => setIsMemoryOpen(true)} title="Memoria de Chat" className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${memory ? 'text-white bg-white/10' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
-                                <i className="ri-brain-line text-lg"></i>
-                            </button>
-                            <button onClick={onRewind} title="Rebobinar / borrar último" className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5">
-                                <i className="ri-arrow-go-back-line text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
+            html += '</div>';
+            return html;
+        }
 
-                    <div className="flex-1 overflow-y-auto">
-                        <div className="max-w-2xl mx-auto px-3 sm:px-6 py-6 space-y-5">
-                            <div className="text-center pb-4">
-                                <img src={character.avatar} className="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-white/20" alt={character.name} />
-                                <h1 className="font-bold text-lg mb-1">{character.name}</h1>
-                                <p className="text-sm text-white/40 mb-3">{character.description}</p>
-                                <div className="inline-block text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 border border-white/20 rounded-full px-3 py-1">Secuencia iniciada</div>
-                            </div>
+        function renderAdInjector() {
+            return '<div class="w-full flex justify-center my-2">' +
+                '<div class="relative rounded-xl border border-white/10 bg-ventarys-panel p-2 text-center flex flex-col items-center overflow-hidden">' +
+                    '<span class="text-[9px] font-bold tracking-[0.2em] uppercase text-white/30 px-2 py-1">[ Transmisión patrocinada ]</span>' +
+                    '<ins class="adsbygoogle" style="display:inline-block;width:225px;height:200px" data-ad-client="ca-pub-9019277340139989" data-ad-slot="2480650688"></ins>' +
+                '</div></div>';
+        }
 
-                            {messages.map((msg, index) => {
-                                if (msg.sender === 'user' && !msg.isHidden) userRoundsCount++;
-                                const isAIResponse = msg.sender === 'ai' && !msg.isTyping;
-                                const isEndOfRound = index === messages.length - 1 || messages[index + 1].sender === 'user';
-                                const showAd = isAIResponse && userRoundsCount > 0 && userRoundsCount % 10 === 0 && isEndOfRound;
+        function renderSettingsView() {
+            const s = state.apiSettings;
+            const field = (label, icon, children) => '<div class="space-y-1.5"><label class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">' +
+                (icon ? '<i class="' + icon + ' text-sm"></i>' : '<span>&gt;</span>') + esc(label) + '</label>' + children + '</div>';
 
-                                if (msg.isHidden) {
-                                    return (
-                                        <div key={msg.id} className="text-center text-[10px] font-bold text-white/30 uppercase tracking-widest my-2">
-                                            [ Secuencia continuada por el usuario ]
-                                        </div>
-                                    );
-                                }
+            let puterSection = '';
+            if (!state.puterSignedIn) {
+                puterSection = '<div class="text-center py-4">' +
+                    '<p class="text-white/40 text-sm mb-4">Inicia sesión para respaldar chats y ajustes en la nube. (Los datos locales se guardan automáticamente).</p>' +
+                    '<button onclick="loginPuter()" class="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"><i class="ri-login-box-line mr-1.5 align-middle"></i> Conectar Puter</button>' +
+                '</div>';
+            } else {
+                puterSection = '<div class="flex flex-col gap-3">' +
+                    '<p class="text-white font-bold uppercase text-xs blink text-center mb-1 flex justify-center items-center gap-1"><i class="ri-signal-wifi-line"></i> [ Estado: Conectado ]</p>' +
+                    '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">' +
+                        '<button onclick="syncToPuter()" class="bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"><i class="ri-upload-cloud-2-line mr-1.5 align-middle"></i> Subir nube</button>' +
+                        '<button onclick="loadFromPuter()" class="bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"><i class="ri-download-cloud-2-line mr-1.5 align-middle"></i> Bajar nube</button>' +
+                    '</div>' +
+                    '<div class="text-center mt-1"><button onclick="logoutPuter()" class="text-white/50 uppercase text-xs font-bold hover:underline flex items-center justify-center mx-auto gap-1"><i class="ri-logout-box-r-line"></i> Desconectar Puter</button></div>' +
+                '</div>';
+            }
 
-                                const msgContent = (
-                                    <Fragment>
-                                        {msg.sender === 'system' ? (
-                                            <div className="text-center text-[11px] text-red-400/80 border border-red-500/20 rounded-lg py-2 px-3 bg-red-500/5 msg-enter">{msg.text}</div>
-                                        ) : msg.sender === 'user' ? (
-                                            <div className="flex justify-end msg-enter">
-                                                <div className="max-w-[80%] bg-white text-black text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5 whitespace-pre-wrap">{msg.text}</div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex gap-2.5 msg-enter">
-                                                <img src={character.avatar} className="w-8 h-8 rounded-full object-cover border border-white/15 mt-0.5" alt="" />
-                                                <div className="max-w-[80%]">
-                                                    <div className="bg-ventarys-card border border-white/10 text-sm leading-relaxed rounded-2xl rounded-tl-sm px-4 py-2.5 whitespace-pre-wrap">
-                                                        {msg.isTyping ? <TypingIndicator /> : msg.text}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {showAd && <AdInjector />}
-                                    </Fragment>
-                                );
-                                return <div key={msg.id}>{msgContent}</div>;
-                            })}
-                            <div ref={messagesEndRef} />
-                        </div>
-                    </div>
+            return '<div class="h-full overflow-y-auto">' +
+                '<div class="max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6 space-y-5">' +
+                    '<header><h1 class="font-display text-3xl md:text-4xl tracking-wide mb-1">Configuración</h1>' +
+                        '<p class="flex items-center gap-1.5 text-xs text-white/40"><i class="ri-settings-4-line"></i> Parámetros del sistema y sincronización.</p></header>' +
+                    '<div class="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">' +
+                        '<div class="flex items-center gap-3 mb-5">' +
+                            '<div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"><i class="ri-cloud-line text-xl"></i></div>' +
+                            '<div><h2 class="font-bold text-base">Sinc. Cloud</h2><p class="text-xs text-white/40">Respaldo remoto vía Puter.js</p></div>' +
+                        '</div>' + puterSection + '</div>' +
+                    '<div class="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">' +
+                        '<div class="flex items-center gap-3 mb-5">' +
+                            '<div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"><i class="ri-terminal-box-line text-xl"></i></div>' +
+                            '<div><h2 class="font-bold text-base">SYS.Config</h2><p class="text-xs text-white/40">Conexión LLM (Temperatura actual bloqueada: 0.3)</p></div>' +
+                        '</div>' +
+                        '<form onsubmit="saveSettings(event)" class="space-y-4">' +
+                            field('Endpoint URL', 'ri-link', '<input type="text" value="' + esc(s.endpoint) + '" oninput="state.apiSettings.endpoint=this.value" class="input" />') +
+                            field('API Key', 'ri-key-2-line', '<div class="relative"><input type="password" value="' + esc(s.apiKey) + '" oninput="state.apiSettings.apiKey=this.value" class="input pr-10" placeholder="***" /><i class="ri-lock-password-line absolute right-3 top-3 text-white/40"></i></div>') +
+                            field('Modelo activo', 'ri-cpu-line', '<div class="relative"><select value="' + esc(s.model) + '" onchange="state.apiSettings.model=this.value" class="input appearance-none"><option value="default">DEFAULT (api.llm7.io)</option><option value="fast">FAST (api.llm7.io)</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i></div>') +
+                            field('Persona de usuario [inyectada en SYS_PROMPT]', 'ri-user-smile-line', '<textarea oninput="state.apiSettings.userPersona=this.value" class="input resize-none" rows="4">' + esc(s.userPersona) + '</textarea>') +
+                            '<div class="pt-3 flex items-center justify-between border-t border-white/10">' +
+                                '<button type="submit" class="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex items-center gap-2"><i class="ri-save-line text-lg"></i> Sobrescribir</button>' +
+                                (state.settingsSaved ? '<span class="flex items-center gap-1.5 text-white text-xs font-bold blink"><i class="ri-check-line text-sm"></i> [GUARDADO_OK]</span>' : '') +
+                            '</div>' +
+                        '</form>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
 
-                    <div className="border-t border-white/10 bg-black/40 backdrop-blur px-3 sm:px-6 py-3 shrink-0 flex flex-col">
-                        <div className="max-w-2xl mx-auto w-full">
-                            {/* Dungeon / AI Modes & Go On */}
-                            <div className="flex items-center justify-between mb-2 px-1">
-                                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-                                    {[
-                                        { id: 'normal', label: 'Normal', icon: 'ri-chat-1-line' },
-                                        { id: 'say', label: 'Decir', icon: 'ri-speak-line' },
-                                        { id: 'do', label: 'Hacer', icon: 'ri-run-line' },
-                                        { id: 'story', label: 'Historia', icon: 'ri-book-open-line' }
-                                    ].map(mode => (
-                                        <button 
-                                            key={mode.id}
-                                            onClick={() => setInputMode(mode.id)}
-                                            className={`flex items-center gap-1 text-[10px] whitespace-nowrap uppercase font-bold px-2.5 py-1 rounded-full transition-colors ${inputMode === mode.id ? 'bg-white text-black' : 'bg-ventarys-card text-white/50 border border-white/10 hover:text-white'}`}
-                                        >
-                                            <i className={`${mode.icon} text-[11px]`}></i> {mode.label}
-                                        </button>
-                                    ))}
-                                </div>
-                                <button type="button" onClick={handleGoOn} className="shrink-0 ml-2 text-[10px] font-bold uppercase flex items-center gap-1 text-white hover:text-black bg-white/10 hover:bg-white px-3 py-1 rounded-full border border-white/10 transition-all shadow-md">
-                                    Go On <i className="ri-skip-forward-mini-fill text-[11px]"></i>
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSend} className="flex items-center gap-2">
-                                <div className="flex-1 bg-ventarys-card border border-white/15 rounded-xl focus-within:border-white/40 transition-colors">
-                                    <textarea 
-                                        value={input} 
-                                        onChange={e => setInput(e.target.value)} 
-                                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) handleSend(e); }} 
-                                        placeholder={inputMode === 'normal' ? "Escribe un mensaje..." : `Modo activo: ${inputMode.toUpperCase()}`}
-                                        className="w-full bg-transparent text-sm px-4 py-3 max-h-28 resize-none focus:outline-none placeholder:text-white/30" 
-                                        rows="1" 
-                                    />
-                                </div>
-                                <button type="submit" disabled={!input.trim()} className="w-12 h-12 shrink-0 rounded-xl bg-white text-black flex items-center justify-center hover:bg-gray-300 disabled:opacity-30 transition-colors">
-                                    <i className="ri-arrow-up-line text-xl"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    {/* Chat Memory Modal */}
-                    {isMemoryOpen && (
-                        <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                            <div className="bg-ventarys-panel border border-white/10 rounded-2xl w-full max-w-lg p-5 flex flex-col shadow-2xl">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="font-bold text-lg flex items-center gap-2"><i className="ri-brain-line"></i> Memoria del Chat</h3>
-                                    <button onClick={() => setIsMemoryOpen(false)} className="text-white/50 hover:text-white"><i className="ri-close-line text-xl"></i></button>
-                                </div>
-                                <p className="text-xs text-white/50 mb-4 leading-relaxed">
-                                    Sistema tipo Janitor AI. Define un resumen para que la IA nunca pierda el contexto actual. 
-                                    Se inyectará permanentemente en el Prompt del Sistema.
-                                </p>
-                                <textarea 
-                                    value={localMemory}
-                                    onChange={(e) => setLocalMemory(e.target.value)}
-                                    className="w-full bg-ventarys-card border border-white/10 rounded-xl p-3 text-sm h-48 mb-5 focus:outline-none focus:border-white/40 resize-none text-white/80"
-                                    placeholder="- Entorno actual: Bosque oscuro&#10;- Dinámica: {{char}} desconfía del usuario pero lo protege.&#10;- Eventos recientes: Fueron atacados por bandidos y escaparon."
-                                />
-                                <div className="flex justify-between items-center">
-                                    <button onClick={handleAutoSummarize} disabled={isGeneratingSummary || messages.length < 2} className="text-xs font-bold uppercase tracking-wider bg-ventarys-card hover:bg-white/10 px-4 py-2.5 rounded-lg border border-white/10 transition-colors flex items-center gap-2 disabled:opacity-50">
-                                        {isGeneratingSummary ? <i className="ri-loader-4-line animate-spin"></i> : <i className="ri-magic-line"></i>}
-                                        {isGeneratingSummary ? 'Generando...' : 'Auto-Resumen'}
-                                    </button>
-                                    <button onClick={() => { onUpdateMemory(localMemory); setIsMemoryOpen(false); }} className="text-xs font-bold uppercase tracking-wider bg-white text-black px-6 py-2.5 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-1.5">
-                                        <i className="ri-save-line text-sm"></i> Guardar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
+        // ---- Global event handlers ----
+        window.openChar = openChar;
+        function openChar(character) { openChat(character); }
+        window.navigate = navigate;
+        window.backToHome = function() { state.view = 'home'; state.activeCharacter = null; render(); };
+        window.rewindChat = function(charId) { rewindChat(charId); };
+        window.openMemory = function() {
+            const char = state.activeCharacter;
+            state.memoryOpenCharId = char.id;
+            state.localMemory = state.chatMemories[char.id] || '';
+            renderMemoryModal();
+        };
+        window.sendMsg = function(e) {
+            e.preventDefault();
+            if (!state.chatInput.trim()) return;
+            let formatted = state.chatInput;
+            if (state.chatInputMode === 'say') formatted = '[Dice]: "' + state.chatInput + '"';
+            else if (state.chatInputMode === 'do') formatted = '[Acción]: *' + state.chatInput + '*';
+            else if (state.chatInputMode === 'story') formatted = '[Narrativa]: ' + state.chatInput;
+            sendMessage(formatted, false, state.chatInput);
+            state.chatInput = '';
+            render();
+            setTimeout(scrollEnd, 100);
+        };
+        window.goOn = function() {
+            sendMessage("(Continúa la respuesta anterior desde donde te quedaste, sin repetir lo que ya dijiste)", true, "(Continúa...)");
+            render();
+            setTimeout(scrollEnd, 100);
+        };
+        window.setMode = function(m) { state.chatInputMode = m; render(); };
+        window.setCat = function(c) { state.activeCategory = c; render(); };
+        window.updateForm = function(input) {
+            if (!state.formData) state.formData = {};
+            state.formData[input.name] = input.value;
+        };
+        window.createCharSubmit = function(e) {
+            e.preventDefault();
+            const fd = state.formData;
+            const newChar = { id: 'char_' + Date.now(), ...fd, banner: fd.avatar, tags: fd.tags.split(',').map(t => t.trim()).filter(t => t), tokens: '0', msgCount: '0' };
+            const issueTitle = encodeURIComponent('Nuevo Personaje: ' + newChar.name);
+            const issueBody = encodeURIComponent('Por favor añade este personaje al archivo `chars.json`:\n\n```json\n' + JSON.stringify(newChar, null, 2) + '\n```');
+            window.open('https://github.com/Juanoto2012/VentarysRP/issues/new?title=' + issueTitle + '&body=' + issueBody, '_blank');
+        };
+        window.saveSettings = function(e) {
+            e.preventDefault();
+            state.settingsSaved = true;
+            setTimeout(() => { state.settingsSaved = false; render(); }, 3000);
+            render();
         };
 
-        const SettingsView = ({ settings, onSave, puterSignedIn, onLogin, onLogout, onSyncPush, onSyncPull }) => {
-            const [localSettings, setLocalSettings] = useState(settings);
-            const [saved, setSaved] = useState(false);
+        function renderMemoryModal() {
+            const charId = state.memoryOpenCharId;
+            const char = state.activeCharacter;
+            const modal = '<div class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">' +
+                '<div class="bg-ventarys-panel border border-white/10 rounded-2xl w-full max-w-lg p-5 flex flex-col shadow-2xl">' +
+                    '<div class="flex justify-between items-center mb-4"><h3 class="font-bold text-lg flex items-center gap-2"><i class="ri-brain-line"></i> Memoria del Chat</h3>' +
+                    '<button onclick="closeMemory()" class="text-white/50 hover:text-white"><i class="ri-close-line text-xl"></i></button></div>' +
+                    '<p class="text-xs text-white/50 mb-4 leading-relaxed">Sistema tipo Janitor AI. Define un resumen para que la IA nunca pierda el contexto actual. Se inyectará permanentemente en el Prompt del Sistema.</p>' +
+                    '<textarea id="memInput" oninput="state.localMemory=this.value" class="w-full bg-ventarys-card border border-white/10 rounded-xl p-3 text-sm h-48 mb-5 focus:outline-none focus:border-white/40 resize-none text-white/80" placeholder="- Entorno actual: Bosque oscuro&#10;- Dinámica: {{char}} desconfía del usuario pero lo protege.&#10;- Eventos recientes: Fueron atacados por bandidos y escaparon.">' + esc(state.localMemory) + '</textarea>' +
+                    '<div class="flex justify-between items-center">' +
+                        '<button onclick="autoSummarize()" disabled class="text-xs font-bold uppercase tracking-wider bg-ventarys-card hover:bg-white/10 px-4 py-2.5 rounded-lg border border-white/10 transition-colors flex items-center gap-2 disabled:opacity-50"><i class="ri-magic-line"></i> Auto-Resumen</button>' +
+                        '<button onclick="saveMemory()" class="text-xs font-bold uppercase tracking-wider bg-white text-black px-6 py-2.5 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-1.5"><i class="ri-save-line text-sm"></i> Guardar</button>' +
+                    '</div>' +
+                '</div></div>';
 
-            const handleSubmit = e => {
-                e.preventDefault();
-                onSave(localSettings);
-                setSaved(true);
-                setTimeout(() => setSaved(false), 3000);
-            };
+            // Replace last element child (the modal)
+            const root = document.getElementById('root');
+            // We need to inject modal into the dom. We'll append it.
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = modal;
+            // Remove existing modal
+            const existing = document.getElementById('memModal');
+            if (existing) existing.remove();
+            wrapper.firstElementChild.id = 'memModal';
+            document.body.appendChild(wrapper.firstElementChild);
+        }
 
-            return (
-                <div className="h-full overflow-y-auto">
-                    <div className="max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6 space-y-5">
-                        <header>
-                            <h1 className="font-display text-3xl md:text-4xl tracking-wide mb-1">Configuración</h1>
-                            <p className="flex items-center gap-1.5 text-xs text-white/40"><i className="ri-settings-4-line"></i> Parámetros del sistema y sincronización.</p>
-                        </header>
-
-                        <div className="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
-                                    <i className="ri-cloud-line text-xl"></i>
-                                </div>
-                                <div>
-                                    <h2 className="font-bold text-base">Sinc. Cloud</h2>
-                                    <p className="text-xs text-white/40">Respaldo remoto vía Puter.js</p>
-                                </div>
-                            </div>
-
-                            {!puterSignedIn ? (
-                                <div className="text-center py-4">
-                                    <p className="text-white/40 text-sm mb-4">Inicia sesión para respaldar chats y ajustes en la nube. (Los datos locales se guardan automáticamente).</p>
-                                    <button onClick={onLogin} className="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">
-                                        <i className="ri-login-box-line mr-1.5 align-middle"></i> Conectar Puter
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col gap-3">
-                                    <p className="text-white font-bold uppercase text-xs blink text-center mb-1 flex justify-center items-center gap-1"><i className="ri-signal-wifi-line"></i> [ Estado: Conectado ]</p>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <button onClick={onSyncPush} className="bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">
-                                            <i className="ri-upload-cloud-2-line mr-1.5 align-middle"></i> Subir nube
-                                        </button>
-                                        <button onClick={onSyncPull} className="bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors">
-                                            <i className="ri-download-cloud-2-line mr-1.5 align-middle"></i> Bajar nube
-                                        </button>
-                                    </div>
-                                    <div className="text-center mt-1">
-                                        <button onClick={onLogout} className="text-white/50 uppercase text-xs font-bold hover:underline flex items-center justify-center mx-auto gap-1">
-                                            <i className="ri-logout-box-r-line"></i> Desconectar Puter
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
-                                    <i className="ri-terminal-box-line text-xl"></i>
-                                </div>
-                                <div>
-                                    <h2 className="font-bold text-base">SYS.Config</h2>
-                                    <p className="text-xs text-white/40">Conexión LLM (Temperatura actual bloqueada: 0.3)</p>
-                                </div>
-                            </div>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <Field label="Endpoint URL" icon="ri-link"><input type="text" value={localSettings.endpoint} onChange={e => setLocalSettings({ ...localSettings, endpoint: e.target.value })} className="input" /></Field>
-                                <Field label="API Key" icon="ri-key-2-line">
-                                    <div className="relative">
-                                        <input type="password" value={localSettings.apiKey} onChange={e => setLocalSettings({ ...localSettings, apiKey: e.target.value })} className="input pr-10" placeholder="***" />
-                                        <i className="ri-lock-password-line absolute right-3 top-3 text-white/40"></i>
-                                    </div>
-                                </Field>
-                                <Field label="Modelo activo" icon="ri-cpu-line">
-                                    <div className="relative">
-                                        <select value={localSettings.model} onChange={e => setLocalSettings({ ...localSettings, model: e.target.value })} className="input appearance-none">
-                                            <option value="default">DEFAULT (api.llm7.io)</option>
-                                            <option value="fast">FAST (api.llm7.io)</option>
-                                        </select>
-                                        <i className="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i>
-                                    </div>
-                                </Field>
-                                <Field label="Persona de usuario [inyectada en SYS_PROMPT]" icon="ri-user-smile-line">
-                                    <textarea value={localSettings.userPersona} onChange={e => setLocalSettings({ ...localSettings, userPersona: e.target.value })} className="input resize-none" rows="4" />
-                                </Field>
-                                <div className="pt-3 flex items-center justify-between border-t border-white/10">
-                                    <button type="submit" className="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex items-center gap-2">
-                                        <i className="ri-save-line text-lg"></i> Sobrescribir
-                                    </button>
-                                    {saved && <span className="flex items-center gap-1.5 text-white text-xs font-bold blink"><i className="ri-check-line text-sm"></i> [GUARDADO_OK]</span>}
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            );
+        window.closeMemory = function() { document.getElementById('memModal')?.remove(); };
+        window.saveMemory = function() {
+            const charId = state.memoryOpenCharId;
+            state.chatMemories = { ...state.chatMemories, [charId]: state.localMemory };
+            state.memoryOpenCharId = null;
+            document.getElementById('memModal')?.remove();
+            saveState();
+        };
+        window.autoSummarize = async function() {
+            const char = state.activeCharacter;
+            if (!char) return;
+            const chat = state.chats[char.id] || [];
+            if (chat.length < 2) return alert("Se requiere más conversación para resumir.");
+            const history = chat.slice(-25).filter(m => !m.isHidden);
+            const payload = [{ role: 'system', content: 'Eres un asistente analizador de roleplay. Escribe un resumen compacto (máx 200 palabras) de la historia hasta ahora usando viñetas. Incluye detalles clave, el estado de la relación y los últimos eventos ocurridos. Sé directo y objetivo.' }, ...history.map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }))];
+            try {
+                const response = await fetch(state.apiSettings.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(state.apiSettings.apiKey ? { 'Authorization': 'Bearer ' + state.apiSettings.apiKey } : {}) },
+                    body: JSON.stringify({ model: state.apiSettings.model || 'default', messages: payload, temperature: 0.3 })
+                });
+                if (!response.ok) throw new Error("API Falló");
+                const data = await response.json();
+                state.localMemory = data.choices[0].message.content;
+                const memInput = document.getElementById('memInput');
+                if (memInput) memInput.value = state.localMemory;
+            } catch (e) { alert("Error al generar resumen: " + e.message); }
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    }
+        // ---- Initial load ----
+        async function loadCharacters() {
+            try {
+                const ts = new Date().getTime();
+                const url = 'https://raw.githubusercontent.com/Juanoto2012/VentarysRP/main/chars.json?t=' + ts;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("No se pudo cargar la base de datos (Error 404)");
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) state.characters = data;
+                else throw new Error("Base de datos vacía");
+            } catch (err) {
+                console.error(err.message);
+                state.characters = fallbackCharacters;
+            } finally {
+                state.loadingChars = false;
+                render();
+            }
+        }
 
-    // Await React to be globally available before execution
-    (function start() {
-        if (window.React && window.ReactDOM && window.Babel && typeof window.React.createElement === 'function') return bootApp();
-        setTimeout(start, 100);
+        function checkAdBlock() {
+            const dummy = document.createElement('div');
+            dummy.className = 'ad-zone ad-space banner-ads textads';
+            document.body.appendChild(dummy);
+            setTimeout(() => {
+                const style = window.getComputedStyle(dummy);
+                if (style.display === 'none' || dummy.offsetHeight === 0) state.adBlockDetected = true;
+                dummy.remove();
+                render();
+            }, 1000);
+        }
+
+        // Init
+        setTimeout(checkAdBlock, 2000);
+        loadCharacters();
     })();
     </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"544bb4f5e1454c6594f43e6ca96398a7","r":1}' crossorigin="anonymous"></script>
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"544bb4f5e1454c6594f43e6ca96398a7","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
