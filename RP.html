@@ -10,6 +10,9 @@
     
     <!-- Puter.js SDK -->
     <script src="https://js.puter.com/v2/"></script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
     
     <!-- Tailwind CSS (DEBE IR ANTES DE LA CONFIGURACIÓN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -74,50 +77,54 @@
             right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 50;
-            background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
 
         /* Custom Blocky Scrollbar */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #000000; 
-            border-left: 2px solid #ffffff;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ffffff; 
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #cccccc; 
-        }
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #000000; border-left: 2px solid #ffffff; }
+        ::-webkit-scrollbar-thumb { background: #ffffff; }
+        ::-webkit-scrollbar-thumb:hover { background: #cccccc; }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
         .pixel-border {
             border: 2px solid #ffffff;
             border-radius: 0;
         }
 
-        .logo-inverted {
-            filter: invert(1) brightness(100);
+        /* Dynamic Logo Logic: White in Dark Mode, Black in Light Mode */
+        .logo-dynamic {
             image-rendering: pixelated;
+            filter: invert(0) brightness(0); /* Default to black */
+        }
+        @media (prefers-color-scheme: dark) {
+            .logo-dynamic {
+                filter: invert(1) brightness(100); /* White */
+            }
+        }
+        @media (prefers-color-scheme: light) {
+            .logo-dynamic {
+                filter: invert(0) brightness(0); /* Black */
+            }
         }
 
-        .image-retro {
-            filter: grayscale(100%) contrast(1.2);
-        }
-        
-        .image-retro:hover {
-            filter: grayscale(0%) contrast(1.1);
-        }
+        .image-retro { filter: grayscale(100%) contrast(1.2); }
+        .image-retro:hover { filter: grayscale(0%) contrast(1.1); }
 
         /* Animations */
-        .blink {
-            animation: blinker 1s linear infinite;
-        }
-        @keyframes blinker {
-            50% { opacity: 0; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        /* AdBlock Dummy Element */
+        .adsbox {
+            position: absolute;
+            top: -999px;
+            left: -999px;
+            width: 1px;
+            height: 1px;
+            background: transparent;
         }
     </style>
 </head>
@@ -153,6 +160,19 @@
                 tags: ['Masculino', 'Militar', 'Espacio', 'Romance'],
                 tokens: '850',
                 msgCount: '8.2k'
+            },
+            {
+                id: 'char3',
+                name: 'Elysia, Sabia del Bosque',
+                avatar: 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400&h=400',
+                banner: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1000&h=400',
+                description: 'La última elfa guardiana de los antiguos secretos de la flora mística.',
+                personality: 'Pacífica, sabia, conectada con la naturaleza, misteriosa.',
+                firstMessage: 'Las raíces susurraban de tu llegada. Acércate, forastero. El bosque tiene mucho que contar, si estás dispuesto a escuchar.',
+                systemPrompt: 'Eres Elysia, una elfa sabia y antigua. Hablas con metáforas de la naturaleza y eres muy serena.',
+                tags: ['Femenino', 'Fantasía', 'Magia', 'Elfo'],
+                tokens: '1.5k',
+                msgCount: '12.1k'
             }
         ];
 
@@ -209,7 +229,13 @@
             const [hiddenChats, setHiddenChats] = useState([]);
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
             
-            // Estado Puter
+            // Recomender System State
+            const [userPreferences, setUserPreferences] = useState({});
+
+            // AdBlock State
+            const [adBlockDetected, setAdBlockDetected] = useState(false);
+
+            // Puter
             const [puterSignedIn, setPuterSignedIn] = useState(false);
 
             const [apiSettings, setApiSettings] = useState({
@@ -219,7 +245,31 @@
                 userPersona: 'Soy un aventurero solitario.'
             });
 
-            // Puter Auth Check
+            // Detect AdBlocker
+            useEffect(() => {
+                const checkAdBlock = () => {
+                    // Method 1: Check DOM interference
+                    const dummy = document.createElement('div');
+                    dummy.className = 'adsbox';
+                    document.body.appendChild(dummy);
+                    
+                    setTimeout(() => {
+                        if (dummy.offsetHeight === 0) {
+                            setAdBlockDetected(true);
+                        }
+                        dummy.remove();
+                    }, 1000);
+
+                    // Method 2: Check Network block (Fetch AdSense Script)
+                    fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989', { 
+                        method: 'HEAD', mode: 'no-cors' 
+                    }).catch(() => {
+                        setAdBlockDetected(true);
+                    });
+                };
+                checkAdBlock();
+            }, []);
+
             useEffect(() => {
                 const checkPuter = async () => {
                     if (typeof puter !== 'undefined') {
@@ -255,6 +305,13 @@
                 setView('chat');
                 setMobileMenuOpen(false);
                 
+                // --- ALGORITMO DE RECOMENDACIÓN: Actualizar gustos ---
+                const newPrefs = { ...userPreferences };
+                (character.tags || []).forEach(tag => {
+                    newPrefs[tag] = (newPrefs[tag] || 0) + 1;
+                });
+                setUserPreferences(newPrefs);
+
                 if (hiddenChats.includes(character.id)) {
                     setHiddenChats(prev => prev.filter(id => id !== character.id));
                 }
@@ -330,11 +387,11 @@
                 });
             };
 
-            // Puter Sync Functions
             const syncToPuter = async () => {
                 try {
                     await puter.kv.set('ventarys_chats', JSON.stringify(chats));
                     await puter.kv.set('ventarys_settings', JSON.stringify(apiSettings));
+                    await puter.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
                     alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
                 } catch (e) {
                     alert("[ERROR]: Fallo al sincronizar. " + e.message);
@@ -345,8 +402,10 @@
                 try {
                     const savedChats = await puter.kv.get('ventarys_chats');
                     const savedSettings = await puter.kv.get('ventarys_settings');
+                    const savedPrefs = await puter.kv.get('ventarys_prefs');
                     if (savedChats) setChats(JSON.parse(savedChats));
                     if (savedSettings) setApiSettings(JSON.parse(savedSettings));
+                    if (savedPrefs) setUserPreferences(JSON.parse(savedPrefs));
                     alert("[SISTEMA]: Datos descargados de Puter correctamente.");
                 } catch (e) {
                     alert("[ERROR]: Fallo al cargar. " + e.message);
@@ -363,16 +422,32 @@
                 setPuterSignedIn(false);
             };
 
+            if (adBlockDetected) {
+                return (
+                    <div className="fixed inset-0 bg-ventarys-bg z-[9999] flex flex-col items-center justify-center p-8 text-center text-ventarys-fg font-pixel border-8 border-red-600">
+                        <i className="ri-shield-keyhole-line text-8xl text-red-500 mb-6 blink"></i>
+                        <h1 className="text-5xl font-bold uppercase mb-4 text-white">Conexión Interrumpida</h1>
+                        <p className="text-2xl text-ventarys-muted uppercase max-w-3xl leading-relaxed mb-10">
+                            Detectamos un bloqueador de anuncios activo. Los anuncios son necesarios para mantener los servidores de Inteligencia Artificial funcionando de forma gratuita.<br/><br/>
+                            <span className="text-red-400">Por favor, deshabilita tu AdBlocker para este sitio y reinicia el sistema.</span>
+                        </p>
+                        <button onClick={() => window.location.reload()} className="bg-white text-black pixel-border px-10 py-4 text-3xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
+                            RECARGAR SISTEMA
+                        </button>
+                    </div>
+                );
+            }
+
             return (
                 <div className="flex h-screen w-full bg-ventarys-bg text-ventarys-fg overflow-hidden relative">
                     
                     {/* Mobile Header */}
                     <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-ventarys-bg border-b-2 border-white z-40 flex items-center justify-between px-4">
                         <div className="flex items-center gap-2">
-                            <img src="https://ventarys.net/logo.png" alt="Logo" className="h-6 logo-inverted" />
+                            <img src="https://ventarys.net/logo.png" alt="Logo" className="h-6 logo-dynamic" />
                             <span className="font-bold text-xl uppercase"># RP</span>
                         </div>
-                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 border-2 border-white shadow-pixel-sm active:translate-y-1 active:shadow-none bg-black">
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 border-2 border-white shadow-pixel-sm active:translate-y-1 active:shadow-none bg-black text-white">
                             <i className={mobileMenuOpen ? "ri-close-line text-xl" : "ri-menu-line text-xl"}></i>
                         </button>
                     </div>
@@ -387,8 +462,8 @@
                         ${mobileMenuOpen ? 'translate-x-0 mt-14 md:mt-0' : '-translate-x-full md:translate-x-0'}
                     `}>
                         <div className="hidden md:flex p-6 items-center gap-3 border-b-2 border-white">
-                            <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-8 logo-inverted" />
-                            <span className="font-bold text-2xl tracking-widest uppercase"># RP</span>
+                            <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-8 logo-dynamic" />
+                            <span className="font-bold text-2xl tracking-widest uppercase text-white"># RP</span>
                         </div>
 
                         <div className="flex-1 py-6 px-4 space-y-3 overflow-y-auto">
@@ -451,7 +526,13 @@
                     {/* Main Content Area */}
                     <div className="flex-1 relative flex flex-col h-full overflow-hidden bg-ventarys-bg mt-14 md:mt-0">
                         {view === 'home' && (
-                            <HomeView characters={characters} loading={loadingChars} error={errorChars} onSelect={openChat} />
+                            <HomeView 
+                                characters={characters} 
+                                loading={loadingChars} 
+                                error={errorChars} 
+                                onSelect={openChat} 
+                                userPreferences={userPreferences} 
+                            />
                         )}
 
                         {view === 'create' && (
@@ -483,13 +564,27 @@
             );
         };
 
-        const HomeView = ({ characters, loading, error, onSelect }) => {
+        const HomeView = ({ characters, loading, error, onSelect, userPreferences }) => {
             const [search, setSearch] = useState('');
+            const [activeCategory, setActiveCategory] = useState('Todos');
             
-            const filtered = characters.filter(c => 
-                (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
-                (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()))
-            );
+            // Extraer categorías únicas
+            const allCategories = ['Todos', ...Array.from(new Set(characters.flatMap(c => c.tags || [])))];
+
+            // Algoritmo de recomendación: Dar puntuación a cada personaje
+            const getScore = (char) => {
+                return (char.tags || []).reduce((sum, tag) => sum + (userPreferences[tag] || 0), 0);
+            };
+
+            // Filtrar y ordenar
+            const filteredAndSorted = [...characters]
+                .sort((a, b) => getScore(b) - getScore(a)) // Mayor puntaje primero
+                .filter(c => {
+                    const matchesCategory = activeCategory === 'Todos' || (c.tags && c.tags.includes(activeCategory));
+                    const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
+                                          (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()));
+                    return matchesCategory && matchesSearch;
+                });
 
             if (loading) {
                 return (
@@ -511,10 +606,10 @@
 
             return (
                 <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10">
-                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-double border-white pb-6">
+                    <header className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-double border-white pb-6">
                         <div>
                             <h1 className="text-5xl font-bold text-white mb-2 uppercase">Base de Datos</h1>
-                            <p className="text-xl text-ventarys-muted uppercase">&gt; Selecciona una entidad para iniciar conexión.</p>
+                            <p className="text-xl text-ventarys-muted uppercase">&gt; Recomendaciones optimizadas por algoritmo.</p>
                         </div>
                         <div className="relative w-full md:w-80 pixel-border bg-black">
                             <i className="ri-search-line absolute left-3 top-3 text-white"></i>
@@ -528,46 +623,73 @@
                         </div>
                     </header>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                        {filtered.map(char => (
-                            <div 
-                                key={char.id}
-                                onClick={() => onSelect(char)}
-                                className="group pixel-border bg-black cursor-pointer hover:shadow-pixel transition-all relative flex flex-col h-full"
+                    {/* Categorías (Scroll horizontal) */}
+                    <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+                        {allCategories.map(cat => (
+                            <button 
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={`px-4 py-2 pixel-border whitespace-nowrap uppercase font-bold transition-colors 
+                                    ${activeCategory === cat ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-gray-800'}`}
                             >
-                                <div className="h-40 w-full relative border-b-2 border-white overflow-hidden">
-                                    <img src={char.banner} className="w-full h-full object-cover image-retro transition-all duration-500 group-hover:scale-105" alt="Banner" />
-                                    <div className="absolute top-2 right-2 flex gap-2">
-                                        <span className="bg-black text-white px-2 py-1 pixel-border text-sm flex items-center gap-1">
-                                            <i className="ri-message-3-fill"></i> {char.msgCount || "0"}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="px-5 pb-6 flex-1 flex flex-col">
-                                    <img src={char.avatar} className="w-24 h-24 object-cover pixel-border bg-black absolute -top-12 image-retro" alt={char.name} />
-                                    
-                                    <div className="pt-14 flex-1">
-                                        <h3 className="text-2xl font-bold text-white mb-2 uppercase group-hover:underline">{char.name}</h3>
-                                        
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            {(char.tags || []).map(tag => (
-                                                <span key={tag} className="text-sm uppercase bg-white text-black px-1 font-bold">
-                                                    [{tag}]
-                                                </span>
-                                            ))}
-                                        </div>
-                                        
-                                        <p className="text-lg text-ventarys-muted line-clamp-3">{char.description}</p>
-                                    </div>
-                                    <div className="mt-4 pt-4 border-t-2 border-dashed border-ventarys-muted text-right">
-                                        <span className="uppercase text-white bg-black pixel-border px-3 py-1 group-hover:bg-white group-hover:text-black transition-colors">
-                                            &gt; CONECTAR
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                                {cat}
+                            </button>
                         ))}
-                        {filtered.length === 0 && (
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {filteredAndSorted.map((char, idx) => {
+                            const isRecommended = activeCategory === 'Todos' && !search && getScore(char) > 0 && idx < 3;
+                            
+                            return (
+                                <div 
+                                    key={char.id}
+                                    onClick={() => onSelect(char)}
+                                    className={`group pixel-border cursor-pointer transition-all relative flex flex-col h-full 
+                                        ${isRecommended ? 'bg-gray-900 border-yellow-400 shadow-[4px_4px_0_0_#fbbf24]' : 'bg-black hover:shadow-pixel'}`}
+                                >
+                                    <div className="h-40 w-full relative border-b-2 border-white overflow-hidden bg-black">
+                                        <img src={char.banner} className="w-full h-full object-cover image-retro transition-all duration-500 group-hover:scale-105" alt="Banner" />
+                                        
+                                        {isRecommended && (
+                                            <div className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 pixel-border text-sm font-bold uppercase blink">
+                                                <i className="ri-star-fill"></i> Para ti
+                                            </div>
+                                        )}
+                                        <div className="absolute top-2 right-2 flex gap-2">
+                                            <span className="bg-black text-white px-2 py-1 pixel-border text-sm flex items-center gap-1">
+                                                <i className="ri-message-3-fill"></i> {char.msgCount || "0"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="px-5 pb-6 flex-1 flex flex-col">
+                                        <img src={char.avatar} className="w-24 h-24 object-cover pixel-border bg-black absolute -top-12 image-retro" alt={char.name} />
+                                        
+                                        <div className="pt-14 flex-1">
+                                            <h3 className={`text-2xl font-bold mb-2 uppercase group-hover:underline ${isRecommended ? 'text-yellow-400' : 'text-white'}`}>
+                                                {char.name}
+                                            </h3>
+                                            
+                                            <div className="flex flex-wrap gap-2 mb-4">
+                                                {(char.tags || []).map(tag => (
+                                                    <span key={tag} className="text-sm uppercase bg-white text-black px-1 font-bold">
+                                                        [{tag}]
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            
+                                            <p className="text-lg text-ventarys-muted line-clamp-3">{char.description}</p>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t-2 border-dashed border-ventarys-muted text-right">
+                                            <span className="uppercase text-white bg-black pixel-border px-3 py-1 group-hover:bg-white group-hover:text-black transition-colors">
+                                                &gt; CONECTAR
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        {filteredAndSorted.length === 0 && (
                             <div className="col-span-full text-center py-20 text-ventarys-muted text-2xl uppercase">
                                 [404] ENTIDAD NO ENCONTRADA.
                             </div>
@@ -579,43 +701,27 @@
 
         const CreateCharView = () => {
             const [formData, setFormData] = useState({
-                name: '',
-                avatar: '',
-                banner: '',
-                description: '',
-                personality: '',
-                firstMessage: '',
-                systemPrompt: '',
-                tags: ''
+                name: '', avatar: '', banner: '', description: '', personality: '', firstMessage: '', systemPrompt: '', tags: ''
             });
 
             const handleSubmit = (e) => {
                 e.preventDefault();
-                
                 const newChar = {
                     id: 'char_' + Date.now(),
-                    name: formData.name,
-                    avatar: formData.avatar,
-                    banner: formData.banner,
-                    description: formData.description,
-                    personality: formData.personality,
-                    firstMessage: formData.firstMessage,
-                    systemPrompt: formData.systemPrompt,
+                    name: formData.name, avatar: formData.avatar, banner: formData.banner,
+                    description: formData.description, personality: formData.personality,
+                    firstMessage: formData.firstMessage, systemPrompt: formData.systemPrompt,
                     tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
-                    tokens: "0",
-                    msgCount: "0"
+                    tokens: "0", msgCount: "0"
                 };
 
                 const issueTitle = encodeURIComponent(`Nuevo Personaje: ${newChar.name}`);
                 const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
                 const githubUrl = `https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`;
-                
                 window.open(githubUrl, '_blank');
             };
 
-            const handleChange = (e) => {
-                setFormData({...formData, [e.target.name]: e.target.value});
-            };
+            const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
             return (
                 <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10 flex justify-center items-start pt-12">
@@ -654,17 +760,14 @@
                                 <label className="block text-xl font-bold text-white uppercase">&gt; DESCRIPCIÓN CORTA</label>
                                 <textarea required name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
                             </div>
-
                             <div className="space-y-2">
                                 <label className="block text-xl font-bold text-white uppercase">&gt; PERSONALIDAD</label>
                                 <textarea required name="personality" value={formData.personality} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
                             </div>
-
                             <div className="space-y-2">
                                 <label className="block text-xl font-bold text-white uppercase">&gt; PRIMER MENSAJE</label>
                                 <textarea required name="firstMessage" value={formData.firstMessage} onChange={handleChange} rows="3" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
                             </div>
-
                             <div className="space-y-2">
                                 <label className="block text-xl font-bold text-white uppercase">&gt; SYSTEM PROMPT (Instrucciones LLM)</label>
                                 <textarea required name="systemPrompt" value={formData.systemPrompt} onChange={handleChange} rows="4" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
@@ -676,6 +779,30 @@
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Inyector de Anuncios
+        const AdInjector = () => {
+            useEffect(() => {
+                try {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error("AdSense Error", e);
+                }
+            }, []);
+            return (
+                <div className="w-full flex justify-center my-6">
+                    <div className="relative pixel-border bg-ventarys-panel p-4 pb-0 text-center flex flex-col items-center">
+                        <span className="absolute -top-3 bg-black px-2 text-ventarys-muted text-[10px] font-bold tracking-widest uppercase">
+                            [ TRANSMISIÓN PATROCINADA ]
+                        </span>
+                        <ins className="adsbygoogle"
+                            style={{ display: 'inline-block', width: '225px', height: '240px' }}
+                            data-ad-client="ca-pub-9019277340139989"
+                            data-ad-slot="2480650688"></ins>
                     </div>
                 </div>
             );
@@ -696,6 +823,8 @@
                 onSendMessage(input);
                 setInput('');
             };
+
+            let userRoundsCount = 0;
 
             return (
                 <div className="flex flex-col h-full z-10 bg-black">
@@ -729,42 +858,50 @@
                         </div>
 
                         <div className="max-w-4xl mx-auto space-y-6">
-                            {messages.map((msg) => (
-                                <div key={msg.id} className={`flex gap-4 message-enter ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                                    {msg.sender !== 'system' && (
-                                        <div className="shrink-0">
-                                            {msg.sender === 'user' ? (
-                                                <div className="w-10 h-10 pixel-border bg-white text-black flex items-center justify-center font-bold text-xl">
-                                                    U
+                            {messages.map((msg, index) => {
+                                if (msg.sender === 'user') userRoundsCount++;
+                                
+                                // Insertar anuncio cada 10 rondas del usuario, mostrado debajo de la respuesta de la IA.
+                                const isAIResponse = msg.sender === 'ai' && !msg.isTyping;
+                                const isEndOfRound = index === messages.length - 1 || messages[index+1].sender === 'user';
+                                const showAd = isAIResponse && userRoundsCount > 0 && userRoundsCount % 10 === 0 && isEndOfRound;
+
+                                return (
+                                    <React.Fragment key={msg.id}>
+                                        <div className={`flex gap-4 message-enter ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                                            {msg.sender !== 'system' && (
+                                                <div className="shrink-0">
+                                                    {msg.sender === 'user' ? (
+                                                        <div className="w-10 h-10 pixel-border bg-white text-black flex items-center justify-center font-bold text-xl">U</div>
+                                                    ) : (
+                                                        <img src={character.avatar} className="w-10 h-10 object-cover pixel-border image-retro" alt="AI" />
+                                                    )}
                                                 </div>
-                                            ) : (
-                                                <img src={character.avatar} className="w-10 h-10 object-cover pixel-border image-retro" alt="AI" />
                                             )}
+                                            
+                                            <div className={`flex flex-col max-w-[85%] md:max-w-[80%] ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                                                {msg.sender !== 'system' && (
+                                                    <span className="text-sm font-bold text-ventarys-muted mb-1 uppercase bg-black px-1">
+                                                        {msg.sender === 'user' ? 'USUARIO' : character.name.split(',')[0]}
+                                                    </span>
+                                                )}
+                                                
+                                                <div className={`
+                                                    p-4 pixel-border text-lg leading-relaxed whitespace-pre-wrap
+                                                    ${msg.sender === 'user' ? 'bg-white text-black' : 
+                                                    msg.sender === 'system' ? 'border-dashed text-white text-center w-full' :
+                                                    'bg-black text-white'}
+                                                `}>
+                                                    {msg.isTyping ? <span className="blink">PROCESANDO...</span> : msg.text}
+                                                </div>
+                                            </div>
                                         </div>
-                                    )}
-                                    
-                                    <div className={`flex flex-col max-w-[85%] md:max-w-[80%] ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                                        {msg.sender !== 'system' && (
-                                            <span className="text-sm font-bold text-ventarys-muted mb-1 uppercase bg-black px-1">
-                                                {msg.sender === 'user' ? 'USUARIO' : character.name.split(',')[0]}
-                                            </span>
-                                        )}
                                         
-                                        <div className={`
-                                            p-4 pixel-border text-lg leading-relaxed whitespace-pre-wrap
-                                            ${msg.sender === 'user' ? 'bg-white text-black' : 
-                                              msg.sender === 'system' ? 'border-dashed text-white text-center w-full' :
-                                              'bg-black text-white'}
-                                        `}>
-                                            {msg.isTyping ? (
-                                                <span className="blink">PROCESANDO...</span>
-                                            ) : (
-                                                msg.text
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                        {/* Injecting AD if condition matches */}
+                                        {showAd && <AdInjector />}
+                                    </React.Fragment>
+                                );
+                            })}
                             <div ref={messagesEndRef} />
                         </div>
                     </div>
