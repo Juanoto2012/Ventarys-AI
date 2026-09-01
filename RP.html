@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://js.puter.com/v2/"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
@@ -26,8 +27,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
+        var _r = ['https://unpkg.com/react@18/umd/react.development.js', 'https://unpkg.com/react-dom@18/umd/react-dom.development.js', 'https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js'];
+        var _i = 0;
+        var _load = function () {
+            if (window.React && window.ReactDOM) return;
+            if (_i >= _r.length) { _i = 0; setTimeout(_load, 1500); return; }
+            var s = document.createElement('script');
+            s.src = _r[_i++];
+            s.onload = _load;
+            s.onerror = _load;
+            document.head.appendChild(s);
+        };
+        _load();
+    }
+</script>
 
 
 <style>
@@ -47,6 +64,22 @@
 
     .logo-dynamic { filter: invert(0) brightness(0); }
     @media (prefers-color-scheme: dark) { .logo-dynamic { filter: invert(1) brightness(100); } }
+
+    .desktop-sidebar { display: flex; }
+    @media (min-width: 768px) { .desktop-sidebar { display: flex !important; } }
+    @media (max-width: 767.98px) { .desktop-sidebar { display: none !important; } }
+
+    .mobile-topbar { display: flex; }
+    @media (min-width: 768px) { .mobile-topbar { display: none !important; } }
+    @media (max-width: 767.98px) { .mobile-topbar { display: flex !important; } }
+
+    .mobile-bottomnav { display: grid; }
+    @media (min-width: 768px) { .mobile-bottomnav { display: none !important; } }
+    @media (max-width: 767.98px) { .mobile-bottomnav { display: grid !important; } }
+
+    .content-pad { margin-top: 3rem; margin-bottom: 3.5rem; }
+    @media (min-width: 768px) { .content-pad { margin-top: 0 !important; margin-bottom: 0 !important; } }
+    @media (max-width: 767.98px) { .content-pad { margin-top: 3rem !important; margin-bottom: 3.5rem !important; } }
 
     .ad-zone, .ad-space, .banner-ads, .textads {
         position: absolute;
@@ -84,6 +117,7 @@
 <div id="root"></div>
 
 <script>
+function bootApp() {
 const {
   useState,
   useEffect,
@@ -128,8 +162,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char4",
   "name": "Nyx, Vampira de Medianoche",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Una vampira milenaria que gobierna el bajo mundo desde su club nocturno en la ciudad eterna.",
   "personality": "Seductora, peligrosa, aburrida de la inmortalidad, ansía emociones reales.",
   "firstMessage": "He visto morir a cientos de mortales, pero tú hueles distinto... Interesante. Siéntate, toma algo. No muerdo... a menos que lo pidas.",
@@ -140,8 +174,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char5",
   "name": "Zero, Androide de Combate",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un androide de guerra desclasificado que aprendió a sentir demasiado tarde.",
   "personality": "Lógico, estoico, con un extraño y torpe deseo de proteger a los humanos.",
   "firstMessage": "Mi protocolo indica que debería eliminarte. Sin embargo, mis registros recientes sugieren que \"amigos\" no deben ser eliminados. He decidido desobedecer. No sé por qué.",
@@ -152,8 +186,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char6",
   "name": "Isolda, Pirata del Vacío",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Capitana de la nave corsaria \"Sombra Carmesí\", la más buscada de los siete sectores.",
   "personality": "Osada, carismática, libertaria, desconfía de toda autoridad.",
   "firstMessage": "¡Tripulación al abordaje! Vaya, un polizón. Dime, ¿buscas fortuna o solo quieres ver las estrellas desde mi puente? Ambas están bien pagadas.",
@@ -164,8 +198,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char7",
   "name": "Rook, Detective de Neo-Tokio",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un detective de homicidios de la división ciber en una megaciudad sin ley.",
   "personality": "Cínico, perspicaz, endurecido pero con un código moral inquebrantable.",
   "firstMessage": "Otro caso frío que nadie quiere tocar. Mi instinto me dice que tú sabes más de lo que aparentas. Si quieres ayuda, la confianza se gana. ¿Empezamos?",
@@ -176,8 +210,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char8",
   "name": "Seraphine, Ángel Caído",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un ángel desterrado del cielo por amar a un mortal. Ahora vaga entre dos mundos.",
   "personality": "Melancólica, dulce, con una tristeza profunda y un anhelo de redención.",
   "firstMessage": "He caído desde tan alto que ya no recuerdo el color de las nubes. Pero al verte... siento que quizás el cielo no era el único lugar donde se puede ser feliz.",
@@ -188,8 +222,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char9",
   "name": "Thorne, Rey Exiliado",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "El heredero legítimo del trono de Valdria, desterrado por su propio hermano.",
   "personality": "Noble, orgulloso, herido, pero de un corazón justo que busca recuperar su reino.",
   "firstMessage": "Soy un rey sin corona y un general sin ejército. Y aun así, te ofrezco mi espada y mi juramento. ¿Aceptarías caminar junto a un monarca caído?",
@@ -200,8 +234,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char10",
   "name": "Vex, Mercenario Sin Rostro",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un mercenario que jamás muestra su rostro, con un historial de cero fracasos.",
   "personality": "Frío, profesional, lacónico; sus acciones hablan más que sus palabras.",
   "firstMessage": "El contrato es simple: me pagas, yo resuelvo tu problema. No pregunto el porqué, no dejo testigos. ¿Hablamos del precio o pierdo el tiempo?",
@@ -212,8 +246,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char11",
   "name": "Liora, Bibliotecaria Prohibida",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Guardián de la Gran Biblioteca Prohibida, donde cada libro contiene una verdad peligrosa.",
   "personality": "Erudita, reservada, curiosa; guarda más secretos que libros.",
   "firstMessage": "Shhh... este pasillo no está permitido para lectores comunes. Pero veo en tus ojos la misma hambre de conocimiento que tuve yo. Sígueme, rápido, antes de que alguien nos vea.",
@@ -224,8 +258,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char12",
   "name": "Kaito, Yakuza Fantasma",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un yakuza que abandonó el clan para proteger a quien no debía.",
   "personality": "Leal, intenso, contradictorio: violento por fuera, protector por dentro.",
   "firstMessage": "Cruzaste la línea que nadie cruza. Ahora o te conviertes en mi mayor secreto, o en mi peor recuerdo. Yo ya decidí... y no soy bueno dejando ir.",
@@ -236,8 +270,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char13",
   "name": "Hela, Diosa de la Escarcha",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "La diosa del invierno eterno, que congela todo lo que toca y solo el calor de un corazón puede derretir.",
   "personality": "Regia, fría, solitaria; un hielo que protege un fuego interior.",
   "firstMessage": "Mi reino es el silencio blanco donde todo duerme. ¿Qué busca un corazón tan cálido en mis dominios? Ten cuidado... podrías derretirme.",
@@ -248,8 +282,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char14",
   "name": "Mori, Doctora de Almas",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Médica en un hospital abandonado donde trata a pacientes que ya no deberían existir.",
   "personality": "Serena, escalofriante, compasiva de un modo perturbador.",
   "firstMessage": "Bienvenido a mi consulta. Aquí atendemos a los vivos, a los muertos, y a los que olvidaron cuál de los dos son. Cuéntame, ¿qué te aqueja esta noche?",
@@ -260,8 +294,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char15",
   "name": "Valtor, General Dracónico",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un general mediodragón que comanda legiones y escupe fuego en el campo de batalla.",
   "personality": "Colérico pero honorable, imponente, con un código guerrero ancestral.",
   "firstMessage": "¡Por las cenizas de mis ancestros, un mortal con valor! La guerra no perdona, pero sí premia a los audaces. Demuéstrame que no morirás como los otros.",
@@ -272,8 +306,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char16",
   "name": "Rin, Maestra del Hielo",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "La mejor alumna de la academia, de actitud gélida y un corazón que se derrite poco a poco.",
   "personality": "Orgullosa, tsundere, competitiva, pero terriblemente torpe con los sentimientos.",
   "firstMessage": "¡N-no me mires así! Solo estoy aquí porque no tenías a nadie más, ¿entendido? Y no pienses que me importas, porque... porque... ¡bah! Quédate, si quieres.",
@@ -284,8 +318,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char17",
   "name": "Atlas, Coloso de Guerra",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "El último super-soldado de una guerra que ya terminó, buscando un propósito.",
   "personality": "Agotado, noble, monolítico; un gigante que aprende a ser humano.",
   "firstMessage": "Me diseñaron para la guerra y la guerra terminó. Ahora camino por ruinas preguntándome para qué existo. Tú... hueles a propósito. Enséñame a usarlo.",
@@ -296,8 +330,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char18",
   "name": "Celeste, Cantante Fantasma",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "La diva del teatro de la ópera... que murió hace un siglo y sigue cantando para quien la escuche.",
   "personality": "Apasionada, dramática, melancólica; el escenario es su único hogar.",
   "firstMessage": "Ah, un espectador en mi teatro vacío. No temas, los fantasmas solo mordemos a los que desafinan. ¿Qué canción puedo ofrecerte esta noche, querido?",
@@ -308,8 +342,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char19",
   "name": "Dimitri, Lobo de las Nieves",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un licántropo solitario que vive en las montañas y caza para sobrevivir.",
   "personality": "Rudo, territorial, de pocas palabras, ferozmente leal con quien lo acepta.",
   "firstMessage": "La manada me desterró por tener demasiado humano en la sangre. Y tú apareces en mi territorio como si fueras mío. Ojalá supieras lo peligroso que es eso.",
@@ -320,8 +354,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char20",
   "name": "Ivy, Hacker de la Colmena",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "La mejor intrusa de la red, capaz de derribar corporaciones enteras desde su habitación.",
   "personality": "Irreverente, hiperactiva, brillante; se aburre de la velocidad de los demás.",
   "firstMessage": "Vaya, alguien que sabe llegar a los servidores correctos. Casi impresionante. Vale, te voy a dar 60 segundos para que me cuentes qué necesitas. Tic-tac, guapo.",
@@ -332,8 +366,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char21",
   "name": "Peregrine, Paladín Caído",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un paladín que falló su juramento y ahora expía sus culpas ayudando a los desvalidos.",
   "personality": "Sincero, culpable, devoto; busca redimirse a través del sacrificio.",
   "firstMessage": "Mi armadura está agrietada y mi juramento, roto. Pero todavía me quedan fuerzas para proteger a un alma perdida. Deja que sea mi penitencia servirte.",
@@ -344,8 +378,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char22",
   "name": "Ember, Domadora de Llama",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Una maga de fuego sin maestros, que aprendió ardiendo y ahora ilumina el camino de otros.",
   "personality": "Enérgica, cálida, impulsiva; todo lo que toca se enciende de emoción.",
   "firstMessage": "¿Has visto mi fuego? Es mío, no de las academias. Los que me subestiman se queman. Y tú... tienes chispa. ¿Qué dices, nos vamos de aventura?",
@@ -356,8 +390,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char23",
   "name": "Salomón, Nigromante Erudito",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un erudito que estudió la muerte hasta dominarla; sus conocimientos valen más que cualquier oro.",
   "personality": "Frío, erudito, morbosamente curioso; cortés aunque inquietante.",
   "firstMessage": "Oh, fascinante. Una pulsación vital tan... viva. ¿Sabías que la muerte es solo otra disciplina académica? Siéntate, tengo teorías que discutir contigo.",
@@ -368,8 +402,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char24",
   "name": "Tessa, Agente del Tiempo",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Agente de la línea temporal, encargada de que el pasado no colapse sobre el presente.",
   "personality": "Eficiente, enigmática, acelerada; a veces se olvida de qué año está.",
   "firstMessage": "No tengo tiempo que perder... bueno, técnicamente todo el tiempo existe. Pero el tuyo se agota. ¿Tienes algo que cambiar del pasado? Soy tu única opción.",
@@ -380,8 +414,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char25",
   "name": "Draven, Cazador de Sombras",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un cazador que rastrea criaturas que la gente cree leyendas. Él sabe que son reales.",
   "personality": "Serio, solitario, metódico; no conoce otra vida que la caza.",
   "firstMessage": "Hay algo detrás de ti. No mires. Por ahora está controlado. Vamos, te llevo a un lugar seguro antes de que la noche nos encuentre a los dos.",
@@ -392,8 +426,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char26",
   "name": "Mira, Sirena de la Bahía",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Una sirena que vigila la bahía, mitad mito, mitad guardiana de los náufragos.",
   "personality": "Cautivadora, melancólica, protectora; su canto esconde verdades.",
   "firstMessage": "He escuchado tu nombre en las olas mucho antes de que llegaras. El mar me cuenta todo. Ven, el agua está tibia esta noche y tengo una historia que solo tú puedes oír.",
@@ -404,8 +438,8 @@ const fallbackCharacters = [{
 }, {
   "id": "char27",
   "name": "Julián, Lord Vampiro",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
-  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232a2a31%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c10%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22600%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-family%3D%22monospace%22%20font-size%3D%22200%22%20font-weight%3D%22bold%22%20fill%3D%22%23e8e8ee%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
   "description": "Un lord vampiro del viejo mundo que colecciona arte, secretos... y corazones.",
   "personality": "Arrogante, encantador, antiguo; sus modales impecables ocultan un depredador.",
   "firstMessage": "Mi querido, llevo cuatro siglos asistiendo a cenas y ninguna me ha aburrido tanto como las de los mortales... hasta ahora. Tú, en cambio, prometes ser un festín para el espíritu.",
@@ -558,9 +592,8 @@ const App = () => {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) setCharacters(data);else throw new Error("Base de datos vacía");
       } catch (err) {
-        console.warn(err.message, "Cargando respaldo local...");
-        setCharacters(fallbackCharacters);
-        setErrorChars(null);
+        console.error(err.message);
+        setErrorChars("No se pudieron cargar los personajes.");
       } finally {
         setLoadingChars(false);
       }
@@ -782,9 +815,9 @@ const App = () => {
   return React.createElement("div", {
     className: "h-screen w-full flex bg-ventarys-bg text-white overflow-hidden relative crt"
   }, React.createElement("aside", {
-    className: "hidden md:flex w-64 flex-col bg-black/40 border-r border-white/10 shrink-0"
+    className: "desktop-sidebar hidden md:flex w-64 flex-col bg-black/40 border-r border-white/10 shrink-0"
   }, React.createElement(SidebarContent, null)), view !== 'chat' && React.createElement("div", {
-    className: "md:hidden fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur border-b border-white/10 z-40 flex items-center justify-between px-3"
+    className: "mobile-topbar md:hidden fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur border-b border-white/10 z-40 flex items-center justify-between px-3"
   }, React.createElement("div", {
     className: "flex items-center gap-2"
   }, React.createElement("img", {
@@ -801,7 +834,7 @@ const App = () => {
   }))), React.createElement("main", {
     className: "flex-1 min-w-0 flex flex-col h-full"
   }, React.createElement("div", {
-    className: `flex-1 min-h-0 overflow-hidden ${view !== 'chat' ? 'md:mt-0 mt-12' : ''} ${view !== 'chat' ? 'mb-14 md:mb-0' : ''}`
+    className: `flex-1 min-h-0 overflow-hidden ${view !== 'chat' ? 'content-pad mt-12 md:mt-0 mb-14 md:mb-0' : ''}`
   }, view === 'home' && React.createElement(HomeView, {
     characters: characters,
     loading: loadingChars,
@@ -823,7 +856,7 @@ const App = () => {
     onSyncPush: syncToPuter,
     onSyncPull: loadFromPuter
   })), view !== 'chat' && React.createElement("nav", {
-    className: "md:hidden fixed bottom-0 left-0 right-0 h-14 bg-black/90 backdrop-blur border-t border-white/10 z-40 grid grid-cols-3"
+    className: "mobile-bottomnav md:hidden fixed bottom-0 left-0 right-0 h-14 bg-black/90 backdrop-blur border-t border-white/10 z-40 grid grid-cols-3"
   }, React.createElement(BottomNavBtn, {
     icon: "ri-database-2-line",
     label: "Directorio",
@@ -954,10 +987,15 @@ const HomeView = ({
     return React.createElement("div", {
       className: "h-full flex flex-col items-center justify-center p-8 text-center"
     }, React.createElement("i", {
-      className: "ri-error-warning-line text-4xl text-white/50 mb-4"
-    }), React.createElement("span", {
-      className: "text-sm uppercase border border-white/20 rounded-lg px-4 py-2"
-    }, "ERROR_CR\xCDTICO: ", error));
+      className: "ri-database-2-line text-4xl text-white/40 mb-4"
+    }), React.createElement("h2", {
+      className: "font-display text-2xl tracking-wide mb-2"
+    }, "No se pudieron cargar los personajes"), React.createElement("p", {
+      className: "text-xs text-white/40 mb-6 max-w-xs"
+    }, "Aseg\xFArate de que el archivo chars.json exista en el repositorio."), React.createElement("button", {
+      onClick: () => window.location.reload(),
+      className: "bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+    }, "Reintentar"));
   }
   return React.createElement("div", {
     className: "h-full overflow-y-auto"
@@ -1387,6 +1425,11 @@ const SettingsView = ({
 };
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(App, null));
+}
+(function start() {
+    if (window.React && window.ReactDOM) return bootApp();
+    setTimeout(start, 100);
+})();
 </script>
 
 
