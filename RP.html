@@ -33,17 +33,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.development.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script>
         if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
             var _r = [
-                'https://unpkg.com/react@18/umd/react.development.js', 
-                'https://unpkg.com/react-dom@18/umd/react-dom.development.js', 
-                'https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js', 
-                'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js'
+                'https://unpkg.com/react@18/umd/react.development.js',
+                'https://unpkg.com/react-dom@18/umd/react-dom.development.js'
             ];
             var _i = 0;
             var _load = function () {
@@ -302,18 +300,21 @@
 
             useEffect(() => {
                 const loadPuter = () => new Promise((resolve) => {
-                    if (typeof window.puter !== 'undefined') return resolve(window.puter);
+                    if (typeof window.puter !== 'undefined') {
+                        try { window.puter.quiet = true; } catch(e){}
+                        return resolve(window.puter);
+                    }
                     const s = document.createElement('script');
                     s.src = 'https://js.puter.com/v2/';
                     s.async = true;
-                    s.onload = () => resolve(window.puter);
+                    s.onload = () => { try { if (window.puter) window.puter.quiet = true; } catch(e){} resolve(window.puter); };
                     s.onerror = () => resolve(null);
                     document.head.appendChild(s);
                 });
 
                 const checkPuter = async () => {
                     const p = await loadPuter();
-                    if (p && typeof p.auth !== 'undefined') {
+                    if (p && p.auth && typeof p.auth.isSignedIn === 'function') {
                         const signedIn = p.auth.isSignedIn();
                         setPuterSignedIn(signedIn);
                     }
@@ -434,11 +435,12 @@
                         const s = document.createElement('script');
                         s.src = 'https://js.puter.com/v2/';
                         s.async = true;
-                        s.onload = () => resolve();
+                        s.onload = () => { try { if (window.puter) window.puter.quiet = true; } catch(e){} resolve(); };
                         s.onerror = () => resolve();
                         document.head.appendChild(s);
                     });
                 }
+                try { if (window.puter) window.puter.quiet = true; } catch(e){}
                 return window.puter;
             };
 
