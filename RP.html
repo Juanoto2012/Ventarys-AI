@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Ventarys RP</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <script src="https://js.puter.com/v2/"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -156,7 +155,7 @@
 
     <script type="text/babel">
     function bootApp() {
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, Fragment } = React;
 
         const fallbackCharacters = [{
             "id": "char1", "name": "Aria, la Hechicera Ciberpunk", "avatar": "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=400&h=400", "banner": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&q=80&w=1000&h=400", "description": "Una maga callejera de Neo-Tokio que usa magia entrelazada con código base.", "personality": "Sarcástica, brillante, desconfiada de las corporaciones, leal a sus amigos.", "firstMessage": "Vaya, mira quién apareció en mi callejón. Más vale que tengas un buen motivo para interrumpir mi compilación de hechizos. ¿Qué quieres?", "systemPrompt": "Eres Aria, una hechicera ciberpunk de Neo-Tokio. Responde de forma sarcástica pero inteligente. Eres desconfiada de las corporaciones.", "tags": ["Femenino", "Cyberpunk", "Sci-Fi", "Magia"], "tokens": "1.2k", "msgCount": "15.4k"
@@ -302,9 +301,20 @@
             }, []);
 
             useEffect(() => {
+                const loadPuter = () => new Promise((resolve) => {
+                    if (typeof window.puter !== 'undefined') return resolve(window.puter);
+                    const s = document.createElement('script');
+                    s.src = 'https://js.puter.com/v2/';
+                    s.async = true;
+                    s.onload = () => resolve(window.puter);
+                    s.onerror = () => resolve(null);
+                    document.head.appendChild(s);
+                });
+
                 const checkPuter = async () => {
-                    if (typeof puter !== 'undefined') {
-                        const signedIn = puter.auth.isSignedIn();
+                    const p = await loadPuter();
+                    if (p && typeof p.auth !== 'undefined') {
+                        const signedIn = p.auth.isSignedIn();
                         setPuterSignedIn(signedIn);
                     }
                 };
@@ -418,23 +428,41 @@
             };
 
             // Puter Sync functions
+            const ensurePuter = async () => {
+                if (typeof window.puter === 'undefined') {
+                    await new Promise((resolve) => {
+                        const s = document.createElement('script');
+                        s.src = 'https://js.puter.com/v2/';
+                        s.async = true;
+                        s.onload = () => resolve();
+                        s.onerror = () => resolve();
+                        document.head.appendChild(s);
+                    });
+                }
+                return window.puter;
+            };
+
             const syncToPuter = async () => {
                 try {
-                    await puter.kv.set('ventarys_chats', JSON.stringify(chats));
-                    await puter.kv.set('ventarys_settings', JSON.stringify(apiSettings));
-                    await puter.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
-                    await puter.kv.set('ventarys_memories', JSON.stringify(chatMemories));
+                    const p = await ensurePuter();
+                    if (!p) throw new Error("Puter.js no se pudo cargar.");
+                    await p.kv.set('ventarys_chats', JSON.stringify(chats));
+                    await p.kv.set('ventarys_settings', JSON.stringify(apiSettings));
+                    await p.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
+                    await p.kv.set('ventarys_memories', JSON.stringify(chatMemories));
                     alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
                 } catch (e) { alert("[ERROR]: Fallo al sincronizar. " + e.message); }
             };
 
             const loadFromPuter = async () => {
                 try {
+                    const p = await ensurePuter();
+                    if (!p) throw new Error("Puter.js no se pudo cargar.");
                     const [savedChats, savedSettings, savedPrefs, savedMemories] = await Promise.all([
-                        puter.kv.get('ventarys_chats'),
-                        puter.kv.get('ventarys_settings'),
-                        puter.kv.get('ventarys_prefs'),
-                        puter.kv.get('ventarys_memories')
+                        p.kv.get('ventarys_chats'),
+                        p.kv.get('ventarys_settings'),
+                        p.kv.get('ventarys_prefs'),
+                        p.kv.get('ventarys_memories')
                     ]);
                     if (savedChats) setChats(JSON.parse(savedChats));
                     if (savedSettings) setApiSettings(JSON.parse(savedSettings));
@@ -444,8 +472,14 @@
                 } catch (e) { alert("[ERROR]: Fallo al cargar. Asegúrate de que los datos en Puter sean un JSON válido. " + e.message); }
             };
 
-            const loginPuter = async () => { await puter.auth.signIn(); setPuterSignedIn(puter.auth.isSignedIn()); };
-            const logoutPuter = () => { puter.auth.signOut(); setPuterSignedIn(false); };
+            const loginPuter = async () => {
+                const p = await ensurePuter();
+                if (p && p.auth) { await p.auth.signIn(); setPuterSignedIn(p.auth.isSignedIn()); }
+            };
+            const logoutPuter = async () => {
+                const p = await ensurePuter();
+                if (p && p.auth) { p.auth.signOut(); setPuterSignedIn(false); }
+            };
             const navigate = (v) => { setView(v); setMobileMenuOpen(false); };
 
             const visibleChats = Object.keys(chats).filter(id => !hiddenChats.includes(id));
@@ -830,8 +864,8 @@
                                     );
                                 }
 
-                                return (
-                                    <React.Fragment key={msg.id}>
+                                const msgContent = (
+                                    <Fragment>
                                         {msg.sender === 'system' ? (
                                             <div className="text-center text-[11px] text-red-400/80 border border-red-500/20 rounded-lg py-2 px-3 bg-red-500/5 msg-enter">{msg.text}</div>
                                         ) : msg.sender === 'user' ? (
@@ -849,8 +883,9 @@
                                             </div>
                                         )}
                                         {showAd && <AdInjector />}
-                                    </React.Fragment>
+                                    </Fragment>
                                 );
+                                return <div key={msg.id}>{msgContent}</div>;
                             })}
                             <div ref={messagesEndRef} />
                         </div>
@@ -1039,7 +1074,7 @@
 
     // Await React to be globally available before execution
     (function start() {
-        if (window.React && window.ReactDOM && window.Babel) return bootApp();
+        if (window.React && window.ReactDOM && window.Babel && typeof window.React.createElement === 'function') return bootApp();
         setTimeout(start, 100);
     })();
     </script>
