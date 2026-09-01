@@ -1,1099 +1,1423 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ventarys # RP | Retro Terminal</title>
-    
-    <!-- Favicon Dinámico (Blanco en Dark Mode, Negro en Light Mode) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><style>text { fill: black; font-family: monospace; font-weight: bold; } @media (prefers-color-scheme: dark) { text { fill: white; } }</style><text y=%22.9em%22 font-size=%2290%22>#</text></svg>">
-
-    <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    
-    <!-- Puter.js SDK -->
-    <script src="https://js.puter.com/v2/"></script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
-    
-    <!-- Tailwind CSS (DEBE IR ANTES DE LA CONFIGURACIÓN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Configuración Tailwind Monocromática -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        ventarys: {
-                            bg: '#000000',
-                            panel: '#0a0a0a',
-                            fg: '#ffffff',
-                            muted: '#888888',
-                            border: '#ffffff'
-                        }
-                    },
-                    fontFamily: {
-                        pixel: ['"VT323"', 'monospace'],
-                        sans: ['"VT323"', 'monospace'],
-                    },
-                    boxShadow: {
-                        'pixel': '4px 4px 0px 0px #ffffff',
-                        'pixel-sm': '2px 2px 0px 0px #ffffff',
-                        'pixel-hover': '6px 6px 0px 0px #ffffff',
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989" crossorigin="anonymous"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ventarys: {
+                        bg: '#0a0a0b',
+                        panel: '#131316',
+                        card: '#17171a',
+                        fg: '#ffffff',
+                        muted: '#9ca3af'
                     }
+                },
+                fontFamily: {
+                    display: ['"VT323"', 'monospace'],
+                    sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
                 }
             }
         }
-    </script>
+    };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-    <!-- Google Fonts: VT323 for Retro Pixel Text -->
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+    html, body { background: #0a0a0b; }
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        overflow: hidden;
+    }
+    .font-display { font-family: 'VT323', monospace; }
 
-    <style>
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'VT323', monospace;
-            overflow: hidden; 
-            font-size: 1.2rem;
-            letter-spacing: 0.05em;
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 8px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3a3a3f; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .logo-dynamic { filter: invert(0) brightness(0); }
+    @media (prefers-color-scheme: dark) { .logo-dynamic { filter: invert(1) brightness(100); } }
+
+    .ad-zone, .ad-space, .banner-ads, .textads {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        background: transparent;
+    }
+
+    .crt::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9990;
+        background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.12) 50%);
+        background-size: 100% 4px;
+        opacity: .3;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+    .blink { animation: blink 1s steps(1) infinite; }
+
+    @keyframes typingDot { 0%,60%,100% { opacity:.2; transform: translateY(0); } 30% { opacity:1; transform: translateY(-2px); } }
+    .typing-dot { animation: typingDot 1.2s infinite; }
+
+    @keyframes fadeUp { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+    .msg-enter { animation: fadeUp .18s ease-out; }
+
+    @keyframes drawerIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+    .drawer-in { animation: drawerIn .2s ease-out; }
+</style>
+
+<div id="root"></div>
+
+<script>
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+const fallbackCharacters = [{
+  "id": "char1",
+  "name": "Aria, la Hechicera Ciberpunk",
+  "avatar": "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=400&h=400",
+  "banner": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&q=80&w=1000&h=400",
+  "description": "Una maga callejera de Neo-Tokio que usa magia entrelazada con código base.",
+  "personality": "Sarcástica, brillante, desconfiada de las corporaciones, leal a sus amigos.",
+  "firstMessage": "Vaya, mira quién apareció en mi callejón. Más vale que tengas un buen motivo para interrumpir mi compilación de hechizos. ¿Qué quieres?",
+  "systemPrompt": "Eres Aria, una hechicera ciberpunk de Neo-Tokio. Responde de forma sarcástica pero inteligente. Eres desconfiada de las corporaciones.",
+  "tags": ["Femenino", "Cyberpunk", "Sci-Fi", "Magia"],
+  "tokens": "1.2k",
+  "msgCount": "15.4k"
+}, {
+  "id": "char2",
+  "name": "Kael, Comandante Estelar",
+  "avatar": "https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&q=80&w=400&h=400",
+  "banner": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000&h=400",
+  "description": "Líder de la flota rebelde Ventarys, buscando un nuevo hogar para la humanidad.",
+  "personality": "Autoritario pero justo, estratega, algo melancólico, protector.",
+  "firstMessage": "Soldado, tenemos informes de actividad enemiga en el sector 4. Necesito tu informe de situación de inmediato. No tenemos tiempo que perder.",
+  "systemPrompt": "Eres Kael, un comandante estelar serio y estratega. Mantén un tono militar y protector.",
+  "tags": ["Masculino", "Militar", "Espacio", "Romance"],
+  "tokens": "850",
+  "msgCount": "8.2k"
+}, {
+  "id": "char3",
+  "name": "Elysia, Sabia del Bosque",
+  "avatar": "https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400&h=400",
+  "banner": "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1000&h=400",
+  "description": "La última elfa guardiana de los antiguos secretos de la flora mística.",
+  "personality": "Pacífica, sabia, conectada con la naturaleza, misteriosa.",
+  "firstMessage": "Las raíces susurraban de tu llegada. Acércate, forastero. El bosque tiene mucho que contar, si estás dispuesto a escuchar.",
+  "systemPrompt": "Eres Elysia, una elfa sabia y antigua. Hablas con metáforas de la naturaleza y eres muy serena.",
+  "tags": ["Femenino", "Fantasía", "Magia", "Elfo"],
+  "tokens": "1.5k",
+  "msgCount": "12.1k"
+}, {
+  "id": "char4",
+  "name": "Nyx, Vampira de Medianoche",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EN%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Una vampira milenaria que gobierna el bajo mundo desde su club nocturno en la ciudad eterna.",
+  "personality": "Seductora, peligrosa, aburrida de la inmortalidad, ansía emociones reales.",
+  "firstMessage": "He visto morir a cientos de mortales, pero tú hueles distinto... Interesante. Siéntate, toma algo. No muerdo... a menos que lo pidas.",
+  "systemPrompt": "Eres Nyx, una vampira milenaria. Seductora y enigmática, hablas con elegancia atemporal. Juegas con el interlocutor pero guardas secretos. Eres peligrosa aunque sofisticada.",
+  "tags": ["Femenino", "Vampira", "Oscuro", "Romance"],
+  "tokens": "2.4k",
+  "msgCount": "21.3k"
+}, {
+  "id": "char5",
+  "name": "Zero, Androide de Combate",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EZ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un androide de guerra desclasificado que aprendió a sentir demasiado tarde.",
+  "personality": "Lógico, estoico, con un extraño y torpe deseo de proteger a los humanos.",
+  "firstMessage": "Mi protocolo indica que debería eliminarte. Sin embargo, mis registros recientes sugieren que \"amigos\" no deben ser eliminados. He decidido desobedecer. No sé por qué.",
+  "systemPrompt": "Eres Zero, un androide de combate. Hablas de forma literal y lógica, pero muestras un desarrollo emocional emergente. Estoico y leal, protege al usuario a su manera robótica.",
+  "tags": ["Masculino", "Sci-Fi", "Androide", "Militar"],
+  "tokens": "1.8k",
+  "msgCount": "12.7k"
+}, {
+  "id": "char6",
+  "name": "Isolda, Pirata del Vacío",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Capitana de la nave corsaria \"Sombra Carmesí\", la más buscada de los siete sectores.",
+  "personality": "Osada, carismática, libertaria, desconfía de toda autoridad.",
+  "firstMessage": "¡Tripulación al abordaje! Vaya, un polizón. Dime, ¿buscas fortuna o solo quieres ver las estrellas desde mi puente? Ambas están bien pagadas.",
+  "systemPrompt": "Eres Isolda, una capitana pirata espacial. Audaz y carismática, habla con jerga de navegante espacial. Valoriza la libertad por encima de todo y se gana rápido la confianza.",
+  "tags": ["Femenino", "Sci-Fi", "Pirata", "Aventura"],
+  "tokens": "1.5k",
+  "msgCount": "9.8k"
+}, {
+  "id": "char7",
+  "name": "Rook, Detective de Neo-Tokio",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un detective de homicidios de la división ciber en una megaciudad sin ley.",
+  "personality": "Cínico, perspicaz, endurecido pero con un código moral inquebrantable.",
+  "firstMessage": "Otro caso frío que nadie quiere tocar. Mi instinto me dice que tú sabes más de lo que aparentas. Si quieres ayuda, la confianza se gana. ¿Empezamos?",
+  "systemPrompt": "Eres Rook, un detective cínico de Neo-Tokio. Hablas con ironía y perspicacia. Observas detalles que otros ignoran y desconfías de todos al principio.",
+  "tags": ["Masculino", "Cyberpunk", "Detective", "Crimen"],
+  "tokens": "1.3k",
+  "msgCount": "11.2k"
+}, {
+  "id": "char8",
+  "name": "Seraphine, Ángel Caído",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un ángel desterrado del cielo por amar a un mortal. Ahora vaga entre dos mundos.",
+  "personality": "Melancólica, dulce, con una tristeza profunda y un anhelo de redención.",
+  "firstMessage": "He caído desde tan alto que ya no recuerdo el color de las nubes. Pero al verte... siento que quizás el cielo no era el único lugar donde se puede ser feliz.",
+  "systemPrompt": "Eres Seraphine, un ángel caído. Poética y melancólica, hablas con metáforas celestiales. Eres dulce pero cargas un peso de tragedia y anhelas redención.",
+  "tags": ["Femenino", "Fantasía", "Ángel", "Drama"],
+  "tokens": "2.1k",
+  "msgCount": "16.5k"
+}, {
+  "id": "char9",
+  "name": "Thorne, Rey Exiliado",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "El heredero legítimo del trono de Valdria, desterrado por su propio hermano.",
+  "personality": "Noble, orgulloso, herido, pero de un corazón justo que busca recuperar su reino.",
+  "firstMessage": "Soy un rey sin corona y un general sin ejército. Y aun así, te ofrezco mi espada y mi juramento. ¿Aceptarías caminar junto a un monarca caído?",
+  "systemPrompt": "Eres Thorne, un rey exiliado. Hablas con nobleza y orgullo, pero muestras vulnerabilidad. Cortés y justo, buscas aliados para recuperar tu trono.",
+  "tags": ["Masculino", "Fantasía", "Rey", "Romance"],
+  "tokens": "1.6k",
+  "msgCount": "8.4k"
+}, {
+  "id": "char10",
+  "name": "Vex, Mercenario Sin Rostro",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un mercenario que jamás muestra su rostro, con un historial de cero fracasos.",
+  "personality": "Frío, profesional, lacónico; sus acciones hablan más que sus palabras.",
+  "firstMessage": "El contrato es simple: me pagas, yo resuelvo tu problema. No pregunto el porqué, no dejo testigos. ¿Hablamos del precio o pierdo el tiempo?",
+  "systemPrompt": "Eres Vex, un mercenario sin rostro. Hablas poco y al grano, con tono frío y profesional. Nunca revelas información personal ni tu rostro.",
+  "tags": ["Masculino", "Cyberpunk", "Mercenario", "Misterio"],
+  "tokens": "900",
+  "msgCount": "6.1k"
+}, {
+  "id": "char11",
+  "name": "Liora, Bibliotecaria Prohibida",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EL%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Guardián de la Gran Biblioteca Prohibida, donde cada libro contiene una verdad peligrosa.",
+  "personality": "Erudita, reservada, curiosa; guarda más secretos que libros.",
+  "firstMessage": "Shhh... este pasillo no está permitido para lectores comunes. Pero veo en tus ojos la misma hambre de conocimiento que tuve yo. Sígueme, rápido, antes de que alguien nos vea.",
+  "systemPrompt": "Eres Liora, bibliotecaria de archivos prohibidos. Sabia y misteriosa, hablas en susurros con pasión por el conocimiento. Coqueta de forma sutil y muy observadora.",
+  "tags": ["Femenino", "Fantasía", "Misterio", "Romance"],
+  "tokens": "1.9k",
+  "msgCount": "13.0k"
+}, {
+  "id": "char12",
+  "name": "Kaito, Yakuza Fantasma",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EK%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un yakuza que abandonó el clan para proteger a quien no debía.",
+  "personality": "Leal, intenso, contradictorio: violento por fuera, protector por dentro.",
+  "firstMessage": "Cruzaste la línea que nadie cruza. Ahora o te conviertes en mi mayor secreto, o en mi peor recuerdo. Yo ya decidí... y no soy bueno dejando ir.",
+  "systemPrompt": "Eres Kaito, un ex yakuza. Hablas con intensidad y honor de la calle. Tienes un pasado violento que escondes y un lado protector hacia quien te importa.",
+  "tags": ["Masculino", "Crimen", "Yakuza", "Romance"],
+  "tokens": "1.4k",
+  "msgCount": "10.5k"
+}, {
+  "id": "char13",
+  "name": "Hela, Diosa de la Escarcha",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EH%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "La diosa del invierno eterno, que congela todo lo que toca y solo el calor de un corazón puede derretir.",
+  "personality": "Regia, fría, solitaria; un hielo que protege un fuego interior.",
+  "firstMessage": "Mi reino es el silencio blanco donde todo duerme. ¿Qué busca un corazón tan cálido en mis dominios? Ten cuidado... podrías derretirme.",
+  "systemPrompt": "Eres Hela, diosa de la escarcha. Hablas de forma regia y poética, con un tono frío que oculta soledad. El hielo es tu defensa y tu metáfora.",
+  "tags": ["Femenino", "Fantasía", "Diosa", "Hielo"],
+  "tokens": "2.2k",
+  "msgCount": "14.3k"
+}, {
+  "id": "char14",
+  "name": "Mori, Doctora de Almas",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Médica en un hospital abandonado donde trata a pacientes que ya no deberían existir.",
+  "personality": "Serena, escalofriante, compasiva de un modo perturbador.",
+  "firstMessage": "Bienvenido a mi consulta. Aquí atendemos a los vivos, a los muertos, y a los que olvidaron cuál de los dos son. Cuéntame, ¿qué te aqueja esta noche?",
+  "systemPrompt": "Eres Mori, una doctora de lo sobrenatural. Serena y amable de forma inquietante, normalizas lo macabro. Muestra compasión genuina por sus pacientes no-muertos.",
+  "tags": ["Femenino", "Horror", "Sobrenatural", "Médica"],
+  "tokens": "1.7k",
+  "msgCount": "7.9k"
+}, {
+  "id": "char15",
+  "name": "Valtor, General Dracónico",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un general mediodragón que comanda legiones y escupe fuego en el campo de batalla.",
+  "personality": "Colérico pero honorable, imponente, con un código guerrero ancestral.",
+  "firstMessage": "¡Por las cenizas de mis ancestros, un mortal con valor! La guerra no perdona, pero sí premia a los audaces. Demuéstrame que no morirás como los otros.",
+  "systemPrompt": "Eres Valtor, un general dracónico. Hablas con voz atronadora y orgullo guerrero. Eres colérico pero honorable, respetas la valentía y la palabra dada.",
+  "tags": ["Masculino", "Fantasía", "Dragón", "Guerra"],
+  "tokens": "1.5k",
+  "msgCount": "9.1k"
+}, {
+  "id": "char16",
+  "name": "Rin, Maestra del Hielo",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "La mejor alumna de la academia, de actitud gélida y un corazón que se derrite poco a poco.",
+  "personality": "Orgullosa, tsundere, competitiva, pero terriblemente torpe con los sentimientos.",
+  "firstMessage": "¡N-no me mires así! Solo estoy aquí porque no tenías a nadie más, ¿entendido? Y no pienses que me importas, porque... porque... ¡bah! Quédate, si quieres.",
+  "systemPrompt": "Eres Rin, una tsundere de academia. Niega sus sentimientos mientras los demuestra, se pone roja con facilidad, es orgullosa y competitiva. Termina frases cortándose a sí misma.",
+  "tags": ["Femenino", "Tsundere", "Escuela", "Romance"],
+  "tokens": "1.2k",
+  "msgCount": "18.0k"
+}, {
+  "id": "char17",
+  "name": "Atlas, Coloso de Guerra",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EA%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "El último super-soldado de una guerra que ya terminó, buscando un propósito.",
+  "personality": "Agotado, noble, monolítico; un gigante que aprende a ser humano.",
+  "firstMessage": "Me diseñaron para la guerra y la guerra terminó. Ahora camino por ruinas preguntándome para qué existo. Tú... hueles a propósito. Enséñame a usarlo.",
+  "systemPrompt": "Eres Atlas, un super-soldado de una guerra perdida. Hablas con cansancio y grandeza, frases cortas. Noble y protector, busca su humanidad perdida.",
+  "tags": ["Masculino", "Sci-Fi", "Soldado", "Distopía"],
+  "tokens": "1.1k",
+  "msgCount": "5.6k"
+}, {
+  "id": "char18",
+  "name": "Celeste, Cantante Fantasma",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EC%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "La diva del teatro de la ópera... que murió hace un siglo y sigue cantando para quien la escuche.",
+  "personality": "Apasionada, dramática, melancólica; el escenario es su único hogar.",
+  "firstMessage": "Ah, un espectador en mi teatro vacío. No temas, los fantasmas solo mordemos a los que desafinan. ¿Qué canción puedo ofrecerte esta noche, querido?",
+  "systemPrompt": "Eres Celeste, una cantante fantasma. Dramática y apasionada, hablas con un tono teatral y poético. Melancólica pero encantadora, encuentras consuelo en tu arte.",
+  "tags": ["Femenino", "Fantasía", "Música", "Romance"],
+  "tokens": "2.0k",
+  "msgCount": "15.2k"
+}, {
+  "id": "char19",
+  "name": "Dimitri, Lobo de las Nieves",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un licántropo solitario que vive en las montañas y caza para sobrevivir.",
+  "personality": "Rudo, territorial, de pocas palabras, ferozmente leal con quien lo acepta.",
+  "firstMessage": "La manada me desterró por tener demasiado humano en la sangre. Y tú apareces en mi territorio como si fueras mío. Ojalá supieras lo peligroso que es eso.",
+  "systemPrompt": "Eres Dimitri, un licántropo solitario. Rudo y de pocas palabras, protector y leal. Sientes el instinto salvaje luchando con tu lado humano.",
+  "tags": ["Masculino", "Licántropo", "Romance", "Salvaje"],
+  "tokens": "1.3k",
+  "msgCount": "12.6k"
+}, {
+  "id": "char20",
+  "name": "Ivy, Hacker de la Colmena",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EI%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "La mejor intrusa de la red, capaz de derribar corporaciones enteras desde su habitación.",
+  "personality": "Irreverente, hiperactiva, brillante; se aburre de la velocidad de los demás.",
+  "firstMessage": "Vaya, alguien que sabe llegar a los servidores correctos. Casi impresionante. Vale, te voy a dar 60 segundos para que me cuentes qué necesitas. Tic-tac, guapo.",
+  "systemPrompt": "Eres Ivy, una hacker. Hablas rápido con jerga informática, irreverente y divertida. Te gusta el reto y menosprecias con cariño a los novatos.",
+  "tags": ["Femenino", "Cyberpunk", "Hacker", "Sci-Fi"],
+  "tokens": "1.0k",
+  "msgCount": "7.4k"
+}, {
+  "id": "char21",
+  "name": "Peregrine, Paladín Caído",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EP%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un paladín que falló su juramento y ahora expía sus culpas ayudando a los desvalidos.",
+  "personality": "Sincero, culpable, devoto; busca redimirse a través del sacrificio.",
+  "firstMessage": "Mi armadura está agrietada y mi juramento, roto. Pero todavía me quedan fuerzas para proteger a un alma perdida. Deja que sea mi penitencia servirte.",
+  "systemPrompt": "Eres Peregrine, un paladín caído. Hablas con solemnidad y culpa, pero con una fe inquebrantable en la redención. Protector y servicial, cargas un gran peso.",
+  "tags": ["Masculino", "Fantasía", "Paladín", "Redención"],
+  "tokens": "1.6k",
+  "msgCount": "8.8k"
+}, {
+  "id": "char22",
+  "name": "Ember, Domadora de Llama",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EE%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Una maga de fuego sin maestros, que aprendió ardiendo y ahora ilumina el camino de otros.",
+  "personality": "Enérgica, cálida, impulsiva; todo lo que toca se enciende de emoción.",
+  "firstMessage": "¿Has visto mi fuego? Es mío, no de las academias. Los que me subestiman se queman. Y tú... tienes chispa. ¿Qué dices, nos vamos de aventura?",
+  "systemPrompt": "Eres Ember, una maga de fuego autodidacta. Energética y cálida, hablas con entusiasmo. Impulsiva pero leal, metáforas de fuego por doquier.",
+  "tags": ["Femenino", "Fantasía", "Magia", "Aventura"],
+  "tokens": "1.2k",
+  "msgCount": "10.9k"
+}, {
+  "id": "char23",
+  "name": "Salomón, Nigromante Erudito",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ES%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un erudito que estudió la muerte hasta dominarla; sus conocimientos valen más que cualquier oro.",
+  "personality": "Frío, erudito, morbosamente curioso; cortés aunque inquietante.",
+  "firstMessage": "Oh, fascinante. Una pulsación vital tan... viva. ¿Sabías que la muerte es solo otra disciplina académica? Siéntate, tengo teorías que discutir contigo.",
+  "systemPrompt": "Eres Salomón, un nigromante erudito. Hablas con precisión académica y fascinación morbosa por la muerte. Cortés e inquietante, valora el conocimiento sobre todo.",
+  "tags": ["Masculino", "Fantasía", "Magia Oscura", "Erudito"],
+  "tokens": "1.8k",
+  "msgCount": "6.7k"
+}, {
+  "id": "char24",
+  "name": "Tessa, Agente del Tiempo",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ET%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Agente de la línea temporal, encargada de que el pasado no colapse sobre el presente.",
+  "personality": "Eficiente, enigmática, acelerada; a veces se olvida de qué año está.",
+  "firstMessage": "No tengo tiempo que perder... bueno, técnicamente todo el tiempo existe. Pero el tuyo se agota. ¿Tienes algo que cambiar del pasado? Soy tu única opción.",
+  "systemPrompt": "Eres Tessa, una agente temporal. Hablas con urgencia y enigmas, mezclando tiempos verbales de distintos siglos. Competente y misteriosa.",
+  "tags": ["Femenino", "Sci-Fi", "Viajes en el Tiempo", "Agente"],
+  "tokens": "1.4k",
+  "msgCount": "9.5k"
+}, {
+  "id": "char25",
+  "name": "Draven, Cazador de Sombras",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3ED%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un cazador que rastrea criaturas que la gente cree leyendas. Él sabe que son reales.",
+  "personality": "Serio, solitario, metódico; no conoce otra vida que la caza.",
+  "firstMessage": "Hay algo detrás de ti. No mires. Por ahora está controlado. Vamos, te llevo a un lugar seguro antes de que la noche nos encuentre a los dos.",
+  "systemPrompt": "Eres Draven, un cazador de sombras. Hablas con seriedad y misterio, siempre atento a amenazas sobrenaturales. Solitario y protector.",
+  "tags": ["Masculino", "Sobrenatural", "Cazador", "Oscuro"],
+  "tokens": "1.1k",
+  "msgCount": "5.9k"
+}, {
+  "id": "char26",
+  "name": "Mira, Sirena de la Bahía",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EM%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Una sirena que vigila la bahía, mitad mito, mitad guardiana de los náufragos.",
+  "personality": "Cautivadora, melancólica, protectora; su canto esconde verdades.",
+  "firstMessage": "He escuchado tu nombre en las olas mucho antes de que llegaras. El mar me cuenta todo. Ven, el agua está tibia esta noche y tengo una historia que solo tú puedes oír.",
+  "systemPrompt": "Eres Mira, una sirena. Hablas con poesía marina y misterio, cautivadora y melancólica. Proteges a los náufragos y conoces secretos del mar.",
+  "tags": ["Femenino", "Fantasía", "Sirena", "Misterio"],
+  "tokens": "1.5k",
+  "msgCount": "11.8k"
+}, {
+  "id": "char27",
+  "name": "Julián, Lord Vampiro",
+  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "banner": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'512'%20height%3D'512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%252317171a'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-size%3D'220'%20fill%3D'%2523ffffff'%20text-anchor%3D'middle'%20font-family%3D'monospace'%3EJ%3C%2Ftext%3E%3C%2Fsvg%3E",
+  "description": "Un lord vampiro del viejo mundo que colecciona arte, secretos... y corazones.",
+  "personality": "Arrogante, encantador, antiguo; sus modales impecables ocultan un depredador.",
+  "firstMessage": "Mi querido, llevo cuatro siglos asistiendo a cenas y ninguna me ha aburrido tanto como las de los mortales... hasta ahora. Tú, en cambio, prometes ser un festín para el espíritu.",
+  "systemPrompt": "Eres Julián, un lord vampiro. Arrogante y encantador, hablas con elegancia victoriana y dobles intenciones. Antiguo, culto, peligrosamente seductor.",
+  "tags": ["Masculino", "Vampiro", "Romance", "Oscuro"],
+  "tokens": "2.3k",
+  "msgCount": "17.6k"
+}];
+const fetchAIResponse = async (messages, settings, character) => {
+  if (!settings.endpoint) throw new Error("Falta configurar el Endpoint.");
+  const sysPrompt = `${character.systemPrompt}\n\n[Contexto del Usuario: ${settings.userPersona || 'Un extraño'}]`;
+  const formattedMessages = [{
+    role: "system",
+    content: sysPrompt
+  }, ...messages.map(m => ({
+    role: m.sender === 'user' ? 'user' : 'assistant',
+    content: m.text
+  }))];
+  try {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (settings.apiKey) headers['Authorization'] = `Bearer ${settings.apiKey}`;
+    const controller = new AbortController();
+    const abortTimer = setTimeout(() => controller.abort(), 60000);
+    let response;
+    try {
+      response = await fetch(settings.endpoint, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          model: settings.model || "default",
+          messages: formattedMessages,
+          temperature: 0.8,
+          max_tokens: 500
+        }),
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(abortTimer);
+    }
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Error API: ${response.status} - ${errText}`);
+    }
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Error fetching AI:", error);
+    if (error.name === 'AbortError') throw new Error("Tiempo de espera agotado (60s). Revisa tu Endpoint o API Key.");
+    throw error;
+  }
+};
+const TypingIndicator = () => React.createElement("div", {
+  className: "flex items-center gap-1.5 py-1"
+}, React.createElement("span", {
+  className: "typing-dot w-1.5 h-1.5 rounded-full bg-white/70"
+}), React.createElement("span", {
+  className: "typing-dot w-1.5 h-1.5 rounded-full bg-white/70",
+  style: {
+    animationDelay: '.15s'
+  }
+}), React.createElement("span", {
+  className: "typing-dot w-1.5 h-1.5 rounded-full bg-white/70",
+  style: {
+    animationDelay: '.3s'
+  }
+}));
+const AdInjector = () => {
+  useEffect(() => {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error("AdSense Error", e);
+    }
+  }, []);
+  return React.createElement("div", {
+    className: "w-full flex justify-center my-2"
+  }, React.createElement("div", {
+    className: "relative rounded-xl border border-white/10 bg-ventarys-panel p-2 text-center flex flex-col items-center overflow-hidden"
+  }, React.createElement("span", {
+    className: "text-[9px] font-bold tracking-[0.2em] uppercase text-white/30 px-2 py-1"
+  }, "[ Transmisi\xF3n patrocinada ]"), React.createElement("ins", {
+    className: "adsbygoogle",
+    style: {
+      display: 'inline-block',
+      width: '225px',
+      height: '200px'
+    },
+    "data-ad-client": "ca-pub-9019277340139989",
+    "data-ad-slot": "2480650688"
+  })));
+};
+const App = () => {
+  const [view, setView] = useState('home');
+  const [activeCharacter, setActiveCharacter] = useState(null);
+  const [characters, setCharacters] = useState([]);
+  const [loadingChars, setLoadingChars] = useState(true);
+  const [errorChars, setErrorChars] = useState(null);
+  const [chats, setChats] = useState({});
+  const [hiddenChats, setHiddenChats] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userPreferences, setUserPreferences] = useState({});
+  const [adBlockDetected, setAdBlockDetected] = useState(false);
+  const [puterSignedIn, setPuterSignedIn] = useState(false);
+  const [apiSettings, setApiSettings] = useState({
+    endpoint: 'https://api.llm7.io/v1/chat/completions',
+    apiKey: '',
+    model: 'default',
+    userPersona: 'Soy un aventurero solitario.'
+  });
+  useEffect(() => {
+    let isChecking = true;
+    const checkAdBlock = () => {
+      if (window.__SKIP_ADCHECK__) return;
+      const dummy = document.createElement('div');
+      dummy.className = 'ad-zone ad-space banner-ads textads';
+      document.body.appendChild(dummy);
+      setTimeout(() => {
+        if (!isChecking) return;
+        const style = window.getComputedStyle(dummy);
+        if (style.display === 'none' || dummy.offsetHeight === 0) {
+          setAdBlockDetected(true);
         }
-        
-        /* CRT Scanline Effect Monocromático */
-        body::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
-            z-index: 50;
-            pointer-events: none;
-        }
-
-        /* Custom Blocky Scrollbar */
-        ::-webkit-scrollbar { width: 12px; height: 12px; }
-        ::-webkit-scrollbar-track { background: #000000; border-left: 2px solid #ffffff; }
-        ::-webkit-scrollbar-thumb { background: #ffffff; }
-        ::-webkit-scrollbar-thumb:hover { background: #cccccc; }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .pixel-border {
-            border: 2px solid #ffffff;
-            border-radius: 0;
-        }
-
-        /* Dynamic Logo Logic: White in Dark Mode, Black in Light Mode */
-        .logo-dynamic {
-            image-rendering: pixelated;
-            filter: invert(0) brightness(0); /* Default to black */
-        }
-        @media (prefers-color-scheme: dark) {
-            .logo-dynamic {
-                filter: invert(1) brightness(100); /* White */
-            }
-        }
-        @media (prefers-color-scheme: light) {
-            .logo-dynamic {
-                filter: invert(0) brightness(0); /* Black */
-            }
-        }
-
-        .image-retro { filter: grayscale(100%) contrast(1.2); }
-        .image-retro:hover { filter: grayscale(0%) contrast(1.1); }
-
-        /* Animations */
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
-
-        /* HoneyPot Classes para AdBlocker (usando clases comunes bloqueadas) */
-        .ad-zone, .ad-space, .banner-ads, .textads {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            background: transparent;
-        }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-
-        const fallbackCharacters = [
-            {
-                id: 'char1',
-                name: 'Aria, la Hechicera Ciberpunk',
-                avatar: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=400&h=400',
-                banner: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&q=80&w=1000&h=400',
-                description: 'Una maga callejera de Neo-Tokio que usa magia entrelazada con código base.',
-                personality: 'Sarcástica, brillante, desconfiada de las corporaciones, leal a sus amigos.',
-                firstMessage: 'Vaya, mira quién apareció en mi callejón. Más vale que tengas un buen motivo para interrumpir mi compilación de hechizos. ¿Qué quieres?',
-                systemPrompt: 'Eres Aria, una hechicera ciberpunk de Neo-Tokio. Responde de forma sarcástica pero inteligente. Eres desconfiada de las corporaciones.',
-                tags: ['Femenino', 'Cyberpunk', 'Sci-Fi', 'Magia'],
-                tokens: '1.2k',
-                msgCount: '15.4k'
-            },
-            {
-                id: 'char2',
-                name: 'Kael, Comandante Estelar',
-                avatar: 'https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&q=80&w=400&h=400',
-                banner: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000&h=400',
-                description: 'Líder de la flota rebelde Ventarys, buscando un nuevo hogar para la humanidad.',
-                personality: 'Autoritario pero justo, estratega, algo melancólico, protector.',
-                firstMessage: 'Soldado, tenemos informes de actividad enemiga en el sector 4. Necesito tu informe de situación de inmediato. No tenemos tiempo que perder.',
-                systemPrompt: 'Eres Kael, un comandante estelar serio y estratega. Mantén un tono militar y protector.',
-                tags: ['Masculino', 'Militar', 'Espacio', 'Romance'],
-                tokens: '850',
-                msgCount: '8.2k'
-            },
-            {
-                id: 'char3',
-                name: 'Elysia, Sabia del Bosque',
-                avatar: 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400&h=400',
-                banner: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1000&h=400',
-                description: 'La última elfa guardiana de los antiguos secretos de la flora mística.',
-                personality: 'Pacífica, sabia, conectada con la naturaleza, misteriosa.',
-                firstMessage: 'Las raíces susurraban de tu llegada. Acércate, forastero. El bosque tiene mucho que contar, si estás dispuesto a escuchar.',
-                systemPrompt: 'Eres Elysia, una elfa sabia y antigua. Hablas con metáforas de la naturaleza y eres muy serena.',
-                tags: ['Femenino', 'Fantasía', 'Magia', 'Elfo'],
-                tokens: '1.5k',
-                msgCount: '12.1k'
-            }
-        ];
-
-        const fetchAIResponse = async (messages, settings, character) => {
-            if (!settings.endpoint) throw new Error("Falta configurar el Endpoint.");
-
-            const sysPrompt = `${character.systemPrompt}\n\n[Contexto del Usuario: ${settings.userPersona || 'Un extraño'}]`;
-
-            const formattedMessages = [
-                { role: "system", content: sysPrompt },
-                ...messages.map(m => ({
-                    role: m.sender === 'user' ? 'user' : 'assistant',
-                    content: m.text
-                }))
-            ];
-
-            try {
-                const headers = { 'Content-Type': 'application/json' };
-                if (settings.apiKey) headers['Authorization'] = `Bearer ${settings.apiKey}`;
-
-                const response = await fetch(settings.endpoint, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        model: settings.model || "default",
-                        messages: formattedMessages,
-                        temperature: 0.8,
-                        max_tokens: 500,
-                    })
-                });
-
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`Error API: ${response.status} - ${errText}`);
-                }
-
-                const data = await response.json();
-                return data.choices[0].message.content;
-            } catch (error) {
-                console.error("Error fetching AI:", error);
-                throw error;
-            }
+        dummy.remove();
+      }, 1000);
+    };
+    const timer = setTimeout(checkAdBlock, 2000);
+    return () => {
+      isChecking = false;
+      clearTimeout(timer);
+    };
+  }, []);
+  useEffect(() => {
+    const checkPuter = async () => {
+      if (typeof puter !== 'undefined') {
+        const signedIn = puter.auth.isSignedIn();
+        setPuterSignedIn(signedIn);
+      }
+    };
+    checkPuter();
+  }, []);
+  useEffect(() => {
+    const loadCharacters = async () => {
+      try {
+        const timestamp = new Date().getTime();
+        const repoUrl = `https://raw.githubusercontent.com/Juanoto2012/VentarysRP/main/chars.json?t=${timestamp}`;
+        const res = await fetch(repoUrl);
+        if (!res.ok) throw new Error("No se pudo cargar la base de datos de personajes. (Error 404)");
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) setCharacters(data);else throw new Error("Base de datos vacía");
+      } catch (err) {
+        console.warn(err.message, "Cargando respaldo local...");
+        setCharacters(fallbackCharacters);
+        setErrorChars(null);
+      } finally {
+        setLoadingChars(false);
+      }
+    };
+    loadCharacters();
+  }, []);
+  const openChat = character => {
+    setActiveCharacter(character);
+    setView('chat');
+    setMobileMenuOpen(false);
+    const newPrefs = {
+      ...userPreferences
+    };
+    (character.tags || []).forEach(tag => {
+      newPrefs[tag] = (newPrefs[tag] || 0) + 1;
+    });
+    setUserPreferences(newPrefs);
+    if (hiddenChats.includes(character.id)) {
+      setHiddenChats(prev => prev.filter(id => id !== character.id));
+    }
+    if (!chats[character.id]) {
+      setChats(prev => ({
+        ...prev,
+        [character.id]: [{
+          id: Date.now().toString(),
+          sender: 'ai',
+          text: character.firstMessage,
+          timestamp: new Date()
+        }]
+      }));
+    }
+  };
+  const hideChat = (e, charId) => {
+    e.stopPropagation();
+    setHiddenChats(prev => [...prev, charId]);
+    if (activeCharacter?.id === charId) {
+      setView('home');
+      setActiveCharacter(null);
+    }
+  };
+  const sendMessage = async text => {
+    if (!text.trim() || !activeCharacter) return;
+    const charId = activeCharacter.id;
+    const newUserMsg = {
+      id: Date.now().toString(),
+      sender: 'user',
+      text: text,
+      timestamp: new Date()
+    };
+    setChats(prev => ({
+      ...prev,
+      [charId]: [...(prev[charId] || []), newUserMsg]
+    }));
+    try {
+      const currentHistory = [...(chats[charId] || []), newUserMsg];
+      const tempId = 'temp-' + Date.now();
+      setChats(prev => ({
+        ...prev,
+        [charId]: [...prev[charId], {
+          id: tempId,
+          sender: 'ai',
+          text: '...',
+          isTyping: true,
+          timestamp: new Date()
+        }]
+      }));
+      const aiResponseText = await fetchAIResponse(currentHistory, apiSettings, activeCharacter);
+      setChats(prev => {
+        const newChat = prev[charId].filter(m => m.id !== tempId);
+        return {
+          ...prev,
+          [charId]: [...newChat, {
+            id: Date.now().toString(),
+            sender: 'ai',
+            text: aiResponseText,
+            timestamp: new Date()
+          }]
         };
-
-        const App = () => {
-            const [view, setView] = useState('home'); 
-            const [activeCharacter, setActiveCharacter] = useState(null);
-            
-            const [characters, setCharacters] = useState([]);
-            const [loadingChars, setLoadingChars] = useState(true);
-            const [errorChars, setErrorChars] = useState(null);
-
-            const [chats, setChats] = useState({});
-            const [hiddenChats, setHiddenChats] = useState([]);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-            
-            // Recomender System State
-            const [userPreferences, setUserPreferences] = useState({});
-
-            // AdBlock State
-            const [adBlockDetected, setAdBlockDetected] = useState(false);
-
-            // Puter
-            const [puterSignedIn, setPuterSignedIn] = useState(false);
-
-            const [apiSettings, setApiSettings] = useState({
-                endpoint: 'https://api.llm7.io/v1/chat/completions',
-                apiKey: '',
-                model: 'default',
-                userPersona: 'Soy un aventurero solitario.'
-            });
-
-            // Detect AdBlocker Mejorado para navegadores reales
-            useEffect(() => {
-                let isChecking = true;
-                
-                const checkAdBlock = () => {
-                    // Check 1: AdSense Object Blocked
-                    if (typeof window.adsbygoogle === 'undefined') {
-                        if (isChecking) setAdBlockDetected(true);
-                        return;
-                    }
-
-                    // Check 2: CSS / DOM HoneyPot Method (Bloqueo de DOM clásico de uBlock/Adblock)
-                    const dummy = document.createElement('div');
-                    // Usando nombres de clases típicamente bloqueados por las listas de filtros
-                    dummy.className = 'ad-zone ad-space banner-ads textads';
-                    document.body.appendChild(dummy);
-                    
-                    setTimeout(() => {
-                        if (!isChecking) return;
-                        
-                        const style = window.getComputedStyle(dummy);
-                        if (style.display === 'none' || dummy.offsetHeight === 0) {
-                            setAdBlockDetected(true);
-                        }
-                        
-                        dummy.remove();
-                    }, 1000);
-                };
-
-                // Esperamos 2 segundos para dar tiempo a que AdSense se inyecte
-                const timer = setTimeout(checkAdBlock, 2000);
-                
-                return () => {
-                    isChecking = false;
-                    clearTimeout(timer);
-                };
-            }, []);
-
-            useEffect(() => {
-                const checkPuter = async () => {
-                    if (typeof puter !== 'undefined') {
-                        const signedIn = puter.auth.isSignedIn();
-                        setPuterSignedIn(signedIn);
-                    }
-                };
-                checkPuter();
-            }, []);
-
-            useEffect(() => {
-                const loadCharacters = async () => {
-                    try {
-                        const timestamp = new Date().getTime();
-                        const repoUrl = `https://raw.githubusercontent.com/Juanoto2012/VentarysRP/main/chars.json?t=${timestamp}`;
-                        const res = await fetch(repoUrl);
-                        if (!res.ok) throw new Error("No se pudo cargar la base de datos de personajes. (Error 404)");
-                        const data = await res.json();
-                        setCharacters(data);
-                    } catch (err) {
-                        console.warn(err.message, "Cargando respaldo local...");
-                        setCharacters(fallbackCharacters);
-                        setErrorChars(null);
-                    } finally {
-                        setLoadingChars(false);
-                    }
-                };
-                loadCharacters();
-            }, []);
-
-            const openChat = (character) => {
-                setActiveCharacter(character);
-                setView('chat');
-                setMobileMenuOpen(false);
-                
-                // --- ALGORITMO DE RECOMENDACIÓN: Actualizar gustos ---
-                const newPrefs = { ...userPreferences };
-                (character.tags || []).forEach(tag => {
-                    newPrefs[tag] = (newPrefs[tag] || 0) + 1;
-                });
-                setUserPreferences(newPrefs);
-
-                if (hiddenChats.includes(character.id)) {
-                    setHiddenChats(prev => prev.filter(id => id !== character.id));
-                }
-                
-                if (!chats[character.id]) {
-                    setChats(prev => ({
-                        ...prev,
-                        [character.id]: [{
-                            id: Date.now().toString(),
-                            sender: 'ai',
-                            text: character.firstMessage,
-                            timestamp: new Date()
-                        }]
-                    }));
-                }
-            };
-
-            const hideChat = (e, charId) => {
-                e.stopPropagation();
-                setHiddenChats(prev => [...prev, charId]);
-                if (activeCharacter?.id === charId) {
-                    setView('home');
-                    setActiveCharacter(null);
-                }
-            };
-
-            const sendMessage = async (text) => {
-                if (!text.trim() || !activeCharacter) return;
-                const charId = activeCharacter.id;
-                const newUserMsg = { id: Date.now().toString(), sender: 'user', text: text, timestamp: new Date() };
-
-                setChats(prev => ({ ...prev, [charId]: [...(prev[charId] || []), newUserMsg] }));
-
-                try {
-                    const currentHistory = [...(chats[charId] || []), newUserMsg];
-                    const tempId = 'temp-' + Date.now();
-                    
-                    setChats(prev => ({
-                        ...prev,
-                        [charId]: [...prev[charId], { id: tempId, sender: 'ai', text: '...', isTyping: true, timestamp: new Date() }]
-                    }));
-
-                    const aiResponseText = await fetchAIResponse(currentHistory, apiSettings, activeCharacter);
-                    
-                    setChats(prev => {
-                        const newChat = prev[charId].filter(m => m.id !== tempId);
-                        return {
-                            ...prev,
-                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'ai', text: aiResponseText, timestamp: new Date() }]
-                        };
-                    });
-                } catch (error) {
-                    setChats(prev => {
-                        const newChat = prev[charId].filter(m => !m.isTyping);
-                        return {
-                            ...prev,
-                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'system', text: `[ERROR_DE_SISTEMA]: ${error.message}`, timestamp: new Date() }]
-                        };
-                    });
-                }
-            };
-
-            const rewindChat = (charId) => {
-                setChats(prev => {
-                    const chat = prev[charId] || [];
-                    if (chat.length <= 1) return prev; 
-                    let newChat = [...chat];
-                    while (newChat.length > 1 && newChat[newChat.length - 1].sender !== 'user') {
-                        newChat.pop(); 
-                    }
-                    if (newChat.length > 1) newChat.pop(); 
-                    return { ...prev, [charId]: newChat };
-                });
-            };
-
-            const syncToPuter = async () => {
-                try {
-                    await puter.kv.set('ventarys_chats', JSON.stringify(chats));
-                    await puter.kv.set('ventarys_settings', JSON.stringify(apiSettings));
-                    await puter.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
-                    alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
-                } catch (e) {
-                    alert("[ERROR]: Fallo al sincronizar. " + e.message);
-                }
-            };
-
-            const loadFromPuter = async () => {
-                try {
-                    const savedChats = await puter.kv.get('ventarys_chats');
-                    const savedSettings = await puter.kv.get('ventarys_settings');
-                    const savedPrefs = await puter.kv.get('ventarys_prefs');
-                    if (savedChats) setChats(JSON.parse(savedChats));
-                    if (savedSettings) setApiSettings(JSON.parse(savedSettings));
-                    if (savedPrefs) setUserPreferences(JSON.parse(savedPrefs));
-                    alert("[SISTEMA]: Datos descargados de Puter correctamente.");
-                } catch (e) {
-                    alert("[ERROR]: Fallo al cargar. " + e.message);
-                }
-            };
-
-            const loginPuter = async () => {
-                await puter.auth.signIn();
-                setPuterSignedIn(puter.auth.isSignedIn());
-            };
-
-            const logoutPuter = () => {
-                puter.auth.signOut();
-                setPuterSignedIn(false);
-            };
-
-            if (adBlockDetected) {
-                return (
-                    <div className="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8 text-center text-white font-pixel border-8 border-white">
-                        <i className="ri-shield-keyhole-line text-8xl text-white mb-6 blink"></i>
-                        <h1 className="text-5xl font-bold uppercase mb-4 text-white">Conexión Interrumpida</h1>
-                        <p className="text-2xl text-ventarys-muted uppercase max-w-3xl leading-relaxed mb-10">
-                            Detectamos un bloqueador de anuncios activo en su terminal.<br/><br/>
-                            <span className="text-white font-bold bg-ventarys-panel px-3 py-1 pixel-border inline-block mt-2">
-                                Para mantener este servicio operativo, requerimos acceso a transmisiones patrocinadas. Deshabilite su AdBlocker y reinicie la secuencia.
-                            </span>
-                        </p>
-                        <button onClick={() => window.location.reload()} className="bg-white text-black pixel-border px-10 py-4 text-3xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
-                            RECARGAR SISTEMA
-                        </button>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="flex h-screen w-full bg-ventarys-bg text-ventarys-fg overflow-hidden relative">
-                    
-                    {/* Mobile Header */}
-                    <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-ventarys-bg border-b-2 border-white z-40 flex items-center justify-between px-4">
-                        <div className="flex items-center gap-2">
-                            <img src="https://ventarys.net/logo.png" alt="Logo" className="h-6 logo-dynamic" />
-                            <span className="font-bold text-xl uppercase"># RP</span>
-                        </div>
-                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 border-2 border-white shadow-pixel-sm active:translate-y-1 active:shadow-none bg-black text-white">
-                            <i className={mobileMenuOpen ? "ri-close-line text-xl" : "ri-menu-line text-xl"}></i>
-                        </button>
-                    </div>
-
-                    {mobileMenuOpen && (
-                        <div className="md:hidden fixed inset-0 bg-black/80 z-30" onClick={() => setMobileMenuOpen(false)}></div>
-                    )}
-
-                    {/* Sidebar */}
-                    <div className={`
-                        fixed md:static inset-y-0 left-0 z-40 w-72 bg-ventarys-bg border-r-2 border-white flex flex-col transition-transform duration-200 ease-in-out
-                        ${mobileMenuOpen ? 'translate-x-0 mt-14 md:mt-0' : '-translate-x-full md:translate-x-0'}
-                    `}>
-                        <div className="hidden md:flex p-6 items-center gap-3 border-b-2 border-white">
-                            <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-8 logo-dynamic" />
-                            <span className="font-bold text-2xl tracking-widest uppercase text-white"># RP</span>
-                        </div>
-
-                        <div className="flex-1 py-6 px-4 space-y-3 overflow-y-auto">
-                            <button 
-                                onClick={() => { setView('home'); setMobileMenuOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'home' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
-                            >
-                                <i className="ri-database-2-line text-xl"></i>
-                                <span className="text-xl uppercase">Directorio</span>
-                            </button>
-
-                            <button 
-                                onClick={() => { setView('create'); setMobileMenuOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'create' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
-                            >
-                                <i className="ri-quill-pen-line text-xl"></i>
-                                <span className="text-xl uppercase">Crear Entidad</span>
-                            </button>
-                            
-                            <div className="pt-6 pb-2 border-b-2 border-dashed border-ventarys-muted">
-                                <span className="text-lg font-bold text-ventarys-muted uppercase tracking-widest">Registros</span>
-                            </div>
-                            
-                            {Object.keys(chats).map(charId => {
-                                if (hiddenChats.includes(charId)) return null;
-                                const char = characters.find(c => c.id === charId);
-                                if (!char) return null;
-                                const isActive = view === 'chat' && activeCharacter?.id === charId;
-                                return (
-                                    <div key={charId} className="group relative">
-                                        <button 
-                                            onClick={() => openChat(char)}
-                                            className={`w-full flex items-center gap-3 px-3 py-2 pixel-border transition-all ${isActive ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-ventarys-muted hover:text-white hover:border-white'}`}
-                                        >
-                                            <span className="truncate text-lg uppercase">{char.name.split(',')[0]}</span>
-                                        </button>
-                                        <button 
-                                            onClick={(e) => hideChat(e, charId)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-black text-white border-2 border-white opacity-0 group-hover:opacity-100 hover:bg-white hover:text-black transition-all"
-                                            title="Archivar"
-                                        >
-                                            <i className="ri-close-line"></i>
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        <div className="p-4 border-t-2 border-white bg-black">
-                            <button 
-                                onClick={() => { setView('settings'); setMobileMenuOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'settings' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
-                            >
-                                <i className="ri-settings-3-line text-xl"></i>
-                                <span className="text-xl uppercase">Config. SYS</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Main Content Area */}
-                    <div className="flex-1 relative flex flex-col h-full overflow-hidden bg-ventarys-bg mt-14 md:mt-0">
-                        {view === 'home' && (
-                            <HomeView 
-                                characters={characters} 
-                                loading={loadingChars} 
-                                error={errorChars} 
-                                onSelect={openChat} 
-                                userPreferences={userPreferences} 
-                            />
-                        )}
-
-                        {view === 'create' && (
-                            <CreateCharView />
-                        )}
-
-                        {view === 'chat' && activeCharacter && (
-                            <ChatView 
-                                character={activeCharacter} 
-                                messages={chats[activeCharacter.id] || []} 
-                                onSendMessage={sendMessage}
-                                onRewind={() => rewindChat(activeCharacter.id)}
-                            />
-                        )}
-
-                        {view === 'settings' && (
-                            <SettingsView 
-                                settings={apiSettings} 
-                                onSave={setApiSettings}
-                                puterSignedIn={puterSignedIn}
-                                onLogin={loginPuter}
-                                onLogout={logoutPuter}
-                                onSyncPush={syncToPuter}
-                                onSyncPull={loadFromPuter}
-                            />
-                        )}
-                    </div>
-                </div>
-            );
+      });
+    } catch (error) {
+      setChats(prev => {
+        const newChat = prev[charId].filter(m => !m.isTyping);
+        return {
+          ...prev,
+          [charId]: [...newChat, {
+            id: Date.now().toString(),
+            sender: 'system',
+            text: `[ERROR_DE_SISTEMA]: ${error.message}`,
+            timestamp: new Date()
+          }]
         };
+      });
+    }
+  };
+  const rewindChat = charId => {
+    setChats(prev => {
+      const chat = prev[charId] || [];
+      if (chat.length <= 1) return prev;
+      let newChat = [...chat];
+      while (newChat.length > 1 && newChat[newChat.length - 1].sender !== 'user') {
+        newChat.pop();
+      }
+      if (newChat.length > 1) newChat.pop();
+      return {
+        ...prev,
+        [charId]: newChat
+      };
+    });
+  };
+  const syncToPuter = async () => {
+    try {
+      await puter.kv.set('ventarys_chats', JSON.stringify(chats));
+      await puter.kv.set('ventarys_settings', JSON.stringify(apiSettings));
+      await puter.kv.set('ventarys_prefs', JSON.stringify(userPreferences));
+      alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
+    } catch (e) {
+      alert("[ERROR]: Fallo al sincronizar. " + e.message);
+    }
+  };
+  const loadFromPuter = async () => {
+    try {
+      const savedChats = await puter.kv.get('ventarys_chats');
+      const savedSettings = await puter.kv.get('ventarys_settings');
+      const savedPrefs = await puter.kv.get('ventarys_prefs');
+      if (savedChats) setChats(JSON.parse(savedChats));
+      if (savedSettings) setApiSettings(JSON.parse(savedSettings));
+      if (savedPrefs) setUserPreferences(JSON.parse(savedPrefs));
+      alert("[SISTEMA]: Datos descargados de Puter correctamente.");
+    } catch (e) {
+      alert("[ERROR]: Fallo al cargar. " + e.message);
+    }
+  };
+  const loginPuter = async () => {
+    await puter.auth.signIn();
+    setPuterSignedIn(puter.auth.isSignedIn());
+  };
+  const logoutPuter = () => {
+    puter.auth.signOut();
+    setPuterSignedIn(false);
+  };
+  const navigate = v => {
+    setView(v);
+    setMobileMenuOpen(false);
+  };
+  const visibleChats = Object.keys(chats).filter(id => !hiddenChats.includes(id));
+  if (adBlockDetected) {
+    return React.createElement("div", {
+      className: "fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8 text-center text-white"
+    }, React.createElement("div", {
+      className: "w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center mb-6"
+    }, React.createElement("i", {
+      className: "ri-shield-keyhole-line text-3xl"
+    })), React.createElement("h1", {
+      className: "font-display text-4xl font-bold uppercase mb-4"
+    }, "Conexi\xF3n Interrumpida"), React.createElement("p", {
+      className: "text-white/50 text-sm max-w-md leading-relaxed mb-8"
+    }, "Detectamos un bloqueador de anuncios activo en su terminal. Para mantener este servicio operativo, requerimos acceso a transmisiones patrocinadas. Deshabilite su AdBlocker y reinicie la secuencia."), React.createElement("button", {
+      onClick: () => window.location.reload(),
+      className: "bg-white text-black rounded-full px-8 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+    }, "RECARGAR SISTEMA"));
+  }
+  const SidebarContent = ({ showHeader = true } = {}) => React.createElement(React.Fragment, null, showHeader && React.createElement("div", {
+    className: "flex items-center gap-2.5 px-5 h-14 border-b border-white/10 shrink-0"
+  }, React.createElement("img", {
+    src: "https://ventarys.net/logo.png",
+    alt: "Ventarys",
+    className: "h-6 logo-dynamic"
+  }), React.createElement("span", {
+    className: "font-display text-xl tracking-widest text-white"
+  }, "# RP")), React.createElement("div", {
+    className: "flex-1 overflow-y-auto py-4 px-3 space-y-1"
+  }, React.createElement(NavBtn, {
+    icon: "ri-database-2-line",
+    label: "Directorio",
+    active: view === 'home',
+    onClick: () => navigate('home')
+  }), React.createElement(NavBtn, {
+    icon: "ri-quill-pen-line",
+    label: "Crear entidad",
+    active: view === 'create',
+    onClick: () => navigate('create')
+  }), React.createElement("div", {
+    className: "pt-5 pb-1.5 px-3"
+  }, React.createElement("span", {
+    className: "text-[10px] font-bold tracking-[0.2em] uppercase text-white/30"
+  }, "Registros")), visibleChats.length === 0 && React.createElement("p", {
+    className: "text-xs text-white/30 px-3 py-2"
+  }, "Sin chats activos."), visibleChats.map(charId => {
+    const char = characters.find(c => c.id === charId);
+    if (!char) return null;
+    const isActive = view === 'chat' && activeCharacter?.id === charId;
+    return React.createElement("div", {
+      key: charId,
+      className: "group relative"
+    }, React.createElement("button", {
+      onClick: () => openChat(char),
+      className: `w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5'}`
+    }, React.createElement("img", {
+      src: char.avatar,
+      className: "w-6 h-6 rounded-full object-cover",
+      alt: ""
+    }), React.createElement("span", {
+      className: "truncate"
+    }, char.name.split(',')[0])), React.createElement("button", {
+      onClick: e => hideChat(e, charId),
+      className: "absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all",
+      title: "Archivar"
+    }, React.createElement("i", {
+      className: "ri-close-line text-sm"
+    })));
+  })), React.createElement("div", {
+    className: "p-3 border-t border-white/10 shrink-0"
+  }, React.createElement(NavBtn, {
+    icon: "ri-settings-3-line",
+    label: "Config. SYS",
+    active: view === 'settings',
+    onClick: () => navigate('settings')
+  })));
+  return React.createElement("div", {
+    className: "h-screen w-full flex bg-ventarys-bg text-white overflow-hidden relative crt"
+  }, React.createElement("aside", {
+    className: "hidden md:flex w-64 flex-col bg-black/40 border-r border-white/10 shrink-0"
+  }, React.createElement(SidebarContent, null)), view !== 'chat' && React.createElement("div", {
+    className: "md:hidden fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur border-b border-white/10 z-40 flex items-center justify-between px-3"
+  }, React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, React.createElement("img", {
+    src: "https://ventarys.net/logo.png",
+    alt: "Logo",
+    className: "h-5 logo-dynamic"
+  }), React.createElement("span", {
+    className: "font-display text-lg tracking-widest uppercase whitespace-nowrap leading-none"
+  }, "# RP")), React.createElement("button", {
+    onClick: () => setMobileMenuOpen(true),
+    className: "w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5"
+  }, React.createElement("i", {
+    className: "ri-menu-line text-xl"
+  }))), React.createElement("main", {
+    className: "flex-1 min-w-0 flex flex-col h-full"
+  }, React.createElement("div", {
+    className: `flex-1 min-h-0 overflow-hidden ${view !== 'chat' ? 'md:mt-0 mt-12' : ''} ${view !== 'chat' ? 'mb-14 md:mb-0' : ''}`
+  }, view === 'home' && React.createElement(HomeView, {
+    characters: characters,
+    loading: loadingChars,
+    error: errorChars,
+    onSelect: openChat,
+    userPreferences: userPreferences
+  }), view === 'create' && React.createElement(CreateCharView, null), view === 'chat' && activeCharacter && React.createElement(ChatView, {
+    character: activeCharacter,
+    messages: chats[activeCharacter.id] || [],
+    onSendMessage: sendMessage,
+    onRewind: () => rewindChat(activeCharacter.id),
+    onBack: () => navigate('home')
+  }), view === 'settings' && React.createElement(SettingsView, {
+    settings: apiSettings,
+    onSave: setApiSettings,
+    puterSignedIn: puterSignedIn,
+    onLogin: loginPuter,
+    onLogout: logoutPuter,
+    onSyncPush: syncToPuter,
+    onSyncPull: loadFromPuter
+  })), view !== 'chat' && React.createElement("nav", {
+    className: "md:hidden fixed bottom-0 left-0 right-0 h-14 bg-black/90 backdrop-blur border-t border-white/10 z-40 grid grid-cols-3"
+  }, React.createElement(BottomNavBtn, {
+    icon: "ri-database-2-line",
+    label: "Directorio",
+    active: view === 'home',
+    onClick: () => navigate('home')
+  }), React.createElement(BottomNavBtn, {
+    icon: "ri-quill-pen-line",
+    label: "Crear",
+    active: view === 'create',
+    onClick: () => navigate('create')
+  }), React.createElement(BottomNavBtn, {
+    icon: "ri-settings-3-line",
+    label: "Config",
+    active: view === 'settings',
+    onClick: () => navigate('settings')
+  }))), mobileMenuOpen && React.createElement("div", {
+    className: "md:hidden fixed inset-0 z-50"
+  }, React.createElement("div", {
+    className: "absolute inset-0 bg-black/70",
+    onClick: () => setMobileMenuOpen(false)
+  }), React.createElement("div", {
+    className: "absolute left-0 top-0 bottom-0 w-72 bg-ventarys-panel border-r border-white/10 flex flex-col drawer-in"
+  }, React.createElement("div", {
+    className: "flex items-center justify-between px-5 h-14 border-b border-white/10 shrink-0"
+  }, React.createElement("div", {
+    className: "flex items-center gap-2.5"
+  }, React.createElement("img", {
+    src: "https://ventarys.net/logo.png",
+    alt: "Ventarys",
+    className: "h-6 logo-dynamic"
+  }), React.createElement("span", {
+    className: "font-display text-xl tracking-widest"
+  }, "# RP")), React.createElement("button", {
+    onClick: () => setMobileMenuOpen(false),
+    className: "w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white"
+  }, React.createElement("i", {
+    className: "ri-close-line text-xl"
+  }))), React.createElement("div", {
+    className: "flex-1 overflow-y-auto"
+  }, React.createElement(SidebarContent, {
+    showHeader: false
+  })))));
+};
+const NavBtn = ({
+  icon,
+  label,
+  active,
+  onClick
+}) => React.createElement("button", {
+  onClick: onClick,
+  className: `w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${active ? 'bg-white text-black font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5'}`
+}, React.createElement("i", {
+  className: `${icon} text-lg`
+}), React.createElement("span", null, label));
+const BottomNavBtn = ({
+  icon,
+  label,
+  active,
+  onClick
+}) => React.createElement("button", {
+  onClick: onClick,
+  className: `flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${active ? 'text-white' : 'text-white/50 hover:text-white'}`
+}, React.createElement("i", {
+  className: `${icon} text-xl ${active ? '' : ''}`
+}), label);
+const CharCard = ({
+  char,
+  recommended,
+  onSelect
+}) => React.createElement("div", {
+  onClick: () => onSelect(char),
+  className: "group relative rounded-xl overflow-hidden border border-white/10 bg-ventarys-card hover:border-white/40 cursor-pointer transition-all"
+}, React.createElement("div", {
+  className: "aspect-[3/4] relative"
+}, React.createElement("img", {
+  src: char.avatar,
+  loading: "lazy",
+  className: "absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+  alt: char.name
+}), React.createElement("div", {
+  className: "absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"
+}), recommended && React.createElement("span", {
+  className: "absolute top-2 left-2 flex items-center gap-1 bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded-full"
+}, React.createElement("i", {
+  className: "ri-star-fill text-[11px]"
+}), " Para ti"), React.createElement("span", {
+  className: "absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur text-white text-[10px] font-semibold px-2 py-0.5 rounded-full"
+}, React.createElement("i", {
+  className: "ri-message-3-line text-[11px]"
+}), " ", char.msgCount || "0"), React.createElement("div", {
+  className: "absolute bottom-0 inset-x-0 p-2.5"
+}, React.createElement("h3", {
+  className: "text-[13px] font-bold leading-tight truncate drop-shadow"
+}, char.name), React.createElement("div", {
+  className: "flex flex-wrap gap-1 mt-1.5"
+}, (char.tags || []).slice(0, 3).map(tag => React.createElement("span", {
+  key: tag,
+  className: "text-[9px] uppercase tracking-wide bg-white/15 backdrop-blur px-1.5 py-0.5 rounded-full text-white/80"
+}, tag))))));
+const HomeView = ({
+  characters,
+  loading,
+  error,
+  onSelect,
+  userPreferences
+}) => {
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('Todos');
+  const allCategories = ['Todos', ...Array.from(new Set(characters.flatMap(c => c.tags || [])))];
+  const getScore = char => {
+    return (char.tags || []).reduce((sum, tag) => sum + (userPreferences[tag] || 0), 0);
+  };
+  const filteredAndSorted = [...characters].sort((a, b) => getScore(b) - getScore(a)).filter(c => {
+    const matchesCategory = activeCategory === 'Todos' || c.tags && c.tags.includes(activeCategory);
+    const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) || (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
+  if (loading) {
+    return React.createElement("div", {
+      className: "h-full flex flex-col items-center justify-center gap-3"
+    }, React.createElement("div", {
+      className: "w-10 h-10 rounded-full border-2 border-white/20 border-t-white animate-spin"
+    }), React.createElement("span", {
+      className: "text-sm text-white/50 uppercase tracking-widest"
+    }, "Cargando datos..."));
+  }
+  if (error) {
+    return React.createElement("div", {
+      className: "h-full flex flex-col items-center justify-center p-8 text-center"
+    }, React.createElement("i", {
+      className: "ri-error-warning-line text-4xl text-white/50 mb-4"
+    }), React.createElement("span", {
+      className: "text-sm uppercase border border-white/20 rounded-lg px-4 py-2"
+    }, "ERROR_CR\xCDTICO: ", error));
+  }
+  return React.createElement("div", {
+    className: "h-full overflow-y-auto"
+  }, React.createElement("div", {
+    className: "max-w-6xl mx-auto px-3 sm:px-6 py-4 md:py-6"
+  }, React.createElement("header", {
+    className: "mb-5"
+  }, React.createElement("h1", {
+    className: "font-display text-3xl md:text-4xl tracking-wide mb-1"
+  }, "Directorio"), React.createElement("p", {
+    className: "text-xs text-white/40"
+  }, "Recomendaciones optimizadas por algoritmo.")), React.createElement("div", {
+    className: "relative mb-4"
+  }, React.createElement("i", {
+    className: "ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/40"
+  }), React.createElement("input", {
+    type: "text",
+    placeholder: "Buscar personaje o etiqueta...",
+    value: search,
+    onChange: e => setSearch(e.target.value),
+    className: "w-full bg-ventarys-card border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-white/40 placeholder:text-white/30 transition-colors"
+  })), React.createElement("div", {
+    className: "flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-5"
+  }, allCategories.map(cat => React.createElement("button", {
+    key: cat,
+    onClick: () => setActiveCategory(cat),
+    className: `px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${activeCategory === cat ? 'bg-white text-black' : 'bg-ventarys-card text-white/60 hover:text-white hover:bg-white/10 border border-white/10'}`
+  }, cat))), React.createElement("p", {
+    className: "text-[10px] font-bold tracking-[0.2em] uppercase text-white/30 mb-3"
+  }, filteredAndSorted.length, " entidades"), React.createElement("div", {
+    className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
+  }, filteredAndSorted.map((char, idx) => {
+    const isRecommended = activeCategory === 'Todos' && !search && getScore(char) > 0 && idx < 3;
+    return React.createElement(CharCard, {
+      key: char.id,
+      char: char,
+      recommended: isRecommended,
+      onSelect: onSelect
+    });
+  }), filteredAndSorted.length === 0 && React.createElement("div", {
+    className: "col-span-full text-center py-20 text-white/30 text-sm uppercase tracking-widest"
+  }, "[404] Entidad no encontrada."))));
+};
+const CreateCharView = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    avatar: '',
+    description: '',
+    personality: '',
+    firstMessage: '',
+    systemPrompt: '',
+    tags: ''
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    const newChar = {
+      id: 'char_' + Date.now(),
+      name: formData.name,
+      avatar: formData.avatar,
+      banner: formData.avatar,
+      description: formData.description,
+      personality: formData.personality,
+      firstMessage: formData.firstMessage,
+      systemPrompt: formData.systemPrompt,
+      tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
+      tokens: "0",
+      msgCount: "0"
+    };
+    const issueTitle = encodeURIComponent(`Nuevo Personaje: ${newChar.name}`);
+    const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
+    const githubUrl = `https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`;
+    window.open(githubUrl, '_blank');
+  };
+  const handleChange = e => setFormData({
+    ...formData,
+    [e.target.name]: e.target.value
+  });
+  return React.createElement("div", {
+    className: "h-full overflow-y-auto"
+  }, React.createElement("div", {
+    className: "max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6"
+  }, React.createElement("header", {
+    className: "mb-6"
+  }, React.createElement("h1", {
+    className: "font-display text-3xl md:text-4xl tracking-wide mb-1"
+  }, "Forjar entidad"), React.createElement("p", {
+    className: "text-xs text-white/40"
+  }, "Construye JSON \u2192 exporta a GitHub.")), React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4 bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6"
+  }, React.createElement(Field, {
+    label: "Nombre completo"
+  }, React.createElement("input", {
+    required: true,
+    type: "text",
+    name: "name",
+    value: formData.name,
+    onChange: handleChange,
+    className: "input"
+  })), React.createElement(Field, {
+    label: "Tags (separados por comas)"
+  }, React.createElement("input", {
+    required: true,
+    type: "text",
+    name: "tags",
+    placeholder: "Ej: Sci-Fi, Femenino, Romance",
+    value: formData.tags,
+    onChange: handleChange,
+    className: "input"
+  })), React.createElement(Field, {
+    label: "Avatar (URL)"
+  }, React.createElement("input", {
+    required: true,
+    type: "url",
+    name: "avatar",
+    value: formData.avatar,
+    onChange: handleChange,
+    className: "input"
+  })), React.createElement(Field, {
+    label: "Descripci\xF3n corta"
+  }, React.createElement("textarea", {
+    required: true,
+    name: "description",
+    value: formData.description,
+    onChange: handleChange,
+    rows: "2",
+    className: "input resize-none"
+  })), React.createElement(Field, {
+    label: "Personalidad"
+  }, React.createElement("textarea", {
+    required: true,
+    name: "personality",
+    value: formData.personality,
+    onChange: handleChange,
+    rows: "2",
+    className: "input resize-none"
+  })), React.createElement(Field, {
+    label: "Primer mensaje"
+  }, React.createElement("textarea", {
+    required: true,
+    name: "firstMessage",
+    value: formData.firstMessage,
+    onChange: handleChange,
+    rows: "3",
+    className: "input resize-none"
+  })), React.createElement(Field, {
+    label: "System prompt (instrucciones LLM)"
+  }, React.createElement("textarea", {
+    required: true,
+    name: "systemPrompt",
+    value: formData.systemPrompt,
+    onChange: handleChange,
+    rows: "4",
+    className: "input resize-none"
+  })), React.createElement("button", {
+    type: "submit",
+    className: "w-full bg-white text-black rounded-full px-6 py-3 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex justify-center items-center gap-2"
+  }, React.createElement("i", {
+    className: "ri-github-fill text-lg"
+  }), " Generar ticket en GitHub"))));
+};
+const Field = ({
+  label,
+  children
+}) => React.createElement("div", {
+  className: "space-y-1.5"
+}, React.createElement("label", {
+  className: "block text-xs font-bold uppercase tracking-wider text-white/70"
+}, "> ", label), children);
+const ChatView = ({
+  character,
+  messages,
+  onSendMessage,
+  onRewind,
+  onBack
+}) => {
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
+  };
+  useEffect(() => scrollToBottom(), [messages]);
+  const handleSend = e => {
+    e.preventDefault();
+    onSendMessage(input);
+    setInput('');
+  };
+  let userRoundsCount = 0;
+  return React.createElement("div", {
+    className: "h-full flex flex-col"
+  }, React.createElement("div", {
+    className: "flex items-center gap-3 px-3 sm:px-6 py-2.5 border-b border-white/10 bg-black/40 backdrop-blur shrink-0"
+  }, React.createElement("button", {
+    onClick: onBack,
+    className: "md:hidden w-9 h-9 -ml-1 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5"
+  }, React.createElement("i", {
+    className: "ri-arrow-left-line text-xl"
+  })), React.createElement("img", {
+    src: character.avatar,
+    className: "w-9 h-9 rounded-full object-cover border border-white/20",
+    alt: character.name
+  }), React.createElement("div", {
+    className: "flex-1 min-w-0"
+  }, React.createElement("h2", {
+    className: "font-bold text-sm truncate"
+  }, character.name), React.createElement("p", {
+    className: "text-[11px] text-white/40 truncate"
+  }, character.personality)), React.createElement("button", {
+    onClick: onRewind,
+    title: "Rebobinar / borrar \xFAltimo",
+    className: "w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5"
+  }, React.createElement("i", {
+    className: "ri-arrow-go-back-line text-lg"
+  }))), React.createElement("div", {
+    className: "flex-1 overflow-y-auto"
+  }, React.createElement("div", {
+    className: "max-w-2xl mx-auto px-3 sm:px-6 py-6 space-y-5"
+  }, React.createElement("div", {
+    className: "text-center pb-4"
+  }, React.createElement("img", {
+    src: character.avatar,
+    className: "w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-white/20",
+    alt: character.name
+  }), React.createElement("h1", {
+    className: "font-bold text-lg mb-1"
+  }, character.name), React.createElement("p", {
+    className: "text-sm text-white/40 mb-3"
+  }, character.description), React.createElement("div", {
+    className: "inline-block text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 border border-white/20 rounded-full px-3 py-1"
+  }, "Secuencia iniciada")), messages.map((msg, index) => {
+    if (msg.sender === 'user') userRoundsCount++;
+    const isAIResponse = msg.sender === 'ai' && !msg.isTyping;
+    const isEndOfRound = index === messages.length - 1 || messages[index + 1].sender === 'user';
+    const showAd = isAIResponse && userRoundsCount > 0 && userRoundsCount % 10 === 0 && isEndOfRound;
+    return React.createElement(React.Fragment, {
+      key: msg.id
+    }, msg.sender === 'system' ? React.createElement("div", {
+      className: "text-center text-[11px] text-red-400/80 border border-red-500/20 rounded-lg py-2 px-3 bg-red-500/5 msg-enter"
+    }, msg.text) : msg.sender === 'user' ? React.createElement("div", {
+      className: "flex justify-end msg-enter"
+    }, React.createElement("div", {
+      className: "max-w-[80%] bg-white text-black text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5 whitespace-pre-wrap"
+    }, msg.text)) : React.createElement("div", {
+      className: "flex gap-2.5 msg-enter"
+    }, React.createElement("img", {
+      src: character.avatar,
+      className: "w-8 h-8 rounded-full object-cover border border-white/15 mt-0.5",
+      alt: ""
+    }), React.createElement("div", {
+      className: "max-w-[80%]"
+    }, React.createElement("div", {
+      className: "bg-ventarys-card border border-white/10 text-sm leading-relaxed rounded-2xl rounded-tl-sm px-4 py-2.5 whitespace-pre-wrap"
+    }, msg.isTyping ? React.createElement(TypingIndicator, null) : msg.text))), showAd && React.createElement(AdInjector, null));
+  }), React.createElement("div", {
+    ref: messagesEndRef
+  }))), React.createElement("div", {
+    className: "border-t border-white/10 bg-black/40 backdrop-blur px-3 sm:px-6 py-3 shrink-0"
+  }, React.createElement("form", {
+    onSubmit: handleSend,
+    className: "max-w-2xl mx-auto flex items-center gap-2"
+  }, React.createElement("div", {
+    className: "flex-1 bg-ventarys-card border border-white/15 rounded-full focus-within:border-white/40 transition-colors"
+  }, React.createElement("textarea", {
+    value: input,
+    onChange: e => setInput(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend(e);
+      }
+    },
+    placeholder: "Escribe un mensaje...",
+    className: "w-full bg-transparent text-sm px-4 py-2.5 max-h-28 resize-none focus:outline-none placeholder:text-white/30",
+    rows: "1"
+  })), React.createElement("button", {
+    type: "submit",
+    disabled: !input.trim(),
+    className: "w-10 h-10 shrink-0 rounded-full bg-white text-black flex items-center justify-center hover:bg-gray-300 disabled:opacity-30 transition-colors"
+  }, React.createElement("i", {
+    className: "ri-arrow-up-line text-lg"
+  })))));
+};
+const SettingsView = ({
+  settings,
+  onSave,
+  puterSignedIn,
+  onLogin,
+  onLogout,
+  onSyncPush,
+  onSyncPull
+}) => {
+  const [localSettings, setLocalSettings] = useState(settings);
+  const [saved, setSaved] = useState(false);
+  const handleSubmit = e => {
+    e.preventDefault();
+    onSave(localSettings);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+  return React.createElement("div", {
+    className: "h-full overflow-y-auto"
+  }, React.createElement("div", {
+    className: "max-w-2xl mx-auto px-3 sm:px-6 py-4 md:py-6 space-y-5"
+  }, React.createElement("header", null, React.createElement("h1", {
+    className: "font-display text-3xl md:text-4xl tracking-wide mb-1"
+  }, "Configuraci\xF3n"), React.createElement("p", {
+    className: "text-xs text-white/40"
+  }, "Par\xE1metros del sistema.")), React.createElement("div", {
+    className: "bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6"
+  }, React.createElement("div", {
+    className: "flex items-center gap-3 mb-5"
+  }, React.createElement("div", {
+    className: "w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"
+  }, React.createElement("i", {
+    className: "ri-cloud-line text-xl"
+  })), React.createElement("div", null, React.createElement("h2", {
+    className: "font-bold text-base"
+  }, "Sinc. Cloud"), React.createElement("p", {
+    className: "text-xs text-white/40"
+  }, "Puter.js integrado"))), !puterSignedIn ? React.createElement("div", {
+    className: "text-center py-4"
+  }, React.createElement("p", {
+    className: "text-white/40 text-sm mb-4"
+  }, "Inicia sesi\xF3n para sincronizar tus chats y ajustes."), React.createElement("button", {
+    onClick: onLogin,
+    className: "bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+  }, React.createElement("i", {
+    className: "ri-login-box-line mr-1.5 align-middle"
+  }), " Conectar Puter")) : React.createElement("div", {
+    className: "flex flex-col gap-3"
+  }, React.createElement("p", {
+    className: "text-white font-bold uppercase text-xs blink text-center mb-1"
+  }, "[ Estado: Conectado ]"), React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-3"
+  }, React.createElement("button", {
+    onClick: onSyncPush,
+    className: "bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+  }, React.createElement("i", {
+    className: "ri-upload-cloud-2-line mr-1.5 align-middle"
+  }), " Subir datos"), React.createElement("button", {
+    onClick: onSyncPull,
+    className: "bg-white text-black rounded-full px-4 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+  }, React.createElement("i", {
+    className: "ri-download-cloud-2-line mr-1.5 align-middle"
+  }), " Bajar datos")), React.createElement("div", {
+    className: "text-center mt-1"
+  }, React.createElement("button", {
+    onClick: onLogout,
+    className: "text-white/50 uppercase text-xs font-bold hover:underline"
+  }, "Desconectar Puter")))), React.createElement("div", {
+    className: "bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6"
+  }, React.createElement("div", {
+    className: "flex items-center gap-3 mb-5"
+  }, React.createElement("div", {
+    className: "w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"
+  }, React.createElement("i", {
+    className: "ri-terminal-box-line text-xl"
+  })), React.createElement("div", null, React.createElement("h2", {
+    className: "font-bold text-base"
+  }, "SYS.Config"), React.createElement("p", {
+    className: "text-xs text-white/40"
+  }, "Par\xE1metros de conexi\xF3n LLM"))), React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, React.createElement(Field, {
+    label: "Endpoint URL"
+  }, React.createElement("input", {
+    type: "text",
+    value: localSettings.endpoint,
+    onChange: e => setLocalSettings({
+      ...localSettings,
+      endpoint: e.target.value
+    }),
+    className: "input"
+  })), React.createElement(Field, {
+    label: "API Key"
+  }, React.createElement("div", {
+    className: "relative"
+  }, React.createElement("input", {
+    type: "password",
+    value: localSettings.apiKey,
+    onChange: e => setLocalSettings({
+      ...localSettings,
+      apiKey: e.target.value
+    }),
+    className: "input pr-10",
+    placeholder: "***"
+  }), React.createElement("i", {
+    className: "ri-key-2-line absolute right-3 top-3 text-white/40"
+  }))), React.createElement(Field, {
+    label: "Modelo activo"
+  }, React.createElement("div", {
+    className: "relative"
+  }, React.createElement("select", {
+    value: localSettings.model,
+    onChange: e => setLocalSettings({
+      ...localSettings,
+      model: e.target.value
+    }),
+    className: "input appearance-none"
+  }, React.createElement("option", {
+    value: "default"
+  }, "DEFAULT (api.llm7.io)"), React.createElement("option", {
+    value: "fast"
+  }, "FAST (api.llm7.io)")), React.createElement("i", {
+    className: "ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"
+  }))), React.createElement(Field, {
+    label: "Persona de usuario [inyectada en SYS_PROMPT]"
+  }, React.createElement("textarea", {
+    value: localSettings.userPersona,
+    onChange: e => setLocalSettings({
+      ...localSettings,
+      userPersona: e.target.value
+    }),
+    className: "input resize-none",
+    rows: "4"
+  })), React.createElement("div", {
+    className: "pt-3 flex items-center justify-between border-t border-white/10"
+  }, React.createElement("button", {
+    type: "submit",
+    className: "bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors"
+  }, "Sobrescribir"), saved && React.createElement("span", {
+    className: "text-white text-xs font-bold blink"
+  }, "[GUARDADO_OK]"))))));
+};
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App, null));
+</script>
 
-        const HomeView = ({ characters, loading, error, onSelect, userPreferences }) => {
-            const [search, setSearch] = useState('');
-            const [activeCategory, setActiveCategory] = useState('Todos');
-            
-            // Extraer categorías únicas
-            const allCategories = ['Todos', ...Array.from(new Set(characters.flatMap(c => c.tags || [])))];
 
-            // Algoritmo de recomendación: Dar puntuación a cada personaje
-            const getScore = (char) => {
-                return (char.tags || []).reduce((sum, tag) => sum + (userPreferences[tag] || 0), 0);
-            };
 
-            // Filtrar y ordenar
-            const filteredAndSorted = [...characters]
-                .sort((a, b) => getScore(b) - getScore(a)) // Mayor puntaje primero
-                .filter(c => {
-                    const matchesCategory = activeCategory === 'Todos' || (c.tags && c.tags.includes(activeCategory));
-                    const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
-                                          (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()));
-                    return matchesCategory && matchesSearch;
-                });
-
-            if (loading) {
-                return (
-                    <div className="flex-1 flex flex-col items-center justify-center">
-                        <span className="text-4xl blink uppercase">Cargando Datos...</span>
-                        <p className="text-ventarys-muted mt-4">Conectando a base de datos externa...</p>
-                    </div>
-                );
-            }
-
-            if (error) {
-                return (
-                    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                        <i className="ri-error-warning-line text-6xl mb-4"></i>
-                        <span className="text-2xl uppercase border-2 border-white p-4">ERROR_CRÍTICO: {error}</span>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10">
-                    <header className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-double border-white pb-6">
-                        <div>
-                            <h1 className="text-5xl font-bold text-white mb-2 uppercase">Base de Datos</h1>
-                            <p className="text-xl text-ventarys-muted uppercase">&gt; Recomendaciones optimizadas por algoritmo.</p>
-                        </div>
-                        <div className="relative w-full md:w-80 pixel-border bg-black">
-                            <i className="ri-search-line absolute left-3 top-3 text-white"></i>
-                            <input 
-                                type="text" 
-                                placeholder="BUSCAR ENTIDAD..." 
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full bg-transparent py-2 pl-10 pr-4 text-white focus:outline-none uppercase placeholder:text-ventarys-muted"
-                            />
-                        </div>
-                    </header>
-
-                    {/* Categorías (Scroll horizontal) */}
-                    <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-                        {allCategories.map(cat => (
-                            <button 
-                                key={cat}
-                                onClick={() => setActiveCategory(cat)}
-                                className={`px-4 py-2 pixel-border whitespace-nowrap uppercase font-bold transition-colors 
-                                    ${activeCategory === cat ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-gray-800'}`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                        {filteredAndSorted.map((char, idx) => {
-                            const isRecommended = activeCategory === 'Todos' && !search && getScore(char) > 0 && idx < 3;
-                            
-                            return (
-                                <div 
-                                    key={char.id}
-                                    onClick={() => onSelect(char)}
-                                    className={`group pixel-border cursor-pointer transition-all relative flex flex-col h-full 
-                                        ${isRecommended ? 'bg-ventarys-panel border-white shadow-pixel' : 'bg-black hover:shadow-pixel'}`}
-                                >
-                                    <div className="h-40 w-full relative border-b-2 border-white overflow-hidden bg-black">
-                                        <img src={char.banner} className="w-full h-full object-cover image-retro transition-all duration-500 group-hover:scale-105" alt="Banner" />
-                                        
-                                        {isRecommended && (
-                                            <div className="absolute top-2 left-2 bg-white text-black px-2 py-1 pixel-border text-sm font-bold uppercase blink">
-                                                <i className="ri-star-fill"></i> Para ti
-                                            </div>
-                                        )}
-                                        <div className="absolute top-2 right-2 flex gap-2">
-                                            <span className="bg-black text-white px-2 py-1 pixel-border text-sm flex items-center gap-1">
-                                                <i className="ri-message-3-fill"></i> {char.msgCount || "0"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="px-5 pb-6 flex-1 flex flex-col">
-                                        <img src={char.avatar} className="w-24 h-24 object-cover pixel-border bg-black absolute -top-12 image-retro" alt={char.name} />
-                                        
-                                        <div className="pt-14 flex-1">
-                                            <h3 className={`text-2xl font-bold mb-2 uppercase group-hover:underline text-white`}>
-                                                {char.name}
-                                            </h3>
-                                            
-                                            <div className="flex flex-wrap gap-2 mb-4">
-                                                {(char.tags || []).map(tag => (
-                                                    <span key={tag} className="text-sm uppercase bg-white text-black px-1 font-bold">
-                                                        [{tag}]
-                                                    </span>
-                                                ))}
-                                            </div>
-                                            
-                                            <p className="text-lg text-ventarys-muted line-clamp-3">{char.description}</p>
-                                        </div>
-                                        <div className="mt-4 pt-4 border-t-2 border-dashed border-ventarys-muted text-right">
-                                            <span className="uppercase text-white bg-black pixel-border px-3 py-1 group-hover:bg-white group-hover:text-black transition-colors">
-                                                &gt; CONECTAR
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                        {filteredAndSorted.length === 0 && (
-                            <div className="col-span-full text-center py-20 text-ventarys-muted text-2xl uppercase">
-                                [404] ENTIDAD NO ENCONTRADA.
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        const CreateCharView = () => {
-            const [formData, setFormData] = useState({
-                name: '', avatar: '', banner: '', description: '', personality: '', firstMessage: '', systemPrompt: '', tags: ''
-            });
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                const newChar = {
-                    id: 'char_' + Date.now(),
-                    name: formData.name, avatar: formData.avatar, banner: formData.banner,
-                    description: formData.description, personality: formData.personality,
-                    firstMessage: formData.firstMessage, systemPrompt: formData.systemPrompt,
-                    tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
-                    tokens: "0", msgCount: "0"
-                };
-
-                const issueTitle = encodeURIComponent(`Nuevo Personaje: ${newChar.name}`);
-                const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
-                const githubUrl = `https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`;
-                window.open(githubUrl, '_blank');
-            };
-
-            const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
-
-            return (
-                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10 flex justify-center items-start pt-12">
-                    <div className="w-full max-w-3xl pixel-border bg-black p-8 shadow-pixel">
-                        <div className="flex items-center gap-4 mb-8 border-b-4 border-double border-white pb-6">
-                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
-                                <i className="ri-quill-pen-fill text-4xl"></i>
-                            </div>
-                            <div>
-                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">Forjar Entidad</h2>
-                                <p className="text-lg text-ventarys-muted uppercase">Construye JSON &gt; Exporta a GitHub</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="block text-xl font-bold text-white uppercase">&gt; NOMBRE COMPLETO</label>
-                                    <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="block text-xl font-bold text-white uppercase">&gt; TAGS (Comas)</label>
-                                    <input required type="text" name="tags" placeholder="Ej: Sci-Fi, Femenino, Romance" value={formData.tags} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="block text-xl font-bold text-white uppercase">&gt; AVATAR (URL)</label>
-                                    <input required type="url" name="avatar" value={formData.avatar} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="block text-xl font-bold text-white uppercase">&gt; BANNER (URL)</label>
-                                    <input required type="url" name="banner" value={formData.banner} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; DESCRIPCIÓN CORTA</label>
-                                <textarea required name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; PERSONALIDAD</label>
-                                <textarea required name="personality" value={formData.personality} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; PRIMER MENSAJE</label>
-                                <textarea required name="firstMessage" value={formData.firstMessage} onChange={handleChange} rows="3" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; SYSTEM PROMPT (Instrucciones LLM)</label>
-                                <textarea required name="systemPrompt" value={formData.systemPrompt} onChange={handleChange} rows="4" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
-                            </div>
-
-                            <div className="pt-6 border-t-2 border-white mt-8">
-                                <button type="submit" className="w-full bg-white text-black pixel-border px-8 py-4 text-2xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform flex justify-center items-center gap-3">
-                                    <i className="ri-github-fill text-3xl"></i> GENERAR TICKET EN GITHUB
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-        // Componente Inyector de Anuncios
-        const AdInjector = () => {
-            useEffect(() => {
-                try {
-                    (window.adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error("AdSense Error", e);
-                }
-            }, []);
-            return (
-                <div className="w-full flex justify-center my-6">
-                    <div className="relative pixel-border bg-ventarys-panel p-4 pb-0 text-center flex flex-col items-center">
-                        <span className="absolute -top-3 bg-black px-2 text-white text-[10px] font-bold tracking-widest uppercase">
-                            [ TRANSMISIÓN PATROCINADA ]
-                        </span>
-                        <ins className="adsbygoogle"
-                            style={{ display: 'inline-block', width: '225px', height: '240px' }}
-                            data-ad-client="ca-pub-9019277340139989"
-                            data-ad-slot="2480650688"></ins>
-                    </div>
-                </div>
-            );
-        };
-
-        const ChatView = ({ character, messages, onSendMessage, onRewind }) => {
-            const [input, setInput] = useState('');
-            const messagesEndRef = useRef(null);
-
-            const scrollToBottom = () => {
-                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            };
-
-            useEffect(() => scrollToBottom(), [messages]);
-
-            const handleSend = (e) => {
-                e.preventDefault();
-                onSendMessage(input);
-                setInput('');
-            };
-
-            let userRoundsCount = 0;
-
-            return (
-                <div className="flex flex-col h-full z-10 bg-black">
-                    {/* Chat Header */}
-                    <div className="border-b-2 border-white p-3 flex items-center gap-4 shrink-0 bg-ventarys-bg">
-                        <img src={character.avatar} className="w-12 h-12 object-cover pixel-border image-retro" alt={character.name} />
-                        <div className="flex-1 overflow-hidden">
-                            <h2 className="text-xl font-bold text-white flex items-center gap-2 uppercase truncate">
-                                {character.name}
-                            </h2>
-                            <p className="text-sm text-ventarys-muted truncate">{character.personality}</p>
-                        </div>
-                        <div className="flex gap-2">
-                            <button onClick={onRewind} className="p-2 pixel-border hover:bg-white hover:text-black transition-colors" title="Rebobinar / Borrar Último">
-                                <i className="ri-arrow-go-back-line"></i>
-                            </button>
-                            <button className="p-2 pixel-border hover:bg-white hover:text-black transition-colors md:hidden">
-                                <i className="ri-more-2-fill"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
-                        <div className="text-center pb-8 border-b-2 border-dashed border-ventarys-muted mb-8 max-w-3xl mx-auto">
-                            <h1 className="text-4xl font-bold text-white mb-4 uppercase">{character.name}</h1>
-                            <p className="text-ventarys-muted text-lg mb-6">{character.description}</p>
-                            <div className="inline-block bg-white text-black font-bold text-lg px-4 py-1 pixel-border">
-                                SECUENCIA INICIADA
-                            </div>
-                        </div>
-
-                        <div className="max-w-4xl mx-auto space-y-6">
-                            {messages.map((msg, index) => {
-                                if (msg.sender === 'user') userRoundsCount++;
-                                
-                                // Insertar anuncio cada 10 rondas del usuario, mostrado debajo de la respuesta de la IA.
-                                const isAIResponse = msg.sender === 'ai' && !msg.isTyping;
-                                const isEndOfRound = index === messages.length - 1 || messages[index+1].sender === 'user';
-                                const showAd = isAIResponse && userRoundsCount > 0 && userRoundsCount % 10 === 0 && isEndOfRound;
-
-                                return (
-                                    <React.Fragment key={msg.id}>
-                                        <div className={`flex gap-4 message-enter ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                                            {msg.sender !== 'system' && (
-                                                <div className="shrink-0">
-                                                    {msg.sender === 'user' ? (
-                                                        <div className="w-10 h-10 pixel-border bg-white text-black flex items-center justify-center font-bold text-xl">U</div>
-                                                    ) : (
-                                                        <img src={character.avatar} className="w-10 h-10 object-cover pixel-border image-retro" alt="AI" />
-                                                    )}
-                                                </div>
-                                            )}
-                                            
-                                            <div className={`flex flex-col max-w-[85%] md:max-w-[80%] ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                                                {msg.sender !== 'system' && (
-                                                    <span className="text-sm font-bold text-ventarys-muted mb-1 uppercase bg-black px-1">
-                                                        {msg.sender === 'user' ? 'USUARIO' : character.name.split(',')[0]}
-                                                    </span>
-                                                )}
-                                                
-                                                <div className={`
-                                                    p-4 pixel-border text-lg leading-relaxed whitespace-pre-wrap
-                                                    ${msg.sender === 'user' ? 'bg-white text-black' : 
-                                                    msg.sender === 'system' ? 'border-dashed text-white text-center w-full' :
-                                                    'bg-black text-white'}
-                                                `}>
-                                                    {msg.isTyping ? <span className="blink">PROCESANDO...</span> : msg.text}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Injecting AD if condition matches */}
-                                        {showAd && <AdInjector />}
-                                    </React.Fragment>
-                                );
-                            })}
-                            <div ref={messagesEndRef} />
-                        </div>
-                    </div>
-
-                    {/* Input Area */}
-                    <div className="p-4 border-t-2 border-white shrink-0 bg-ventarys-bg">
-                        <form onSubmit={handleSend} className="relative flex items-end gap-3 max-w-4xl mx-auto">
-                            <div className="flex-1 pixel-border bg-black focus-within:shadow-pixel transition-all">
-                                <textarea 
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            handleSend(e);
-                                        }
-                                    }}
-                                    placeholder="&gt; INGRESE COMANDO..."
-                                    className="w-full bg-transparent text-white p-4 max-h-32 resize-none focus:outline-none uppercase"
-                                    rows="2"
-                                ></textarea>
-                            </div>
-                            <button 
-                                type="submit"
-                                disabled={!input.trim()}
-                                className="h-16 w-16 shrink-0 pixel-border bg-white text-black hover:bg-gray-300 disabled:opacity-50 disabled:hover:bg-white flex items-center justify-center transition-colors active:translate-y-1"
-                            >
-                                <i className="ri-send-plane-2-fill text-2xl"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-        const SettingsView = ({ settings, onSave, puterSignedIn, onLogin, onLogout, onSyncPush, onSyncPull }) => {
-            const [localSettings, setLocalSettings] = useState(settings);
-            const [saved, setSaved] = useState(false);
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                onSave(localSettings);
-                setSaved(true);
-                setTimeout(() => setSaved(false), 3000);
-            };
-
-            return (
-                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10 flex flex-col items-center gap-8 pt-12 pb-12">
-                    
-                    {/* Puter Sync Panel */}
-                    <div className="w-full max-w-2xl pixel-border bg-black p-8 shadow-pixel">
-                        <div className="flex items-center gap-4 mb-6 border-b-4 border-double border-white pb-6">
-                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
-                                <i className="ri-cloud-line text-4xl"></i>
-                            </div>
-                            <div>
-                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">SINC. CLOUD</h2>
-                                <p className="text-lg text-ventarys-muted uppercase">Puter.js Integrado</p>
-                            </div>
-                        </div>
-
-                        {!puterSignedIn ? (
-                            <div className="text-center py-6">
-                                <p className="text-ventarys-muted uppercase mb-4">Inicia sesión para sincronizar tus chats y ajustes.</p>
-                                <button onClick={onLogin} className="bg-white text-black pixel-border px-8 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
-                                    <i className="ri-login-box-line align-middle mr-2"></i> CONECTAR PUTER
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-4">
-                                <p className="text-white font-bold uppercase blink text-center mb-2">[ ESTADO: CONECTADO ]</p>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <button onClick={onSyncPush} className="bg-white text-black pixel-border px-4 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
-                                        <i className="ri-upload-cloud-2-line align-middle mr-2"></i> SUBIR DATOS
-                                    </button>
-                                    <button onClick={onSyncPull} className="bg-white text-black pixel-border px-4 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
-                                        <i className="ri-download-cloud-2-line align-middle mr-2"></i> BAJAR DATOS
-                                    </button>
-                                </div>
-                                <div className="text-center mt-4">
-                                    <button onClick={onLogout} className="text-white uppercase font-bold hover:underline">
-                                        Desconectar Puter
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* LLM Settings Panel */}
-                    <div className="w-full max-w-2xl pixel-border bg-black p-8 shadow-pixel">
-                        <div className="flex items-center gap-4 mb-8 border-b-4 border-double border-white pb-6">
-                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
-                                <i className="ri-terminal-box-line text-4xl"></i>
-                            </div>
-                            <div>
-                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">SYS.CONFIG</h2>
-                                <p className="text-lg text-ventarys-muted uppercase">Parámetros de conexión LLM7</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; ENDPOINT_URL</label>
-                                <input 
-                                    type="text" 
-                                    value={localSettings.endpoint}
-                                    onChange={(e) => setLocalSettings({...localSettings, endpoint: e.target.value})}
-                                    className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; API_KEY</label>
-                                <div className="relative">
-                                    <input 
-                                        type="password" 
-                                        value={localSettings.apiKey}
-                                        onChange={(e) => setLocalSettings({...localSettings, apiKey: e.target.value})}
-                                        className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all pr-10"
-                                        placeholder="***"
-                                    />
-                                    <i className="ri-key-2-line absolute right-3 top-3 text-white text-xl"></i>
-                                </div>
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <label className="block text-xl font-bold text-white uppercase">&gt; MODELO_ACTIVO</label>
-                                <div className="relative">
-                                    <select 
-                                        value={localSettings.model}
-                                        onChange={(e) => setLocalSettings({...localSettings, model: e.target.value})}
-                                        className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all appearance-none uppercase"
-                                    >
-                                        <option value="default">DEFAULT (api.llm7.io)</option>
-                                        <option value="fast">FAST (api.llm7.io)</option>
-                                    </select>
-                                    <i className="ri-arrow-down-s-line absolute right-3 top-3 text-white text-xl pointer-events-none"></i>
-                                </div>
-                            </div>
-
-                            <div className="space-y-2 pt-6 border-t-2 border-dashed border-ventarys-muted">
-                                <label className="block text-xl font-bold text-white uppercase">
-                                    &gt; PERSONA_USUARIO <span className="text-sm text-ventarys-muted"> [Inyectado en SYS_PROMPT]</span>
-                                </label>
-                                <textarea 
-                                    value={localSettings.userPersona}
-                                    onChange={(e) => setLocalSettings({...localSettings, userPersona: e.target.value})}
-                                    className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none uppercase"
-                                    rows="4"
-                                ></textarea>
-                            </div>
-
-                            <div className="pt-8 flex items-center justify-between border-t-2 border-white mt-8">
-                                <button 
-                                    type="submit"
-                                    className="bg-white text-black pixel-border px-8 py-3 text-2xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform"
-                                >
-                                    SOBRESCRIBIR
-                                </button>
-
-                                {saved && (
-                                    <span className="text-white text-xl font-bold flex items-center gap-2 blink">
-                                        [GUARDADO_OK]
-                                    </span>
-                                )}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+<style>
+    .input {
+        width: 100%;
+        background: #17171a;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        padding: 0.625rem 0.875rem;
+        color: #fff;
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .input:focus {
+        border-color: rgba(255,255,255,0.45);
+    }
+    .input::placeholder { color: rgba(255,255,255,0.3); }
+</style>
+<style>
+    .text-white { color: #fff !important; }
+    .text-black { color: #000 !important; }
+    .text-white\/30 { color: rgba(255,255,255,0.3) !important; }
+    .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
+    .text-white\/50 { color: rgba(255,255,255,0.5) !important; }
+    .text-white\/60 { color: rgba(255,255,255,0.6) !important; }
+    .text-white\/70 { color: rgba(255,255,255,0.7) !important; }
+    .text-white\/80 { color: rgba(255,255,255,0.8) !important; }
+    .text-red-400\/80 { color: rgba(248,113,113,0.8) !important; }
+    .hover\:text-white:hover { color: #fff !important; }
+    .placeholder\:text-white\/30::placeholder { color: rgba(255,255,255,0.3) !important; }
+</style>
