@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ventarys # RP | Retro Terminal</title>
     
+    <!-- Favicon Dinámico (Blanco en Dark Mode, Negro en Light Mode) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><style>text { fill: black; font-family: monospace; font-weight: bold; } @media (prefers-color-scheme: dark) { text { fill: white; } }</style><text y=%22.9em%22 font-size=%2290%22>#</text></svg>">
+
     <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     
@@ -17,7 +20,7 @@
     <!-- Tailwind CSS (DEBE IR ANTES DE LA CONFIGURACIÓN) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Configuración Tailwind -->
+    <!-- Configuración Tailwind Monocromática -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -66,7 +69,7 @@
             letter-spacing: 0.05em;
         }
         
-        /* CRT Scanline Effect */
+        /* CRT Scanline Effect Monocromático */
         body::before {
             content: " ";
             display: block;
@@ -75,7 +78,7 @@
             left: 0;
             bottom: 0;
             right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
             z-index: 50;
             pointer-events: none;
         }
@@ -117,11 +120,11 @@
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* AdBlock Dummy Element */
-        .adsbox {
+        /* HoneyPot Classes para AdBlocker (usando clases comunes bloqueadas) */
+        .ad-zone, .ad-space, .banner-ads, .textads {
             position: absolute;
-            top: -999px;
-            left: -999px;
+            top: -9999px;
+            left: -9999px;
             width: 1px;
             height: 1px;
             background: transparent;
@@ -245,29 +248,42 @@
                 userPersona: 'Soy un aventurero solitario.'
             });
 
-            // Detect AdBlocker
+            // Detect AdBlocker Mejorado para navegadores reales
             useEffect(() => {
+                let isChecking = true;
+                
                 const checkAdBlock = () => {
-                    // Method 1: Check DOM interference
+                    // Check 1: AdSense Object Blocked
+                    if (typeof window.adsbygoogle === 'undefined') {
+                        if (isChecking) setAdBlockDetected(true);
+                        return;
+                    }
+
+                    // Check 2: CSS / DOM HoneyPot Method (Bloqueo de DOM clásico de uBlock/Adblock)
                     const dummy = document.createElement('div');
-                    dummy.className = 'adsbox';
+                    // Usando nombres de clases típicamente bloqueados por las listas de filtros
+                    dummy.className = 'ad-zone ad-space banner-ads textads';
                     document.body.appendChild(dummy);
                     
                     setTimeout(() => {
-                        if (dummy.offsetHeight === 0) {
+                        if (!isChecking) return;
+                        
+                        const style = window.getComputedStyle(dummy);
+                        if (style.display === 'none' || dummy.offsetHeight === 0) {
                             setAdBlockDetected(true);
                         }
+                        
                         dummy.remove();
                     }, 1000);
-
-                    // Method 2: Check Network block (Fetch AdSense Script)
-                    fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9019277340139989', { 
-                        method: 'HEAD', mode: 'no-cors' 
-                    }).catch(() => {
-                        setAdBlockDetected(true);
-                    });
                 };
-                checkAdBlock();
+
+                // Esperamos 2 segundos para dar tiempo a que AdSense se inyecte
+                const timer = setTimeout(checkAdBlock, 2000);
+                
+                return () => {
+                    isChecking = false;
+                    clearTimeout(timer);
+                };
             }, []);
 
             useEffect(() => {
@@ -424,12 +440,14 @@
 
             if (adBlockDetected) {
                 return (
-                    <div className="fixed inset-0 bg-ventarys-bg z-[9999] flex flex-col items-center justify-center p-8 text-center text-ventarys-fg font-pixel border-8 border-red-600">
-                        <i className="ri-shield-keyhole-line text-8xl text-red-500 mb-6 blink"></i>
+                    <div className="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8 text-center text-white font-pixel border-8 border-white">
+                        <i className="ri-shield-keyhole-line text-8xl text-white mb-6 blink"></i>
                         <h1 className="text-5xl font-bold uppercase mb-4 text-white">Conexión Interrumpida</h1>
                         <p className="text-2xl text-ventarys-muted uppercase max-w-3xl leading-relaxed mb-10">
-                            Detectamos un bloqueador de anuncios activo. Los anuncios son necesarios para mantener los servidores de Inteligencia Artificial funcionando de forma gratuita.<br/><br/>
-                            <span className="text-red-400">Por favor, deshabilita tu AdBlocker para este sitio y reinicia el sistema.</span>
+                            Detectamos un bloqueador de anuncios activo en su terminal.<br/><br/>
+                            <span className="text-white font-bold bg-ventarys-panel px-3 py-1 pixel-border inline-block mt-2">
+                                Para mantener este servicio operativo, requerimos acceso a transmisiones patrocinadas. Deshabilite su AdBlocker y reinicie la secuencia.
+                            </span>
                         </p>
                         <button onClick={() => window.location.reload()} className="bg-white text-black pixel-border px-10 py-4 text-3xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
                             RECARGAR SISTEMA
@@ -590,7 +608,7 @@
                 return (
                     <div className="flex-1 flex flex-col items-center justify-center">
                         <span className="text-4xl blink uppercase">Cargando Datos...</span>
-                        <p className="text-ventarys-muted mt-4">Conectando a Github Juanoto2012/VentarysRP</p>
+                        <p className="text-ventarys-muted mt-4">Conectando a base de datos externa...</p>
                     </div>
                 );
             }
@@ -646,13 +664,13 @@
                                     key={char.id}
                                     onClick={() => onSelect(char)}
                                     className={`group pixel-border cursor-pointer transition-all relative flex flex-col h-full 
-                                        ${isRecommended ? 'bg-gray-900 border-yellow-400 shadow-[4px_4px_0_0_#fbbf24]' : 'bg-black hover:shadow-pixel'}`}
+                                        ${isRecommended ? 'bg-ventarys-panel border-white shadow-pixel' : 'bg-black hover:shadow-pixel'}`}
                                 >
                                     <div className="h-40 w-full relative border-b-2 border-white overflow-hidden bg-black">
                                         <img src={char.banner} className="w-full h-full object-cover image-retro transition-all duration-500 group-hover:scale-105" alt="Banner" />
                                         
                                         {isRecommended && (
-                                            <div className="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 pixel-border text-sm font-bold uppercase blink">
+                                            <div className="absolute top-2 left-2 bg-white text-black px-2 py-1 pixel-border text-sm font-bold uppercase blink">
                                                 <i className="ri-star-fill"></i> Para ti
                                             </div>
                                         )}
@@ -666,7 +684,7 @@
                                         <img src={char.avatar} className="w-24 h-24 object-cover pixel-border bg-black absolute -top-12 image-retro" alt={char.name} />
                                         
                                         <div className="pt-14 flex-1">
-                                            <h3 className={`text-2xl font-bold mb-2 uppercase group-hover:underline ${isRecommended ? 'text-yellow-400' : 'text-white'}`}>
+                                            <h3 className={`text-2xl font-bold mb-2 uppercase group-hover:underline text-white`}>
                                                 {char.name}
                                             </h3>
                                             
@@ -796,7 +814,7 @@
             return (
                 <div className="w-full flex justify-center my-6">
                     <div className="relative pixel-border bg-ventarys-panel p-4 pb-0 text-center flex flex-col items-center">
-                        <span className="absolute -top-3 bg-black px-2 text-ventarys-muted text-[10px] font-bold tracking-widest uppercase">
+                        <span className="absolute -top-3 bg-black px-2 text-white text-[10px] font-bold tracking-widest uppercase">
                             [ TRANSMISIÓN PATROCINADA ]
                         </span>
                         <ins className="adsbygoogle"
@@ -972,7 +990,7 @@
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
-                                <p className="text-green-400 font-bold uppercase blink text-center mb-2">[ ESTADO: CONECTADO ]</p>
+                                <p className="text-white font-bold uppercase blink text-center mb-2">[ ESTADO: CONECTADO ]</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <button onClick={onSyncPush} className="bg-white text-black pixel-border px-4 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
                                         <i className="ri-upload-cloud-2-line align-middle mr-2"></i> SUBIR DATOS
@@ -982,7 +1000,7 @@
                                     </button>
                                 </div>
                                 <div className="text-center mt-4">
-                                    <button onClick={onLogout} className="text-red-500 uppercase font-bold hover:underline">
+                                    <button onClick={onLogout} className="text-white uppercase font-bold hover:underline">
                                         Desconectar Puter
                                     </button>
                                 </div>
