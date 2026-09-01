@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ventarys # RP | Retro Terminal</title>
+    
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Puter.js SDK -->
+    <script src="https://js.puter.com/v2/"></script>
+    
+    <!-- Tailwind CSS (DEBE IR ANTES DE LA CONFIGURACIÓN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ventarys: {
+                            bg: '#000000',
+                            panel: '#0a0a0a',
+                            fg: '#ffffff',
+                            muted: '#888888',
+                            border: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        pixel: ['"VT323"', 'monospace'],
+                        sans: ['"VT323"', 'monospace'],
+                    },
+                    boxShadow: {
+                        'pixel': '4px 4px 0px 0px #ffffff',
+                        'pixel-sm': '2px 2px 0px 0px #ffffff',
+                        'pixel-hover': '6px 6px 0px 0px #ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: VT323 for Retro Pixel Text -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'VT323', monospace;
+            overflow: hidden; 
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+        }
+        
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Custom Blocky Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000; 
+            border-left: 2px solid #ffffff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffffff; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cccccc; 
+        }
+
+        .pixel-border {
+            border: 2px solid #ffffff;
+            border-radius: 0;
+        }
+
+        .logo-inverted {
+            filter: invert(1) brightness(100);
+            image-rendering: pixelated;
+        }
+
+        .image-retro {
+            filter: grayscale(100%) contrast(1.2);
+        }
+        
+        .image-retro:hover {
+            filter: grayscale(0%) contrast(1.1);
+        }
+
+        /* Animations */
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const fallbackCharacters = [
+            {
+                id: 'char1',
+                name: 'Aria, la Hechicera Ciberpunk',
+                avatar: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=400&h=400',
+                banner: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&q=80&w=1000&h=400',
+                description: 'Una maga callejera de Neo-Tokio que usa magia entrelazada con código base.',
+                personality: 'Sarcástica, brillante, desconfiada de las corporaciones, leal a sus amigos.',
+                firstMessage: 'Vaya, mira quién apareció en mi callejón. Más vale que tengas un buen motivo para interrumpir mi compilación de hechizos. ¿Qué quieres?',
+                systemPrompt: 'Eres Aria, una hechicera ciberpunk de Neo-Tokio. Responde de forma sarcástica pero inteligente. Eres desconfiada de las corporaciones.',
+                tags: ['Femenino', 'Cyberpunk', 'Sci-Fi', 'Magia'],
+                tokens: '1.2k',
+                msgCount: '15.4k'
+            },
+            {
+                id: 'char2',
+                name: 'Kael, Comandante Estelar',
+                avatar: 'https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&q=80&w=400&h=400',
+                banner: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000&h=400',
+                description: 'Líder de la flota rebelde Ventarys, buscando un nuevo hogar para la humanidad.',
+                personality: 'Autoritario pero justo, estratega, algo melancólico, protector.',
+                firstMessage: 'Soldado, tenemos informes de actividad enemiga en el sector 4. Necesito tu informe de situación de inmediato. No tenemos tiempo que perder.',
+                systemPrompt: 'Eres Kael, un comandante estelar serio y estratega. Mantén un tono militar y protector.',
+                tags: ['Masculino', 'Militar', 'Espacio', 'Romance'],
+                tokens: '850',
+                msgCount: '8.2k'
+            }
+        ];
+
+        const fetchAIResponse = async (messages, settings, character) => {
+            if (!settings.endpoint) throw new Error("Falta configurar el Endpoint.");
+
+            const sysPrompt = `${character.systemPrompt}\n\n[Contexto del Usuario: ${settings.userPersona || 'Un extraño'}]`;
+
+            const formattedMessages = [
+                { role: "system", content: sysPrompt },
+                ...messages.map(m => ({
+                    role: m.sender === 'user' ? 'user' : 'assistant',
+                    content: m.text
+                }))
+            ];
+
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                if (settings.apiKey) headers['Authorization'] = `Bearer ${settings.apiKey}`;
+
+                const response = await fetch(settings.endpoint, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        model: settings.model || "default",
+                        messages: formattedMessages,
+                        temperature: 0.8,
+                        max_tokens: 500,
+                    })
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`Error API: ${response.status} - ${errText}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error("Error fetching AI:", error);
+                throw error;
+            }
+        };
+
+        const App = () => {
+            const [view, setView] = useState('home'); 
+            const [activeCharacter, setActiveCharacter] = useState(null);
+            
+            const [characters, setCharacters] = useState([]);
+            const [loadingChars, setLoadingChars] = useState(true);
+            const [errorChars, setErrorChars] = useState(null);
+
+            const [chats, setChats] = useState({});
+            const [hiddenChats, setHiddenChats] = useState([]);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            
+            // Estado Puter
+            const [puterSignedIn, setPuterSignedIn] = useState(false);
+
+            const [apiSettings, setApiSettings] = useState({
+                endpoint: 'https://api.llm7.io/v1/chat/completions',
+                apiKey: '',
+                model: 'default',
+                userPersona: 'Soy un aventurero solitario.'
+            });
+
+            // Puter Auth Check
+            useEffect(() => {
+                const checkPuter = async () => {
+                    if (typeof puter !== 'undefined') {
+                        const signedIn = puter.auth.isSignedIn();
+                        setPuterSignedIn(signedIn);
+                    }
+                };
+                checkPuter();
+            }, []);
+
+            useEffect(() => {
+                const loadCharacters = async () => {
+                    try {
+                        const timestamp = new Date().getTime();
+                        const repoUrl = `https://raw.githubusercontent.com/Juanoto2012/VentarysRP/main/chars.json?t=${timestamp}`;
+                        const res = await fetch(repoUrl);
+                        if (!res.ok) throw new Error("No se pudo cargar la base de datos de personajes. (Error 404)");
+                        const data = await res.json();
+                        setCharacters(data);
+                    } catch (err) {
+                        console.warn(err.message, "Cargando respaldo local...");
+                        setCharacters(fallbackCharacters);
+                        setErrorChars(null);
+                    } finally {
+                        setLoadingChars(false);
+                    }
+                };
+                loadCharacters();
+            }, []);
+
+            const openChat = (character) => {
+                setActiveCharacter(character);
+                setView('chat');
+                setMobileMenuOpen(false);
+                
+                if (hiddenChats.includes(character.id)) {
+                    setHiddenChats(prev => prev.filter(id => id !== character.id));
+                }
+                
+                if (!chats[character.id]) {
+                    setChats(prev => ({
+                        ...prev,
+                        [character.id]: [{
+                            id: Date.now().toString(),
+                            sender: 'ai',
+                            text: character.firstMessage,
+                            timestamp: new Date()
+                        }]
+                    }));
+                }
+            };
+
+            const hideChat = (e, charId) => {
+                e.stopPropagation();
+                setHiddenChats(prev => [...prev, charId]);
+                if (activeCharacter?.id === charId) {
+                    setView('home');
+                    setActiveCharacter(null);
+                }
+            };
+
+            const sendMessage = async (text) => {
+                if (!text.trim() || !activeCharacter) return;
+                const charId = activeCharacter.id;
+                const newUserMsg = { id: Date.now().toString(), sender: 'user', text: text, timestamp: new Date() };
+
+                setChats(prev => ({ ...prev, [charId]: [...(prev[charId] || []), newUserMsg] }));
+
+                try {
+                    const currentHistory = [...(chats[charId] || []), newUserMsg];
+                    const tempId = 'temp-' + Date.now();
+                    
+                    setChats(prev => ({
+                        ...prev,
+                        [charId]: [...prev[charId], { id: tempId, sender: 'ai', text: '...', isTyping: true, timestamp: new Date() }]
+                    }));
+
+                    const aiResponseText = await fetchAIResponse(currentHistory, apiSettings, activeCharacter);
+                    
+                    setChats(prev => {
+                        const newChat = prev[charId].filter(m => m.id !== tempId);
+                        return {
+                            ...prev,
+                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'ai', text: aiResponseText, timestamp: new Date() }]
+                        };
+                    });
+                } catch (error) {
+                    setChats(prev => {
+                        const newChat = prev[charId].filter(m => !m.isTyping);
+                        return {
+                            ...prev,
+                            [charId]: [...newChat, { id: Date.now().toString(), sender: 'system', text: `[ERROR_DE_SISTEMA]: ${error.message}`, timestamp: new Date() }]
+                        };
+                    });
+                }
+            };
+
+            const rewindChat = (charId) => {
+                setChats(prev => {
+                    const chat = prev[charId] || [];
+                    if (chat.length <= 1) return prev; 
+                    let newChat = [...chat];
+                    while (newChat.length > 1 && newChat[newChat.length - 1].sender !== 'user') {
+                        newChat.pop(); 
+                    }
+                    if (newChat.length > 1) newChat.pop(); 
+                    return { ...prev, [charId]: newChat };
+                });
+            };
+
+            // Puter Sync Functions
+            const syncToPuter = async () => {
+                try {
+                    await puter.kv.set('ventarys_chats', JSON.stringify(chats));
+                    await puter.kv.set('ventarys_settings', JSON.stringify(apiSettings));
+                    alert("[SISTEMA]: Datos sincronizados en Puter correctamente.");
+                } catch (e) {
+                    alert("[ERROR]: Fallo al sincronizar. " + e.message);
+                }
+            };
+
+            const loadFromPuter = async () => {
+                try {
+                    const savedChats = await puter.kv.get('ventarys_chats');
+                    const savedSettings = await puter.kv.get('ventarys_settings');
+                    if (savedChats) setChats(JSON.parse(savedChats));
+                    if (savedSettings) setApiSettings(JSON.parse(savedSettings));
+                    alert("[SISTEMA]: Datos descargados de Puter correctamente.");
+                } catch (e) {
+                    alert("[ERROR]: Fallo al cargar. " + e.message);
+                }
+            };
+
+            const loginPuter = async () => {
+                await puter.auth.signIn();
+                setPuterSignedIn(puter.auth.isSignedIn());
+            };
+
+            const logoutPuter = () => {
+                puter.auth.signOut();
+                setPuterSignedIn(false);
+            };
+
+            return (
+                <div className="flex h-screen w-full bg-ventarys-bg text-ventarys-fg overflow-hidden relative">
+                    
+                    {/* Mobile Header */}
+                    <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-ventarys-bg border-b-2 border-white z-40 flex items-center justify-between px-4">
+                        <div className="flex items-center gap-2">
+                            <img src="https://ventarys.net/logo.png" alt="Logo" className="h-6 logo-inverted" />
+                            <span className="font-bold text-xl uppercase"># RP</span>
+                        </div>
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 border-2 border-white shadow-pixel-sm active:translate-y-1 active:shadow-none bg-black">
+                            <i className={mobileMenuOpen ? "ri-close-line text-xl" : "ri-menu-line text-xl"}></i>
+                        </button>
+                    </div>
+
+                    {mobileMenuOpen && (
+                        <div className="md:hidden fixed inset-0 bg-black/80 z-30" onClick={() => setMobileMenuOpen(false)}></div>
+                    )}
+
+                    {/* Sidebar */}
+                    <div className={`
+                        fixed md:static inset-y-0 left-0 z-40 w-72 bg-ventarys-bg border-r-2 border-white flex flex-col transition-transform duration-200 ease-in-out
+                        ${mobileMenuOpen ? 'translate-x-0 mt-14 md:mt-0' : '-translate-x-full md:translate-x-0'}
+                    `}>
+                        <div className="hidden md:flex p-6 items-center gap-3 border-b-2 border-white">
+                            <img src="https://ventarys.net/logo.png" alt="Ventarys" className="h-8 logo-inverted" />
+                            <span className="font-bold text-2xl tracking-widest uppercase"># RP</span>
+                        </div>
+
+                        <div className="flex-1 py-6 px-4 space-y-3 overflow-y-auto">
+                            <button 
+                                onClick={() => { setView('home'); setMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'home' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
+                            >
+                                <i className="ri-database-2-line text-xl"></i>
+                                <span className="text-xl uppercase">Directorio</span>
+                            </button>
+
+                            <button 
+                                onClick={() => { setView('create'); setMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'create' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
+                            >
+                                <i className="ri-quill-pen-line text-xl"></i>
+                                <span className="text-xl uppercase">Crear Entidad</span>
+                            </button>
+                            
+                            <div className="pt-6 pb-2 border-b-2 border-dashed border-ventarys-muted">
+                                <span className="text-lg font-bold text-ventarys-muted uppercase tracking-widest">Registros</span>
+                            </div>
+                            
+                            {Object.keys(chats).map(charId => {
+                                if (hiddenChats.includes(charId)) return null;
+                                const char = characters.find(c => c.id === charId);
+                                if (!char) return null;
+                                const isActive = view === 'chat' && activeCharacter?.id === charId;
+                                return (
+                                    <div key={charId} className="group relative">
+                                        <button 
+                                            onClick={() => openChat(char)}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 pixel-border transition-all ${isActive ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-ventarys-muted hover:text-white hover:border-white'}`}
+                                        >
+                                            <span className="truncate text-lg uppercase">{char.name.split(',')[0]}</span>
+                                        </button>
+                                        <button 
+                                            onClick={(e) => hideChat(e, charId)}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-black text-white border-2 border-white opacity-0 group-hover:opacity-100 hover:bg-white hover:text-black transition-all"
+                                            title="Archivar"
+                                        >
+                                            <i className="ri-close-line"></i>
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className="p-4 border-t-2 border-white bg-black">
+                            <button 
+                                onClick={() => { setView('settings'); setMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 pixel-border transition-all ${view === 'settings' ? 'bg-white text-black shadow-pixel-sm' : 'bg-black text-white hover:bg-white hover:text-black'}`}
+                            >
+                                <i className="ri-settings-3-line text-xl"></i>
+                                <span className="text-xl uppercase">Config. SYS</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 relative flex flex-col h-full overflow-hidden bg-ventarys-bg mt-14 md:mt-0">
+                        {view === 'home' && (
+                            <HomeView characters={characters} loading={loadingChars} error={errorChars} onSelect={openChat} />
+                        )}
+
+                        {view === 'create' && (
+                            <CreateCharView />
+                        )}
+
+                        {view === 'chat' && activeCharacter && (
+                            <ChatView 
+                                character={activeCharacter} 
+                                messages={chats[activeCharacter.id] || []} 
+                                onSendMessage={sendMessage}
+                                onRewind={() => rewindChat(activeCharacter.id)}
+                            />
+                        )}
+
+                        {view === 'settings' && (
+                            <SettingsView 
+                                settings={apiSettings} 
+                                onSave={setApiSettings}
+                                puterSignedIn={puterSignedIn}
+                                onLogin={loginPuter}
+                                onLogout={logoutPuter}
+                                onSyncPush={syncToPuter}
+                                onSyncPull={loadFromPuter}
+                            />
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const HomeView = ({ characters, loading, error, onSelect }) => {
+            const [search, setSearch] = useState('');
+            
+            const filtered = characters.filter(c => 
+                (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
+                (c.tags || []).some(t => t.toLowerCase().includes(search.toLowerCase()))
+            );
+
+            if (loading) {
+                return (
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                        <span className="text-4xl blink uppercase">Cargando Datos...</span>
+                        <p className="text-ventarys-muted mt-4">Conectando a Github Juanoto2012/VentarysRP</p>
+                    </div>
+                );
+            }
+
+            if (error) {
+                return (
+                    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                        <i className="ri-error-warning-line text-6xl mb-4"></i>
+                        <span className="text-2xl uppercase border-2 border-white p-4">ERROR_CRÍTICO: {error}</span>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10">
+                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-double border-white pb-6">
+                        <div>
+                            <h1 className="text-5xl font-bold text-white mb-2 uppercase">Base de Datos</h1>
+                            <p className="text-xl text-ventarys-muted uppercase">&gt; Selecciona una entidad para iniciar conexión.</p>
+                        </div>
+                        <div className="relative w-full md:w-80 pixel-border bg-black">
+                            <i className="ri-search-line absolute left-3 top-3 text-white"></i>
+                            <input 
+                                type="text" 
+                                placeholder="BUSCAR ENTIDAD..." 
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full bg-transparent py-2 pl-10 pr-4 text-white focus:outline-none uppercase placeholder:text-ventarys-muted"
+                            />
+                        </div>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {filtered.map(char => (
+                            <div 
+                                key={char.id}
+                                onClick={() => onSelect(char)}
+                                className="group pixel-border bg-black cursor-pointer hover:shadow-pixel transition-all relative flex flex-col h-full"
+                            >
+                                <div className="h-40 w-full relative border-b-2 border-white overflow-hidden">
+                                    <img src={char.banner} className="w-full h-full object-cover image-retro transition-all duration-500 group-hover:scale-105" alt="Banner" />
+                                    <div className="absolute top-2 right-2 flex gap-2">
+                                        <span className="bg-black text-white px-2 py-1 pixel-border text-sm flex items-center gap-1">
+                                            <i className="ri-message-3-fill"></i> {char.msgCount || "0"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="px-5 pb-6 flex-1 flex flex-col">
+                                    <img src={char.avatar} className="w-24 h-24 object-cover pixel-border bg-black absolute -top-12 image-retro" alt={char.name} />
+                                    
+                                    <div className="pt-14 flex-1">
+                                        <h3 className="text-2xl font-bold text-white mb-2 uppercase group-hover:underline">{char.name}</h3>
+                                        
+                                        <div className="flex flex-wrap gap-2 mb-4">
+                                            {(char.tags || []).map(tag => (
+                                                <span key={tag} className="text-sm uppercase bg-white text-black px-1 font-bold">
+                                                    [{tag}]
+                                                </span>
+                                            ))}
+                                        </div>
+                                        
+                                        <p className="text-lg text-ventarys-muted line-clamp-3">{char.description}</p>
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t-2 border-dashed border-ventarys-muted text-right">
+                                        <span className="uppercase text-white bg-black pixel-border px-3 py-1 group-hover:bg-white group-hover:text-black transition-colors">
+                                            &gt; CONECTAR
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {filtered.length === 0 && (
+                            <div className="col-span-full text-center py-20 text-ventarys-muted text-2xl uppercase">
+                                [404] ENTIDAD NO ENCONTRADA.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const CreateCharView = () => {
+            const [formData, setFormData] = useState({
+                name: '',
+                avatar: '',
+                banner: '',
+                description: '',
+                personality: '',
+                firstMessage: '',
+                systemPrompt: '',
+                tags: ''
+            });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                const newChar = {
+                    id: 'char_' + Date.now(),
+                    name: formData.name,
+                    avatar: formData.avatar,
+                    banner: formData.banner,
+                    description: formData.description,
+                    personality: formData.personality,
+                    firstMessage: formData.firstMessage,
+                    systemPrompt: formData.systemPrompt,
+                    tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
+                    tokens: "0",
+                    msgCount: "0"
+                };
+
+                const issueTitle = encodeURIComponent(`Nuevo Personaje: ${newChar.name}`);
+                const issueBody = encodeURIComponent(`Por favor añade este personaje al archivo \`chars.json\`:\n\n\`\`\`json\n${JSON.stringify(newChar, null, 2)}\n\`\`\``);
+                const githubUrl = `https://github.com/Juanoto2012/VentarysRP/issues/new?title=${issueTitle}&body=${issueBody}`;
+                
+                window.open(githubUrl, '_blank');
+            };
+
+            const handleChange = (e) => {
+                setFormData({...formData, [e.target.name]: e.target.value});
+            };
+
+            return (
+                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10 flex justify-center items-start pt-12">
+                    <div className="w-full max-w-3xl pixel-border bg-black p-8 shadow-pixel">
+                        <div className="flex items-center gap-4 mb-8 border-b-4 border-double border-white pb-6">
+                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
+                                <i className="ri-quill-pen-fill text-4xl"></i>
+                            </div>
+                            <div>
+                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">Forjar Entidad</h2>
+                                <p className="text-lg text-ventarys-muted uppercase">Construye JSON &gt; Exporta a GitHub</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="block text-xl font-bold text-white uppercase">&gt; NOMBRE COMPLETO</label>
+                                    <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-xl font-bold text-white uppercase">&gt; TAGS (Comas)</label>
+                                    <input required type="text" name="tags" placeholder="Ej: Sci-Fi, Femenino, Romance" value={formData.tags} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-xl font-bold text-white uppercase">&gt; AVATAR (URL)</label>
+                                    <input required type="url" name="avatar" value={formData.avatar} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-xl font-bold text-white uppercase">&gt; BANNER (URL)</label>
+                                    <input required type="url" name="banner" value={formData.banner} onChange={handleChange} className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; DESCRIPCIÓN CORTA</label>
+                                <textarea required name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; PERSONALIDAD</label>
+                                <textarea required name="personality" value={formData.personality} onChange={handleChange} rows="2" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; PRIMER MENSAJE</label>
+                                <textarea required name="firstMessage" value={formData.firstMessage} onChange={handleChange} rows="3" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; SYSTEM PROMPT (Instrucciones LLM)</label>
+                                <textarea required name="systemPrompt" value={formData.systemPrompt} onChange={handleChange} rows="4" className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none"></textarea>
+                            </div>
+
+                            <div className="pt-6 border-t-2 border-white mt-8">
+                                <button type="submit" className="w-full bg-white text-black pixel-border px-8 py-4 text-2xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform flex justify-center items-center gap-3">
+                                    <i className="ri-github-fill text-3xl"></i> GENERAR TICKET EN GITHUB
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const ChatView = ({ character, messages, onSendMessage, onRewind }) => {
+            const [input, setInput] = useState('');
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(() => scrollToBottom(), [messages]);
+
+            const handleSend = (e) => {
+                e.preventDefault();
+                onSendMessage(input);
+                setInput('');
+            };
+
+            return (
+                <div className="flex flex-col h-full z-10 bg-black">
+                    {/* Chat Header */}
+                    <div className="border-b-2 border-white p-3 flex items-center gap-4 shrink-0 bg-ventarys-bg">
+                        <img src={character.avatar} className="w-12 h-12 object-cover pixel-border image-retro" alt={character.name} />
+                        <div className="flex-1 overflow-hidden">
+                            <h2 className="text-xl font-bold text-white flex items-center gap-2 uppercase truncate">
+                                {character.name}
+                            </h2>
+                            <p className="text-sm text-ventarys-muted truncate">{character.personality}</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button onClick={onRewind} className="p-2 pixel-border hover:bg-white hover:text-black transition-colors" title="Rebobinar / Borrar Último">
+                                <i className="ri-arrow-go-back-line"></i>
+                            </button>
+                            <button className="p-2 pixel-border hover:bg-white hover:text-black transition-colors md:hidden">
+                                <i className="ri-more-2-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Messages Area */}
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+                        <div className="text-center pb-8 border-b-2 border-dashed border-ventarys-muted mb-8 max-w-3xl mx-auto">
+                            <h1 className="text-4xl font-bold text-white mb-4 uppercase">{character.name}</h1>
+                            <p className="text-ventarys-muted text-lg mb-6">{character.description}</p>
+                            <div className="inline-block bg-white text-black font-bold text-lg px-4 py-1 pixel-border">
+                                SECUENCIA INICIADA
+                            </div>
+                        </div>
+
+                        <div className="max-w-4xl mx-auto space-y-6">
+                            {messages.map((msg) => (
+                                <div key={msg.id} className={`flex gap-4 message-enter ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                                    {msg.sender !== 'system' && (
+                                        <div className="shrink-0">
+                                            {msg.sender === 'user' ? (
+                                                <div className="w-10 h-10 pixel-border bg-white text-black flex items-center justify-center font-bold text-xl">
+                                                    U
+                                                </div>
+                                            ) : (
+                                                <img src={character.avatar} className="w-10 h-10 object-cover pixel-border image-retro" alt="AI" />
+                                            )}
+                                        </div>
+                                    )}
+                                    
+                                    <div className={`flex flex-col max-w-[85%] md:max-w-[80%] ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                                        {msg.sender !== 'system' && (
+                                            <span className="text-sm font-bold text-ventarys-muted mb-1 uppercase bg-black px-1">
+                                                {msg.sender === 'user' ? 'USUARIO' : character.name.split(',')[0]}
+                                            </span>
+                                        )}
+                                        
+                                        <div className={`
+                                            p-4 pixel-border text-lg leading-relaxed whitespace-pre-wrap
+                                            ${msg.sender === 'user' ? 'bg-white text-black' : 
+                                              msg.sender === 'system' ? 'border-dashed text-white text-center w-full' :
+                                              'bg-black text-white'}
+                                        `}>
+                                            {msg.isTyping ? (
+                                                <span className="blink">PROCESANDO...</span>
+                                            ) : (
+                                                msg.text
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </div>
+
+                    {/* Input Area */}
+                    <div className="p-4 border-t-2 border-white shrink-0 bg-ventarys-bg">
+                        <form onSubmit={handleSend} className="relative flex items-end gap-3 max-w-4xl mx-auto">
+                            <div className="flex-1 pixel-border bg-black focus-within:shadow-pixel transition-all">
+                                <textarea 
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleSend(e);
+                                        }
+                                    }}
+                                    placeholder="&gt; INGRESE COMANDO..."
+                                    className="w-full bg-transparent text-white p-4 max-h-32 resize-none focus:outline-none uppercase"
+                                    rows="2"
+                                ></textarea>
+                            </div>
+                            <button 
+                                type="submit"
+                                disabled={!input.trim()}
+                                className="h-16 w-16 shrink-0 pixel-border bg-white text-black hover:bg-gray-300 disabled:opacity-50 disabled:hover:bg-white flex items-center justify-center transition-colors active:translate-y-1"
+                            >
+                                <i className="ri-send-plane-2-fill text-2xl"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const SettingsView = ({ settings, onSave, puterSignedIn, onLogin, onLogout, onSyncPush, onSyncPull }) => {
+            const [localSettings, setLocalSettings] = useState(settings);
+            const [saved, setSaved] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSave(localSettings);
+                setSaved(true);
+                setTimeout(() => setSaved(false), 3000);
+            };
+
+            return (
+                <div className="flex-1 overflow-y-auto p-4 md:p-10 relative z-10 flex flex-col items-center gap-8 pt-12 pb-12">
+                    
+                    {/* Puter Sync Panel */}
+                    <div className="w-full max-w-2xl pixel-border bg-black p-8 shadow-pixel">
+                        <div className="flex items-center gap-4 mb-6 border-b-4 border-double border-white pb-6">
+                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
+                                <i className="ri-cloud-line text-4xl"></i>
+                            </div>
+                            <div>
+                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">SINC. CLOUD</h2>
+                                <p className="text-lg text-ventarys-muted uppercase">Puter.js Integrado</p>
+                            </div>
+                        </div>
+
+                        {!puterSignedIn ? (
+                            <div className="text-center py-6">
+                                <p className="text-ventarys-muted uppercase mb-4">Inicia sesión para sincronizar tus chats y ajustes.</p>
+                                <button onClick={onLogin} className="bg-white text-black pixel-border px-8 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
+                                    <i className="ri-login-box-line align-middle mr-2"></i> CONECTAR PUTER
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                <p className="text-green-400 font-bold uppercase blink text-center mb-2">[ ESTADO: CONECTADO ]</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button onClick={onSyncPush} className="bg-white text-black pixel-border px-4 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
+                                        <i className="ri-upload-cloud-2-line align-middle mr-2"></i> SUBIR DATOS
+                                    </button>
+                                    <button onClick={onSyncPull} className="bg-white text-black pixel-border px-4 py-3 text-xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform">
+                                        <i className="ri-download-cloud-2-line align-middle mr-2"></i> BAJAR DATOS
+                                    </button>
+                                </div>
+                                <div className="text-center mt-4">
+                                    <button onClick={onLogout} className="text-red-500 uppercase font-bold hover:underline">
+                                        Desconectar Puter
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* LLM Settings Panel */}
+                    <div className="w-full max-w-2xl pixel-border bg-black p-8 shadow-pixel">
+                        <div className="flex items-center gap-4 mb-8 border-b-4 border-double border-white pb-6">
+                            <div className="w-14 h-14 pixel-border bg-white text-black flex items-center justify-center">
+                                <i className="ri-terminal-box-line text-4xl"></i>
+                            </div>
+                            <div>
+                                <h2 className="text-4xl font-bold text-white uppercase tracking-tight">SYS.CONFIG</h2>
+                                <p className="text-lg text-ventarys-muted uppercase">Parámetros de conexión LLM7</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; ENDPOINT_URL</label>
+                                <input 
+                                    type="text" 
+                                    value={localSettings.endpoint}
+                                    onChange={(e) => setLocalSettings({...localSettings, endpoint: e.target.value})}
+                                    className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; API_KEY</label>
+                                <div className="relative">
+                                    <input 
+                                        type="password" 
+                                        value={localSettings.apiKey}
+                                        onChange={(e) => setLocalSettings({...localSettings, apiKey: e.target.value})}
+                                        className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all pr-10"
+                                        placeholder="***"
+                                    />
+                                    <i className="ri-key-2-line absolute right-3 top-3 text-white text-xl"></i>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="block text-xl font-bold text-white uppercase">&gt; MODELO_ACTIVO</label>
+                                <div className="relative">
+                                    <select 
+                                        value={localSettings.model}
+                                        onChange={(e) => setLocalSettings({...localSettings, model: e.target.value})}
+                                        className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all appearance-none uppercase"
+                                    >
+                                        <option value="default">DEFAULT (api.llm7.io)</option>
+                                        <option value="fast">FAST (api.llm7.io)</option>
+                                    </select>
+                                    <i className="ri-arrow-down-s-line absolute right-3 top-3 text-white text-xl pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 pt-6 border-t-2 border-dashed border-ventarys-muted">
+                                <label className="block text-xl font-bold text-white uppercase">
+                                    &gt; PERSONA_USUARIO <span className="text-sm text-ventarys-muted"> [Inyectado en SYS_PROMPT]</span>
+                                </label>
+                                <textarea 
+                                    value={localSettings.userPersona}
+                                    onChange={(e) => setLocalSettings({...localSettings, userPersona: e.target.value})}
+                                    className="w-full bg-black pixel-border p-3 text-white focus:outline-none focus:shadow-pixel transition-all resize-none uppercase"
+                                    rows="4"
+                                ></textarea>
+                            </div>
+
+                            <div className="pt-8 flex items-center justify-between border-t-2 border-white mt-8">
+                                <button 
+                                    type="submit"
+                                    className="bg-white text-black pixel-border px-8 py-3 text-2xl font-bold uppercase hover:bg-gray-300 active:translate-y-1 transition-transform"
+                                >
+                                    SOBRESCRIBIR
+                                </button>
+
+                                {saved && (
+                                    <span className="text-white text-xl font-bold flex items-center gap-2 blink">
+                                        [GUARDADO_OK]
+                                    </span>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
