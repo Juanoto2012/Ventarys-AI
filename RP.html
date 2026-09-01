@@ -100,7 +100,7 @@
         chats: safeParseJSON('ventarys_chats', {}),
         chatMemories: safeParseJSON('ventarys_memories', {}),
         userPreferences: safeParseJSON('ventarys_prefs', {}),
-        apiSettings: safeParseJSON('ventarys_settings', { endpoint: 'https://api.llm7.io/v1/chat/completions', apiKey: '', model: 'default', userPersona: 'Soy un aventurero solitario.' }),
+        apiSettings: safeParseJSON('ventarys_settings', { endpoint: 'https://aihorde.net/api/v2/chat/completions', apiKey: '0000000000', model: 'default', userPersona: 'Soy un aventurero solitario.' }),
         hiddenChats: safeParseJSON('ventarys_hidden', []),
         chatInputMode: 'normal',
         chatInput: '',
@@ -151,14 +151,26 @@
         });
         var formattedMessages = [{ role: "system", content: sysPrompt }].concat(cleanMessages);
         var headers = { 'Content-Type': 'application/json' };
-        if (settings.apiKey) headers['Authorization'] = 'Bearer ' + settings.apiKey;
+        var apiKey = settings.apiKey || '0000000000';
+        var isHorde = settings.endpoint.indexOf('aihorde.net') !== -1 || settings.endpoint.indexOf('stablehorde.net') !== -1;
+        if (isHorde) {
+            headers['apikey'] = apiKey;
+        } else {
+            if (settings.apiKey) headers['Authorization'] = 'Bearer ' + settings.apiKey;
+        }
         var controller = new AbortController();
         var abortTimer = setTimeout(function() { controller.abort(); }, 60000);
         try {
+            var body = {
+                model: settings.model || "default",
+                messages: formattedMessages,
+                temperature: 0.3,
+                max_tokens: 800
+            };
             var response = await fetch(settings.endpoint, {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify({ model: settings.model || "default", messages: formattedMessages, temperature: 0.3, max_tokens: 800 }),
+                body: JSON.stringify(body),
                 signal: controller.signal
             });
             if (!response.ok) {
@@ -166,7 +178,10 @@
                 throw new Error('Error API: ' + response.status + ' - ' + errText);
             }
             var data = await response.json();
-            return data.choices[0].message.content;
+            if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+                return data.choices[0].message.content;
+            }
+            throw new Error('Respuesta de API inválida');
         } catch (error) {
             console.error("Error fetching AI:", error);
             if (error.name === 'AbortError') throw new Error("Tiempo de espera agotado (60s). Revisa tu Endpoint o API Key.");
@@ -587,8 +602,23 @@
             '</div></div>';
     }
 
+    function getMirrorFromEndpoint(endpoint) {
+        if (!endpoint) return 'aihorde';
+        if (endpoint.indexOf('aihorde.net') !== -1) return 'aihorde';
+        if (endpoint.indexOf('stablehorde.net') !== -1) return 'stablehorde';
+        return 'custom';
+    }
+
+    function setMirror(mirror) {
+        if (mirror === 'aihorde') state.apiSettings.endpoint = 'https://aihorde.net/api/v2/chat/completions';
+        else if (mirror === 'stablehorde') state.apiSettings.endpoint = 'https://stablehorde.net/api/v2/chat/completions';
+        else state.apiSettings.endpoint = state.apiSettings.endpoint || '';
+        render();
+    }
+
     function renderSettingsView() {
         var s = state.apiSettings;
+        var currentMirror = getMirrorFromEndpoint(s.endpoint);
         var puterSection = '';
         if (!state.puterSignedIn) {
             puterSection = '<div class="text-center py-4">' +
@@ -616,14 +646,15 @@
                         '<div><h2 class="font-bold text-base">Sinc. Cloud</h2><p class="text-xs text-white/40">Respaldo remoto vía Puter.js</p></div>' +
                     '</div>' + puterSection + '</div>' +
                 '<div class="bg-ventarys-panel border border-white/10 rounded-2xl p-4 md:p-6">' +
-                    '<div class="flex items-center gap-3 mb-5">' +
-                        '<div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"><i class="ri-terminal-box-line text-xl"></i></div>' +
-                        '<div><h2 class="font-bold text-base">SYS.Config</h2><p class="text-xs text-white/40">Conexión LLM (Temperatura actual bloqueada: 0.3)</p></div>' +
-                    '</div>' +
+                        '<div class="flex items-center gap-3 mb-5">' +
+                            '<div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center shrink-0"><i class="ri-terminal-box-line text-xl"></i></div>' +
+                            '<div><h2 class="font-bold text-base">SYS.Config</h2><p class="text-xs text-white/40">Conexión LLM (IA Horde - Temperatura bloqueada: 0.3)</p></div>' +
+                        '</div>' +
                     '<form onsubmit="saveSettings(event)" class="space-y-4">' +
-                        field('Endpoint URL', 'ri-link', '<input type="text" value="' + esc(s.endpoint) + '" oninput="state.apiSettings.endpoint=this.value" class="input" />') +
+                        field('Mirror', 'ri-earth-line', '<select onchange="setMirror(this.value)" class="input appearance-none"><option value="aihorde"' + (currentMirror === 'aihorde' ? ' selected' : '') + '>IA Horde</option><option value="stablehorde"' + (currentMirror === 'stablehorde' ? ' selected' : '') + '>Stable Horde</option><option value="custom"' + (currentMirror === 'custom' ? ' selected' : '') + '>Personalizado</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i>') +
+                        (currentMirror === 'custom' ? field('Endpoint personalizado', 'ri-link', '<input type="text" value="' + esc(s.endpoint) + '" oninput="state.apiSettings.endpoint=this.value" class="input" placeholder="https://..." />') : '') +
                         field('API Key', 'ri-key-2-line', '<div class="relative"><input type="password" value="' + esc(s.apiKey) + '" oninput="state.apiSettings.apiKey=this.value" class="input pr-10" placeholder="***" /><i class="ri-lock-password-line absolute right-3 top-3 text-white/40"></i></div>') +
-                        field('Modelo activo', 'ri-cpu-line', '<div class="relative"><select onchange="state.apiSettings.model=this.value" class="input appearance-none"><option value="default">DEFAULT (api.llm7.io)</option><option value="fast">FAST (api.llm7.io)</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i></div>') +
+                        field('Modelo activo', 'ri-cpu-line', '<div class="relative"><select onchange="state.apiSettings.model=this.value" class="input appearance-none"><option value="default">Por defecto (IA Horde)</option><option value="Deliberate">Deliberate (IA Horde)</option><option value="stable_diffusion">Stable Diffusion (IA Horde)</option></select><i class="ri-arrow-down-s-line absolute right-3 top-3 text-white/40 pointer-events-none"></i></div>') +
                         field('Persona de usuario [inyectada en SYS_PROMPT]', 'ri-user-smile-line', '<textarea oninput="state.apiSettings.userPersona=this.value" class="input resize-none" rows="4">' + esc(s.userPersona) + '</textarea>') +
                         '<div class="pt-3 flex items-center justify-between border-t border-white/10">' +
                             '<button type="submit" class="bg-white text-black rounded-full px-6 py-2.5 text-sm font-bold uppercase hover:bg-gray-300 transition-colors flex items-center gap-2"><i class="ri-save-line text-lg"></i> Sobrescribir</button>' +
@@ -656,10 +687,14 @@
         if (chat.length < 2) return alert("Se requiere más conversación para resumir.");
         var history = chat.slice(-25).filter(function(m) { return !m.isHidden; });
         var payload = [{ role: 'system', content: 'Eres un asistente analizador de roleplay. Escribe un resumen compacto (máx 200 palabras) de la historia hasta ahora usando viñetas. Incluye detalles clave, el estado de la relación y los últimos eventos ocurridos. Sé directo y objetivo.' }].concat(history.map(function(m) { return { role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }; }));
+        var apiKey = state.apiSettings.apiKey || '0000000000';
+        var isHorde = state.apiSettings.endpoint.indexOf('aihorde.net') !== -1 || state.apiSettings.endpoint.indexOf('stablehorde.net') !== -1;
+        var headers = { 'Content-Type': 'application/json' };
+        if (isHorde) { headers['apikey'] = apiKey; } else { if (state.apiSettings.apiKey) headers['Authorization'] = 'Bearer ' + state.apiSettings.apiKey; }
         try {
             var response = await fetch(state.apiSettings.endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', ...(state.apiSettings.apiKey ? { 'Authorization': 'Bearer ' + state.apiSettings.apiKey } : {}) },
+                headers: headers,
                 body: JSON.stringify({ model: state.apiSettings.model || 'default', messages: payload, temperature: 0.3 })
             });
             if (!response.ok) throw new Error("API Falló");
