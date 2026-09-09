@@ -22,7 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+    <script src="https://js.puter.com/v2/"></script>
 
     <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -268,6 +268,10 @@
                         <div class="h-px bg-secondary w-full my-1"></div>
                         <div id="device-chain-list" class="flex flex-col gap-1 p-2 max-h-48 overflow-y-auto custom-scrollbar">
                             <!-- Populated via JS -->
+                        </div>
+                        <div class="flex items-center justify-between px-2 pb-1">
+                            <div class="text-[10px] text-muted font-light">P2P sync via <a href="https://developer.puter.com" target="_blank" class="text-accent hover:underline">Puter</a>.</div>
+                            <button id="puter-signin-btn" onclick="p2pSync.ensurePuterAuth()" class="text-[10px] text-muted hover:text-adaptive underline underline-offset-2 transition-colors">Sign in for reliable relay</button>
                         </div>
                     </div>
 
@@ -667,188 +671,155 @@ function toggleImageMode() {
 // ==========================================
 // P2P SYNC CHAIN IMPLEMENTATION
 // ==========================================
-// Transport: MQTT signaling (public brokers) + WebRTC DataChannel (DTLS-encrypted end-to-end).
-// Replaces the old PeerJS public cloud, which is unreliable/broken. Works both inside and
-// outside Perchance (plain WebSocket, no CORS, no Perchance dependency).
+// Transport: Puter.js Peer API (puter.peer) — serverless P2P messaging over Puter's own
+// signaling + TURN relays. Replaces the MQTT+WebRTC stack (public brokers unreliable) and
+// the original PeerJS cloud (broken). Works both inside and outside Perchance.
 const p2pSync = {
-    MQTT_BROKERS: [
-        "wss://broker.emqx.io:8084/mqtt",
-        "wss://broker.hive-mq.com:8884/mqtt",
-        "wss://test.mosquitto.org:8081/mqtt"
-    ],
-    ICE_SERVERS: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:global.stun.twilio.com:3478" },
-        { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" }
-    ],
-    mqtt: null, connections: {}, rtcPeers: {}, pendingCandidates: {}, knownDevices: [], myPeerId: null,
-    html5QrcodeScanner: null, _syncTimeout: null, _brokerIndex: 0, _brokerReady: false, _stopped: false,
-    _started: false, _readyCallbacks: [], _presenceTimer: null, _sweepTimer: null,
+    connections: {}, knownDevices: [], myPeerId: null, server: null,
+    html5QrcodeScanner: null, _syncTimeout: null, _serverReady: false, _stopped: false,
+    _started: false, _readyCallbacks: [], _sweepTimer: null, _dialing: {}, _retryTimers: {},
+    isAuthed() {
+        try { return !!(window.puter && puter.auth && puter.auth.isSignedIn && puter.auth.isSignedIn()); } catch (e) { return false; }
+    },
     init() {
         this.knownDevices = secureLoad('p2p_known_devices', []);
         this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
         AppStorage.setItem('p2p_my_id', this.myPeerId);
+        this.updateSignInUI();
         this.startPeerServer();
-        if (this._brokerReady && this.knownDevices.length) this.connectToKnownDevices();
+        if (this._serverReady && this.knownDevices.length) this.connectToKnownDevices();
     },
     startPeerServer(onReady = null) {
-        if (this.mqtt && this.mqtt.connected) { if (onReady) onReady(this.myPeerId); return; }
+        if (this._serverReady && this.server) { if (onReady) onReady(this.myPeerId); return; }
         if (onReady) this._readyCallbacks.push(onReady);
         if (this._started) return;
         this._started = true;
-        this.connectBroker();
+        this.serveRoom();
     },
-    connectBroker() {
+    async serveRoom() {
         if (this._stopped) return;
-        const url = this.MQTT_BROKERS[this._brokerIndex % this.MQTT_BROKERS.length];
-        try { this.mqtt = mqtt.connect(url, { clientId: 'ventarys-' + Math.random().toString(16).slice(2), clean: true, reconnectPeriod: 0, connectTimeout: 15000 }); }
-        catch (e) { this._brokerIndex++; setTimeout(() => this.connectBroker(), 3000); return; }
-        this.mqtt.on('connect', () => {
-            this._brokerReady = true;
-            this.mqtt.subscribe('ventarys/sync/' + this.myPeerId);
-            this.mqtt.subscribe('ventarys/sync/presence');
+        const opts = { name: this.myPeerId };
+        if (this.isAuthed()) {
+            try { const g = await puter.peer.createGuestGrant(); if (g && g.grant) opts.guestGrant = g.grant; } catch (e) {}
+        } else {
+            opts.anonToken = crypto.randomUUID();
+        }
+        try {
+            const server = await puter.peer.serve(opts);
+            this.server = server;
+            this._serverReady = true;
+            server.addEventListener('connection', (ev) => this.wireConn(ev.conn));
+            server.addEventListener('close', (ev) => {
+                if (this._stopped) return;
+                this._serverReady = false; this.server = null;
+                this.updateStatusIndicator();
+                if (ev.reason !== 'replaced') setTimeout(() => this.serveRoom(), 8000);
+            });
             this.updateStatusIndicator();
-            this.publishPresence();
-            this._presenceTimer = setInterval(() => this.publishPresence(), 15000);
             this.startSweep();
             this.connectToKnownDevices();
             this._readyCallbacks.splice(0).forEach(cb => { try { cb(this.myPeerId); } catch (e) {} });
-        });
-        this.mqtt.on('message', (topic, payload) => this.handleSignal(payload));
-        const retry = () => { if (!this._stopped) { this._brokerIndex++; setTimeout(() => this.connectBroker(), 2500); } };
-        this.mqtt.on('error', () => { if (this.mqtt && !this.mqtt.connected) retry(); });
-        this.mqtt.on('close', () => {
-            if (this._stopped) return;
-            this._brokerReady = false;
-            clearInterval(this._presenceTimer);
-            Object.keys(this.rtcPeers).forEach(id => this.teardownRTC(id));
-            this.updateStatusIndicator();
-            retry();
-        });
-    },
-    publishPresence() {
-        if (!this.mqtt || !this.mqtt.connected) return;
-        try { this.mqtt.publish('ventarys/sync/presence', JSON.stringify({ type: 'presence', from: this.myPeerId })); } catch (e) {}
-    },
-    sendSignal(msg) {
-        if (this.mqtt && this.mqtt.connected && msg && msg.to) {
-            try { this.mqtt.publish('ventarys/sync/' + msg.to, JSON.stringify(msg)); } catch (e) {}
+        } catch (err) {
+            if (!this._stopped) setTimeout(() => this.serveRoom(), 8000);
         }
     },
     startSweep() {
         if (this._sweepTimer) clearInterval(this._sweepTimer);
-        this._sweepTimer = setInterval(() => this.sweep(), 15000);
+        this._sweepTimer = setInterval(() => this.sweep(), 20000);
     },
     sweep() {
-        if (!this.mqtt || !this.mqtt.connected) return;
+        if (!this._serverReady || this._stopped) return;
         this.knownDevices.forEach(d => {
             if (d.id === this.myPeerId) return;
-            if (this.connections[d.id] || this.rtcPeers[d.id]) return;
-            if (d.id < this.myPeerId) this.establishRTC(d.id);
+            if (this.connections[d.id]) return;
+            this.dialDevice(d.id);
         });
     },
     connectToKnownDevices() { this.sweep(); },
-    establishRTC(peerId) {
-        if (peerId === this.myPeerId || this.rtcPeers[peerId] || this.connections[peerId]) return;
-        let pc;
-        try { pc = new RTCPeerConnection({ iceServers: this.ICE_SERVERS }); } catch (e) { return; }
-        this.rtcPeers[peerId] = pc;
-        if (peerId < this.myPeerId) {
-            try { this.wireDataChannel(peerId, pc.createDataChannel('ventarys-sync', { ordered: true })); }
-            catch (e) { this.teardownRTC(peerId); return; }
-        } else {
-            pc.ondatachannel = (ev) => { this.wireDataChannel(peerId, ev.channel); };
-        }
-        pc.onicecandidate = (ev) => {
-            if (ev.candidate) this.sendSignal({ type: 'candidate', from: this.myPeerId, to: peerId, candidate: ev.candidate.toJSON() });
-        };
-        pc.onconnectionstatechange = () => {
-            const st = pc.connectionState;
-            if (st === 'failed' || st === 'closed') this.teardownRTC(peerId);
-        };
-        if (peerId < this.myPeerId) {
-            pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => {
-                if (pc.localDescription) this.sendSignal({ type: 'offer', from: this.myPeerId, to: peerId, sdp: pc.localDescription.sdp });
-            }).catch(() => this.teardownRTC(peerId));
-        }
+    dialDevice(peerId) {
+        if (this._stopped || peerId === this.myPeerId || this._dialing[peerId]) return;
+        if (this.connections[peerId]) return;
+        if (peerId > this.myPeerId) return;
+        this._dialing[peerId] = true;
+        const opts = this.isAuthed() ? {} : { anonToken: crypto.randomUUID() };
+        puter.peer.connect(peerId, opts).then(conn => {
+            delete this._dialing[peerId];
+            this.wireConn(conn);
+        }).catch(() => {
+            delete this._dialing[peerId];
+            this.scheduleRedial(peerId);
+        });
     },
-    wireDataChannel(peerId, dc) {
-        dc.binaryType = 'arraybuffer';
-        dc.onopen = () => {
-            this.connections[peerId] = dc;
-            this.addDeviceToList(peerId);
+    scheduleRedial(peerId) {
+        if (this._stopped) return;
+        if (this._retryTimers[peerId]) clearTimeout(this._retryTimers[peerId]);
+        this._retryTimers[peerId] = setTimeout(() => { delete this._retryTimers[peerId]; this.dialDevice(peerId); }, 8000);
+    },
+    wireConn(conn) {
+        if (this._stopped) return;
+        let peerId = null, buf = [];
+        const sendHello = () => { try { if (conn.connected) conn.send(JSON.stringify({ type: 'HELLO', from: this.myPeerId })); } catch (e) {} };
+        const identify = (pid) => {
+            if (peerId || pid === this.myPeerId) return;
+            peerId = pid;
+            if (this.connections[pid] && this.connections[pid] !== conn) { try { this.connections[pid].close('dup'); } catch (e) {} }
+            this.connections[pid] = conn;
+            buf.forEach(b => { try { this.handleIncomingData(b, { peer: pid, open: true }); } catch (e) {} });
+            buf = [];
+            this.addDeviceToList(pid);
             this.updateStatusIndicator(); this.updateDeviceUI();
             notify("P2P Chain connected to device.", "success");
             this.closeOverlay();
-            this.sendData(dc, { type: 'PEER_EXCHANGE', payload: this.knownDevices });
+            sendHello();
+            this.sendData(conn, { type: 'PEER_EXCHANGE', payload: this.knownDevices });
             this.triggerFullSync();
         };
-        dc.onmessage = (ev) => {
+        conn.addEventListener('open', sendHello);
+        conn.addEventListener('message', (ev) => {
             try {
-                const parsed = JSON.parse(typeof ev.data === 'string' ? ev.data : new TextDecoder().decode(ev.data));
+                const raw = ev.data;
+                const parsed = JSON.parse(typeof raw === 'string' ? raw : new TextDecoder().decode(raw));
+                if (parsed.type === 'HELLO' && parsed.from) { identify(parsed.from); return; }
                 if (parsed.type === 'FULL_SYNC_COMPRESSED' && typeof parsed.payload === 'string') {
                     parsed.payload = Uint8Array.from(atob(parsed.payload), c => c.charCodeAt(0));
                 }
-                this.handleIncomingData(parsed, { peer: peerId, open: true });
+                if (peerId) this.handleIncomingData(parsed, { peer: peerId, open: true });
+                else buf.push(parsed);
             } catch (e) {}
-        };
-        dc.onclose = () => this.teardownRTC(peerId);
-        dc.onerror = () => this.teardownRTC(peerId);
+        });
+        conn.addEventListener('close', () => {
+            if (peerId) this.handleConnClosed(peerId);
+        });
+        conn.addEventListener('error', () => {});
+        if (conn.connected) sendHello();
     },
-    teardownRTC(peerId) {
+    handleConnClosed(peerId) {
+        if (this.connections[peerId]) delete this.connections[peerId];
+        this.updateStatusIndicator(); this.updateDeviceUI();
+        if (peerId < this.myPeerId) this.scheduleRedial(peerId);
+    },
+    teardownConn(peerId) {
+        const conn = this.connections[peerId];
         delete this.connections[peerId];
-        const pc = this.rtcPeers[peerId];
-        if (pc) { try { pc.close(); } catch (e) {} }
-        delete this.rtcPeers[peerId];
-        delete this.pendingCandidates[peerId];
+        if (conn) { try { conn.close('unlink'); } catch (e) {} }
+        if (this._retryTimers[peerId]) { clearTimeout(this._retryTimers[peerId]); delete this._retryTimers[peerId]; }
         this.updateStatusIndicator(); this.updateDeviceUI();
     },
-    handleSignal(payload) {
-        try {
-            const msg = JSON.parse(new TextDecoder().decode(payload));
-            if (!msg || !msg.from || msg.from === this.myPeerId) return;
-            if (msg.type === 'presence') {
-                if (this.knownDevices.some(d => d.id === msg.from) && msg.from < this.myPeerId) this.establishRTC(msg.from);
-                return;
-            }
-            if (msg.to && msg.to !== this.myPeerId) return;
-            if (msg.type === 'offer') this.handleOffer(msg);
-            else if (msg.type === 'answer') this.handleAnswer(msg);
-            else if (msg.type === 'candidate') this.handleCandidate(msg);
-        } catch (e) {}
+    ensurePuterAuth() {
+        const done = () => { this.updateSignInUI(); this.serveRoom(); notify("Puter connected. Device sync enabled.", "success"); };
+        if (this.isAuthed()) { done(); return; }
+        puter.auth.signIn().then(done).catch(() => { notify("Puter sign-in cancelled.", "info"); });
     },
-    handleOffer(msg) {
-        if (!this.rtcPeers[msg.from]) this.establishRTC(msg.from);
-        const pc = this.rtcPeers[msg.from];
-        if (!pc) return;
-        pc.setRemoteDescription({ type: 'offer', sdp: msg.sdp }).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => {
-            this.flushPendingCandidates(msg.from);
-            if (pc.localDescription) this.sendSignal({ type: 'answer', from: this.myPeerId, to: msg.from, sdp: pc.localDescription.sdp });
-        }).catch(() => this.teardownRTC(msg.from));
-    },
-    handleAnswer(msg) {
-        const pc = this.rtcPeers[msg.from];
-        if (!pc) return;
-        pc.setRemoteDescription({ type: 'answer', sdp: msg.sdp }).then(() => this.flushPendingCandidates(msg.from)).catch(() => this.teardownRTC(msg.from));
-    },
-    handleCandidate(msg) {
-        const pc = this.rtcPeers[msg.from];
-        if (!pc) return;
-        if (pc.remoteDescription && pc.remoteDescription.type) {
-            try { pc.addIceCandidate(msg.candidate); } catch (e) {}
-        } else {
-            (this.pendingCandidates[msg.from] = this.pendingCandidates[msg.from] || []).push(msg.candidate);
-        }
-    },
-    flushPendingCandidates(peerId) {
-        const pc = this.rtcPeers[peerId];
-        const list = this.pendingCandidates[peerId] || [];
-        delete this.pendingCandidates[peerId];
-        if (pc) list.forEach(c => { try { pc.addIceCandidate(c); } catch (e) {} });
+    updateSignInUI() {
+        const btn = document.getElementById('puter-signin-btn');
+        if (!btn) return;
+        btn.textContent = this.isAuthed() ? 'Signed in' : 'Sign in to enable sync';
+        this.updateStatusIndicator();
     },
     sendData(dc, obj) {
         try {
-            if (!dc || dc.readyState !== 'open') return;
+            const open = dc ? (typeof dc.connected === 'boolean' ? dc.connected : dc.readyState === 'open') : false;
+            if (!open) return;
             if (obj && obj.payload instanceof Uint8Array) {
                 let s = ''; const chunk = 0x8000;
                 for (let i = 0; i < obj.payload.length; i += chunk) s += String.fromCharCode.apply(null, obj.payload.subarray(i, i + chunk));
@@ -863,13 +834,12 @@ const p2pSync = {
             this.knownDevices.push({ id, name, addedAt: Date.now() });
             secureSave('p2p_known_devices', this.knownDevices);
             this.updateDeviceUI();
-            this.publishPresence();
         }
     },
     removeDevice(id) {
         this.knownDevices = this.knownDevices.filter(d => d.id !== id);
         secureSave('p2p_known_devices', this.knownDevices);
-        this.teardownRTC(id);
+        this.teardownConn(id);
         this.updateDeviceUI(); this.updateStatusIndicator();
     },
     updateDeviceUI() {
@@ -891,8 +861,11 @@ const p2pSync = {
         if (Object.keys(this.connections).length > 0) {
             txt.textContent = `${Object.keys(this.connections).length} Connected`;
             txt.className = "font-medium text-green-500";
+        } else if (!this.isAuthed()) {
+            txt.textContent = "Sign in required";
+            txt.className = "font-medium text-amber-500";
         } else {
-            txt.textContent = this._brokerReady ? "Offline/Searching" : "Connecting...";
+            txt.textContent = this._serverReady ? "Offline/Searching" : "Connecting...";
             txt.className = "font-medium text-amber-500";
         }
     },
@@ -902,7 +875,8 @@ const p2pSync = {
             const overlay = document.getElementById('sync-overlay');
             const content = document.getElementById('sync-content');
             overlay.classList.remove('hidden'); overlay.classList.add('flex');
-            content.innerHTML = `<div class="flex items-center gap-2 mb-2 text-accent"><i class="ri-link-m text-[24px]"></i><h3 class="text-xl font-bold font-sans">Add Device to Chain</h3></div><div class="flex w-full bg-secondary rounded-lg p-1 mb-4"><button id="chain-tab-show" onclick="p2pSync.renderChainShow('${id}')" class="flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Show QR</button><button id="chain-tab-scan" onclick="p2pSync.renderChainScan()" class="flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Scan QR</button></div><div id="chain-modal-body" class="w-full flex flex-col items-center"></div>`;
+            const authNotice = this.isAuthed() ? '' : `<div class="w-full bg-amber-500/10 border border-amber-500/40 text-amber-500 text-[11px] rounded-lg p-2.5 mb-3 flex items-center gap-2"><i class="ri-alert-line text-[14px] shrink-0"></i><span class="leading-relaxed">Device sync needs a <b>Puter</b> sign-in so devices can find each other across networks. <button onclick="p2pSync.ensurePuterAuth()" class="underline font-semibold">Sign in now</button></span></div>`;
+            content.innerHTML = `<div class="flex items-center gap-2 mb-2 text-accent"><i class="ri-link-m text-[24px]"></i><h3 class="text-xl font-bold font-sans">Add Device to Chain</h3></div>${authNotice}<div class="flex w-full bg-secondary rounded-lg p-1 mb-4"><button id="chain-tab-show" onclick="p2pSync.renderChainShow('${id}')" class="flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Show QR</button><button id="chain-tab-scan" onclick="p2pSync.renderChainScan()" class="flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Scan QR</button></div><div id="chain-modal-body" class="w-full flex flex-col items-center"></div>`;
             this.renderChainShow(id);
         });
     },
