@@ -20,8 +20,6 @@
     
     <!-- P2P Sync Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
 
     <!-- Remix Icons -->
@@ -122,9 +120,6 @@
         #preview-modal{backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
         .msg-container-group:hover .msg-actions{opacity:1}
         #tour-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
-        #sync-overlay{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
-        #qr-reader { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-secondary); background: #000; }
-        #qr-reader video { object-fit: cover; }
     </style>
 </head>
 <body>
@@ -251,27 +246,27 @@
                         <p class="text-muted text-sm font-light">Manage your experience and encrypted local data.</p>
                     </div>
 
-                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Device Sync Chain</div>
+                    <div class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest mt-4">Cloud Sync (Puter)</div>
                     <div class="bg-transparent border border-secondary rounded-xl p-2 mb-8">
                         <div class="flex justify-between items-center p-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                                    <i class="ri-link-m text-[16px] text-adaptive"></i>
+                                    <i class="ri-cloud-line text-[16px] text-adaptive"></i>
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-adaptive">Linked Devices</div>
-                                    <div class="text-xs text-muted font-light mt-0.5">Sync chats, keys, and settings across your devices in a mesh chain.</div>
+                                    <div class="text-sm font-medium text-adaptive">Puter account</div>
+                                    <div class="text-xs text-muted font-light mt-0.5">Sign in and your chats, keys and settings are saved to your Puter account and synced to every device — no P2P.</div>
                                 </div>
                             </div>
-                            <button onclick="p2pSync.openChainModal()" class="bg-accent text-[var(--accent-text)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 hover:opacity-90 transition-opacity"><i class="ri-add-line"></i> Add</button>
+                            <button id="puter-signin-btn" onclick="p2pSync.ensurePuterAuth()" class="bg-accent text-[var(--accent-text)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 hover:opacity-90 transition-opacity"><i class="ri-login-box-line"></i> Sign in with Puter</button>
                         </div>
                         <div class="h-px bg-secondary w-full my-1"></div>
-                        <div id="device-chain-list" class="flex flex-col gap-1 p-2 max-h-48 overflow-y-auto custom-scrollbar">
-                            <!-- Populated via JS -->
-                        </div>
                         <div class="flex items-center justify-between px-2 pb-1">
-                            <div class="text-[10px] text-muted font-light">P2P sync via <a href="https://developer.puter.com" target="_blank" class="text-accent hover:underline">Puter</a>.</div>
-                            <button id="puter-signin-btn" onclick="p2pSync.ensurePuterAuth()" class="text-[10px] text-muted hover:text-adaptive underline underline-offset-2 transition-colors">Sign in for reliable relay</button>
+                            <div id="cloud-sync-status" class="text-[10px] text-muted font-light">No cloud sync yet. Sign in with your <b>Puter</b> account to save and sync your data across devices.</div>
+                            <div class="flex items-center gap-3">
+                                <button id="cloud-sync-now" onclick="p2pSync.syncNow()" class="text-[10px] text-muted hover:text-adaptive underline underline-offset-2 transition-colors hidden">Sync now</button>
+                                <button id="cloud-sync-signout" onclick="p2pSync.signOut()" class="text-[10px] text-muted hover:text-red-500 underline underline-offset-2 transition-colors hidden">Sign out</button>
+                            </div>
                         </div>
                     </div>
 
@@ -448,18 +443,6 @@
                 <textarea id="applet-code-editor" class="absolute inset-0 w-full h-full bg-[#111] text-[#e4e4e7] p-4 font-mono text-sm resize-none outline-none border-none hidden custom-scrollbar" oninput="updateAppletPreview()" spellcheck="false"></textarea>
             </div>
         </aside>
-    </div>
-
-    <!-- P2P Sync Overlay -->
-    <div id="sync-overlay" class="fixed inset-0 z-[30000] hidden bg-black/90 flex-col items-center justify-center p-4 transition-opacity">
-        <div class="bg-main border border-secondary rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 text-adaptive relative">
-            <button onclick="p2pSync.closeOverlay()" class="absolute top-4 right-4 text-muted hover:text-adaptive transition-colors">
-                <i class="ri-close-line text-xl"></i>
-            </button>
-            <div id="sync-content" class="flex flex-col gap-4 items-center w-full">
-                <!-- Injected via JS -->
-            </div>
-        </div>
     </div>
 
     <div id="dialog-overlay" class="items-center justify-center p-4 fixed inset-0 hidden">
@@ -669,283 +652,238 @@ function toggleImageMode() {
 }
 
 // ==========================================
-// P2P SYNC CHAIN IMPLEMENTATION
+// CLOUD SYNC IMPLEMENTATION (Puter account)
 // ==========================================
-// Transport: Puter.js Peer API (puter.peer) — serverless P2P messaging over Puter's own
-// signaling + TURN relays. Replaces the MQTT+WebRTC stack (public brokers unreliable) and
-// the original PeerJS cloud (broken). Works both inside and outside Perchance.
+// No P2P. Sign in once with your Puter account and your chats, keys and settings are
+// saved to that account's own cloud key-value store (private to this app). Every device
+// signed into the same account shares that one copy, and changes propagate live through
+// puter.events (kv subject). Works inside and outside Perchance.
+const SYNC_KEY = 'ventarys.sync';
 const p2pSync = {
-    connections: {}, knownDevices: [], myPeerId: null, server: null,
-    html5QrcodeScanner: null, _syncTimeout: null, _serverReady: false, _stopped: false,
-    _started: false, _readyCallbacks: [], _sweepTimer: null, _dialing: {}, _retryTimers: {},
+    myPeerId: null, _syncTimeout: null, _active: false, _started: false,
+    _sub: null, _lastPushSavedAt: 0, _lastSyncedAt: 0, _syncing: false, _dirty: false,
+    _pullTimer: null, _deleted: {}, _kvFail: false,
     isAuthed() {
         try { return !!(window.puter && puter.auth && puter.auth.isSignedIn && puter.auth.isSignedIn()); } catch (e) { return false; }
     },
     init() {
-        this.knownDevices = secureLoad('p2p_known_devices', []);
-        this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
-        AppStorage.setItem('p2p_my_id', this.myPeerId);
-        this.updateSignInUI();
-        this.startPeerServer();
-        if (this._serverReady && this.knownDevices.length) this.connectToKnownDevices();
-    },
-    startPeerServer(onReady = null) {
-        if (this._serverReady && this.server) { if (onReady) onReady(this.myPeerId); return; }
-        if (onReady) this._readyCallbacks.push(onReady);
-        if (this._started) return;
-        this._started = true;
-        this.serveRoom();
-    },
-    async serveRoom() {
-        if (this._stopped) return;
-        const opts = { name: this.myPeerId };
-        if (this.isAuthed()) {
-            try { const g = await puter.peer.createGuestGrant(); if (g && g.grant) opts.guestGrant = g.grant; } catch (e) {}
-        } else {
-            opts.anonToken = crypto.randomUUID();
-        }
-        try {
-            const server = await puter.peer.serve(opts);
-            this.server = server;
-            this._serverReady = true;
-            server.addEventListener('connection', (ev) => this.wireConn(ev.conn));
-            server.addEventListener('close', (ev) => {
-                if (this._stopped) return;
-                this._serverReady = false; this.server = null;
-                this.updateStatusIndicator();
-                if (ev.reason !== 'replaced') setTimeout(() => this.serveRoom(), 8000);
-            });
-            this.updateStatusIndicator();
-            this.startSweep();
-            this.connectToKnownDevices();
-            this._readyCallbacks.splice(0).forEach(cb => { try { cb(this.myPeerId); } catch (e) {} });
-        } catch (err) {
-            if (!this._stopped) setTimeout(() => this.serveRoom(), 8000);
-        }
-    },
-    startSweep() {
-        if (this._sweepTimer) clearInterval(this._sweepTimer);
-        this._sweepTimer = setInterval(() => this.sweep(), 20000);
-    },
-    sweep() {
-        if (!this._serverReady || this._stopped) return;
-        this.knownDevices.forEach(d => {
-            if (d.id === this.myPeerId) return;
-            if (this.connections[d.id]) return;
-            this.dialDevice(d.id);
-        });
-    },
-    connectToKnownDevices() { this.sweep(); },
-    dialDevice(peerId) {
-        if (this._stopped || peerId === this.myPeerId || this._dialing[peerId]) return;
-        if (this.connections[peerId]) return;
-        if (peerId > this.myPeerId) return;
-        this._dialing[peerId] = true;
-        const opts = this.isAuthed() ? {} : { anonToken: crypto.randomUUID() };
-        puter.peer.connect(peerId, opts).then(conn => {
-            delete this._dialing[peerId];
-            this.wireConn(conn);
-        }).catch(() => {
-            delete this._dialing[peerId];
-            this.scheduleRedial(peerId);
-        });
-    },
-    scheduleRedial(peerId) {
-        if (this._stopped) return;
-        if (this._retryTimers[peerId]) clearTimeout(this._retryTimers[peerId]);
-        this._retryTimers[peerId] = setTimeout(() => { delete this._retryTimers[peerId]; this.dialDevice(peerId); }, 8000);
-    },
-    wireConn(conn) {
-        if (this._stopped) return;
-        let peerId = null, buf = [];
-        const sendHello = () => { try { if (conn.connected) conn.send(JSON.stringify({ type: 'HELLO', from: this.myPeerId })); } catch (e) {} };
-        const identify = (pid) => {
-            if (peerId || pid === this.myPeerId) return;
-            peerId = pid;
-            if (this.connections[pid] && this.connections[pid] !== conn) { try { this.connections[pid].close('dup'); } catch (e) {} }
-            this.connections[pid] = conn;
-            buf.forEach(b => { try { this.handleIncomingData(b, { peer: pid, open: true }); } catch (e) {} });
-            buf = [];
-            this.addDeviceToList(pid);
-            this.updateStatusIndicator(); this.updateDeviceUI();
-            notify("P2P Chain connected to device.", "success");
-            this.closeOverlay();
-            sendHello();
-            this.sendData(conn, { type: 'PEER_EXCHANGE', payload: this.knownDevices });
-            this.triggerFullSync();
-        };
-        conn.addEventListener('open', sendHello);
-        conn.addEventListener('message', (ev) => {
-            try {
-                const raw = ev.data;
-                const parsed = JSON.parse(typeof raw === 'string' ? raw : new TextDecoder().decode(raw));
-                if (parsed.type === 'HELLO' && parsed.from) { identify(parsed.from); return; }
-                if (parsed.type === 'FULL_SYNC_COMPRESSED' && typeof parsed.payload === 'string') {
-                    parsed.payload = Uint8Array.from(atob(parsed.payload), c => c.charCodeAt(0));
+        if (!this._started) {
+            this._started = true;
+            this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
+            AppStorage.setItem('p2p_my_id', this.myPeerId);
+            const last = parseInt(AppStorage.getItem('p2p_last_synced') || '0', 10);
+            this._lastSyncedAt = isNaN(last) ? 0 : last;
+            window.addEventListener('pagehide', () => {
+                if (this._active && this._syncTimeout) {
+                    clearTimeout(this._syncTimeout); this._syncTimeout = null;
+                    this.pushToCloud();
                 }
-                if (peerId) this.handleIncomingData(parsed, { peer: peerId, open: true });
-                else buf.push(parsed);
-            } catch (e) {}
-        });
-        conn.addEventListener('close', () => {
-            if (peerId) this.handleConnClosed(peerId);
-        });
-        conn.addEventListener('error', () => {});
-        if (conn.connected) sendHello();
+            });
+        }
+        this.updateSignInUI();
+        this.updateStatusIndicator();
+        if (this.isAuthed()) this.enableSync();
     },
-    handleConnClosed(peerId) {
-        if (this.connections[peerId]) delete this.connections[peerId];
-        this.updateStatusIndicator(); this.updateDeviceUI();
-        if (peerId < this.myPeerId) this.scheduleRedial(peerId);
+    async enableSync() {
+        if (!this.isAuthed()) return;
+        if (this._active) { this.triggerFullSync(); return; }
+        this._active = true;
+        this.subscribeEvents();
+        const wrapper = await this.withTimeout(this.pullFromCloud(), 8000);
+        if (wrapper) {
+            const payload = this.decodeWrapper(wrapper);
+            if (payload) this.mergeDecryptedPayload(payload);
+        }
+        await this.withTimeout(this.pushToCloud(), 12000);
+        this.updateSignInUI();
+        this.updateStatusIndicator();
     },
-    teardownConn(peerId) {
-        const conn = this.connections[peerId];
-        delete this.connections[peerId];
-        if (conn) { try { conn.close('unlink'); } catch (e) {} }
-        if (this._retryTimers[peerId]) { clearTimeout(this._retryTimers[peerId]); delete this._retryTimers[peerId]; }
-        this.updateStatusIndicator(); this.updateDeviceUI();
+    withTimeout(promise, ms) {
+        return Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error('sync_timeout')), ms))]);
+    },
+    async subscribeEvents() {
+        if (this._sub || !window.puter || !puter.events) return;
+        try {
+            this._sub = await this.withTimeout(puter.events.onLocal('kv:' + SYNC_KEY, ({ event }) => {
+                if (event && event.op === 'gap') { this.pullAndMerge(); return; }
+                this.schedulePull();
+            }, { onError: () => { this._sub = null; } }), 8000);
+        } catch (e) { this._sub = null; }
+    },
+    schedulePull() {
+        clearTimeout(this._pullTimer);
+        this._pullTimer = setTimeout(() => { this._pullTimer = null; this.pullAndMerge(); }, 900);
+    },
+    async pullAndMerge() {
+        if (!this._active || !this.isAuthed()) return;
+        const wrapper = await this.pullFromCloud();
+        if (!wrapper) return;
+        if (wrapper.savedAt && this._lastPushSavedAt && wrapper.savedAt <= this._lastPushSavedAt) return;
+        this._lastPushSavedAt = wrapper.savedAt || 0;
+        const payload = this.decodeWrapper(wrapper);
+        if (!payload) return;
+        const changed = this.mergeDecryptedPayload(payload);
+        if (changed) this.pushToCloud();
+    },
+    async pullFromCloud() {
+        try {
+            const wrapper = await this.withTimeout(puter.kv.get(SYNC_KEY), 8000);
+            if (wrapper && wrapper.savedAt) {
+                this._lastSyncedAt = wrapper.savedAt;
+                AppStorage.setItem('p2p_last_synced', String(wrapper.savedAt));
+            }
+            this._kvFail = false;
+            return wrapper;
+        } catch (e) { this._kvFail = true; return null; }
+    },
+    decodeWrapper(wrapper) {
+        try {
+            if (!wrapper || !wrapper.data) return null;
+            const bin = atob(wrapper.data);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return JSON.parse(pako.inflate(bytes, { to: 'string' }));
+        } catch (e) { return null; }
+    },
+    async pushToCloud() {
+        if (!this._active || !this.isAuthed()) return;
+        if (this._syncing) { this._dirty = true; return; }
+        const payload = {
+            chats: allChats,
+            apiKeys: apiKeys,
+            localNodeSettings: localNodeSettings,
+            unifiedModel: currentUnifiedModel,
+            imageModel: currentImageModelId,
+            deleted: this._deleted
+        };
+        let compressed;
+        try { compressed = pako.deflate(JSON.stringify(payload)); }
+        catch (e) { return; }
+        const b64 = this._uint8ToB64(compressed);
+        if (b64.length > 380 * 1024) { notify("Cloud sync couldn't save: data exceeds the account limit.", "error"); return; }
+        const wrapper = { v: 2, savedAt: Date.now(), deviceId: this.myPeerId, data: b64 };
+        this._syncing = true;
+        try {
+            await this.withTimeout(puter.kv.set(SYNC_KEY, wrapper, { disableSharing: true }), 10000);
+            this._kvFail = false;
+            this._lastPushSavedAt = wrapper.savedAt;
+            this._lastSyncedAt = wrapper.savedAt;
+            AppStorage.setItem('p2p_last_synced', String(wrapper.savedAt));
+            this.updateStatusIndicator();
+            this.updateSignInUI();
+        } catch (e) {
+            this._kvFail = true;
+            if (window.puter) notify("Cloud sync failed. Check your connection and try again.", "error");
+        } finally {
+            this._syncing = false;
+            if (this._dirty) { this._dirty = false; setTimeout(() => this.pushToCloud(), 300); }
+        }
+    },
+    _uint8ToB64(bytes) {
+        let s = ''; const chunk = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunk) s += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+        return btoa(s);
     },
     ensurePuterAuth() {
-        const done = () => { this.updateSignInUI(); this.serveRoom(); notify("Puter connected. Device sync enabled.", "success"); };
+        const done = () => {
+            this.updateSignInUI();
+            this.enableSync();
+            notify("Puter connected. Cloud sync enabled.", "success");
+        };
         if (this.isAuthed()) { done(); return; }
         puter.auth.signIn().then(done).catch(() => { notify("Puter sign-in cancelled.", "info"); });
     },
+    async signOut() {
+        try { if (puter.auth && puter.auth.signOut) await puter.auth.signOut(); } catch (e) {}
+        this._active = false;
+        if (this._sub) { try { this._sub.off(); } catch (e) {} this._sub = null; }
+        this.updateSignInUI();
+        this.updateStatusIndicator();
+        notify("Cloud sync signed out.", "info");
+    },
+    async syncNow() {
+        if (!this.isAuthed()) { this.ensurePuterAuth(); return; }
+        if (!this._active) await this.enableSync();
+        await this.pullAndMerge();
+        this.pushToCloud();
+        this.updateSignInUI();
+        notify("Cloud sync updated.", "success");
+    },
     updateSignInUI() {
         const btn = document.getElementById('puter-signin-btn');
-        if (!btn) return;
-        btn.textContent = this.isAuthed() ? 'Signed in' : 'Sign in to enable sync';
+        if (btn) btn.innerHTML = this.isAuthed() ? '<i class="ri-check-double-line"></i> Signed in' : '<i class="ri-login-box-line"></i> Sign in with Puter';
+        const st = document.getElementById('cloud-sync-status');
+        if (st) {
+            if (!this.isAuthed()) {
+                st.innerHTML = 'No cloud sync yet. Sign in with your <b>Puter</b> account to save and sync your data across devices.';
+            } else {
+                const t = this._lastSyncedAt ? this._fmtTime(this._lastSyncedAt) : '—';
+                st.innerHTML = `Cloud sync active · Last sync: ${t}`;
+            }
+        }
+        const now = document.getElementById('cloud-sync-now');
+        const out = document.getElementById('cloud-sync-signout');
+        if (now) now.classList.toggle('hidden', !this.isAuthed());
+        if (out) out.classList.toggle('hidden', !this.isAuthed());
         this.updateStatusIndicator();
     },
-    sendData(dc, obj) {
-        try {
-            const open = dc ? (typeof dc.connected === 'boolean' ? dc.connected : dc.readyState === 'open') : false;
-            if (!open) return;
-            if (obj && obj.payload instanceof Uint8Array) {
-                let s = ''; const chunk = 0x8000;
-                for (let i = 0; i < obj.payload.length; i += chunk) s += String.fromCharCode.apply(null, obj.payload.subarray(i, i + chunk));
-                obj.payload = btoa(s);
-            }
-            dc.send(JSON.stringify(obj));
-        } catch (e) {}
-    },
-    addDeviceToList(id, name = "Linked Device") {
-        if (id === this.myPeerId) return;
-        if (!this.knownDevices.find(d => d.id === id)) {
-            this.knownDevices.push({ id, name, addedAt: Date.now() });
-            secureSave('p2p_known_devices', this.knownDevices);
-            this.updateDeviceUI();
-        }
-    },
-    removeDevice(id) {
-        this.knownDevices = this.knownDevices.filter(d => d.id !== id);
-        secureSave('p2p_known_devices', this.knownDevices);
-        this.teardownConn(id);
-        this.updateDeviceUI(); this.updateStatusIndicator();
-    },
-    updateDeviceUI() {
-        const list = document.getElementById('device-chain-list');
-        if (!list) return;
-        list.innerHTML = '';
-        if (this.knownDevices.length === 0) { list.innerHTML = `<div class="text-xs text-muted font-light p-2 text-center">No devices linked.</div>`; return; }
-        this.knownDevices.forEach(d => {
-            const isOnline = !!this.connections[d.id];
-            list.innerHTML += `<div class="flex items-center justify-between bg-main p-2.5 rounded-lg border border-secondary text-xs"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}"></div><span class="text-adaptive font-mono truncate max-w-[150px]">${d.id.substring(0, 16)}...</span></div><button onclick="p2pSync.removeDevice('${d.id}')" class="text-muted hover:text-red-500 transition-colors p-1" title="Unlink"><i class="ri-delete-bin-line text-[14px]"></i></button></div>`;
-        });
+    _fmtTime(ts) {
+        try { return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+        catch (e) { return '—'; }
     },
     updateStatusIndicator() {
         const ind = document.getElementById('sync-status-indicator');
         const txt = document.getElementById('sync-status-text');
-        if(!ind || !txt) return;
-        if (this.knownDevices.length === 0) { ind.classList.add('hidden'); return; }
+        if (!ind || !txt) return;
+        if (!this.isAuthed()) { ind.classList.add('hidden'); return; }
         ind.classList.remove('hidden');
-        if (Object.keys(this.connections).length > 0) {
-            txt.textContent = `${Object.keys(this.connections).length} Connected`;
-            txt.className = "font-medium text-green-500";
-        } else if (!this.isAuthed()) {
-            txt.textContent = "Sign in required";
-            txt.className = "font-medium text-amber-500";
+        if (this._syncing || this._syncTimeout) {
+            txt.textContent = 'Syncing…'; txt.className = "font-medium text-blue-500";
+        } else if (this._kvFail) {
+            txt.textContent = 'Offline · will retry'; txt.className = "font-medium text-amber-500";
+        } else if (this._active) {
+            txt.textContent = 'Cloud synced'; txt.className = "font-medium text-green-500";
         } else {
-            txt.textContent = this._serverReady ? "Offline/Searching" : "Connecting...";
-            txt.className = "font-medium text-amber-500";
+            txt.textContent = 'Connecting…'; txt.className = "font-medium text-amber-500";
         }
     },
-    isConnected() { return Object.keys(this.connections).length > 0; },
-    openChainModal() {
-        this.startPeerServer((id) => {
-            const overlay = document.getElementById('sync-overlay');
-            const content = document.getElementById('sync-content');
-            overlay.classList.remove('hidden'); overlay.classList.add('flex');
-            const authNotice = this.isAuthed() ? '' : `<div class="w-full bg-amber-500/10 border border-amber-500/40 text-amber-500 text-[11px] rounded-lg p-2.5 mb-3 flex items-center gap-2"><i class="ri-alert-line text-[14px] shrink-0"></i><span class="leading-relaxed">Device sync needs a <b>Puter</b> sign-in so devices can find each other across networks. <button onclick="p2pSync.ensurePuterAuth()" class="underline font-semibold">Sign in now</button></span></div>`;
-            content.innerHTML = `<div class="flex items-center gap-2 mb-2 text-accent"><i class="ri-link-m text-[24px]"></i><h3 class="text-xl font-bold font-sans">Add Device to Chain</h3></div>${authNotice}<div class="flex w-full bg-secondary rounded-lg p-1 mb-4"><button id="chain-tab-show" onclick="p2pSync.renderChainShow('${id}')" class="flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all">Show QR</button><button id="chain-tab-scan" onclick="p2pSync.renderChainScan()" class="flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all">Scan QR</button></div><div id="chain-modal-body" class="w-full flex flex-col items-center"></div>`;
-            this.renderChainShow(id);
-        });
-    },
-    renderChainShow(id) {
-        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
-        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
-        this.stopScanner();
-        document.getElementById('chain-modal-body').innerHTML = `<p class="text-xs text-muted text-center mb-4">Scan this code on your other device using the "Scan QR" tab.</p><div class="bg-white p-2 rounded-xl flex justify-center w-full max-w-[200px] mx-auto"><canvas id="qr-canvas" class="w-full h-auto"></canvas></div><div class="text-xs text-muted flex items-center justify-center gap-2 mt-4 animate-pulse"><i class="ri-radar-line text-[16px]"></i> Waiting for scan...</div>`;
-        new QRious({ element: document.getElementById('qr-canvas'), value: id, size: 400, level: 'M' });
-    },
-    renderChainScan() {
-        document.getElementById('chain-tab-scan').className = "flex-1 py-1.5 rounded-md text-xs font-medium bg-main text-adaptive shadow-sm transition-all";
-        document.getElementById('chain-tab-show').className = "flex-1 py-1.5 rounded-md text-xs font-medium text-muted hover:text-adaptive transition-all";
-        document.getElementById('chain-modal-body').innerHTML = `<p class="text-xs text-muted text-center mb-4">Scan a Ventarys QR code to link devices.</p><div id="qr-reader" class="w-full max-w-[250px] overflow-hidden rounded-xl border border-secondary bg-black min-h-[200px] flex items-center justify-center relative mx-auto"><div id="qr-reader-placeholder" class="absolute text-muted flex flex-col items-center"><i class="ri-refresh-line animate-spin mb-2 text-2xl"></i><span class="text-xs">Initializing...</span></div></div>`;
-        this.html5QrcodeScanner = new Html5Qrcode("qr-reader");
-        this.html5QrcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 200, height: 200 } }, (decodedText) => { 
-            if (decodedText.startsWith('ventarys-')) {
-                this.stopScanner(); this.addDeviceToList(decodedText); this.connectToKnownDevices(); this.closeOverlay();
-            } else { notify("Invalid code.", "error"); }
-        }, () => {}).then(() => {
-            const p = document.getElementById('qr-reader-placeholder'); if(p) p.style.display = 'none';
-        }).catch(err => {
-            const q = document.getElementById('qr-reader');
-            if (q) q.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center bg-black"><i class="ri-camera-off-line text-muted text-4xl mb-2"></i><p class="text-muted text-xs leading-relaxed">Camera unavailable.</p></div>`;
-        });
-    },
-    stopScanner() { if (this.html5QrcodeScanner) { try { this.html5QrcodeScanner.stop(); } catch(e){} this.html5QrcodeScanner = null; } },
-    closeOverlay() { this.stopScanner(); document.getElementById('sync-overlay').classList.add('hidden'); document.getElementById('sync-overlay').classList.remove('flex'); },
-    broadcastAction(action, payload) {
-        if (!this.isConnected()) return;
-        const msg = { type: 'ACTION', action, payload };
-        Object.values(this.connections).forEach(dc => this.sendData(dc, msg));
-    },
+    updateDeviceUI() {},
+    isConnected() { return this._active && this.isAuthed(); },
     triggerFullSync() {
         if (!this.isConnected()) return;
         clearTimeout(this._syncTimeout);
-        this._syncTimeout = setTimeout(() => this.broadcastFullSync(), 1500); 
+        this._syncTimeout = setTimeout(() => {
+            this._syncTimeout = null;
+            this.updateStatusIndicator();
+            this.pushToCloud();
+        }, 1200);
+        this.updateStatusIndicator();
     },
-    broadcastFullSync() {
-        if (!this.isConnected()) return;
-        const payload = { chats: allChats, apiKeys: apiKeys, localNodeSettings: localNodeSettings, unifiedModel: currentUnifiedModel, imageModel: currentImageModelId };
-        try {
-            const compressed = pako.deflate(JSON.stringify(payload));
-            const msg = { type: 'FULL_SYNC_COMPRESSED', payload: compressed };
-            Object.values(this.connections).forEach(dc => this.sendData(dc, msg));
-        } catch(err) {}
-    },
-    handleIncomingData(data, conn) {
-        if (data.type === 'PEER_EXCHANGE' && Array.isArray(data.payload)) {
-            data.payload.forEach(d => this.addDeviceToList(d.id, d.name));
-            this.connectToKnownDevices();
-        } else if (data.type === 'ACTION') {
-            let reqUpdate = false;
-            if (data.action === 'RENAME_CHAT' && allChats[data.payload.id]) {
-                allChats[data.payload.id].title = data.payload.title; reqUpdate = true;
-            } else if (data.action === 'DELETE_CHAT' && allChats[data.payload.id]) {
-                delete allChats[data.payload.id]; reqUpdate = true;
-                if (currentChatId === data.payload.id) createNewChatUIOnly();
-            }
-            if (reqUpdate) { saveChatsLocally(false); updateChatHistory(); }
-        } else if (data.type === 'FULL_SYNC_COMPRESSED' && data.payload) {
-            try { this.mergeDecryptedPayload(JSON.parse(pako.inflate(data.payload, { to: 'string' }))); } catch (err) {}
-        }
+    broadcastAction(action, payload) {
+        if (action === 'DELETE_CHAT' && payload && payload.id) this._deleted[payload.id] = Date.now();
+        this.triggerFullSync();
     },
     mergeDecryptedPayload(payload) {
         let reqChat = false, reqKeys = false, reqSet = false;
+        if (payload.deleted && typeof payload.deleted === 'object') {
+            this._deleted = { ...payload.deleted, ...this._deleted };
+            for (const [id, ts] of Object.entries(payload.deleted)) {
+                if (payload.chats && payload.chats[id]) continue;
+                const local = allChats[id];
+                if (local && (!local._u || ts > local._u)) {
+                    delete allChats[id]; reqChat = true;
+                    if (currentChatId === id) createNewChatUIOnly();
+                }
+            }
+        }
         if (payload.chats) {
-            for (const [id, chat] of Object.entries(payload.chats)) {
-                if (!allChats[id] || chat.messages.length > allChats[id].messages.length) { allChats[id] = chat; reqChat = true; }
+            for (const [id, r] of Object.entries(payload.chats)) {
+                const l = allChats[id];
+                if (!l) { allChats[id] = r; reqChat = true; continue; }
+                const rN = r.messages ? r.messages.length : 0, lN = l.messages ? l.messages.length : 0;
+                const rU = r._u || 0, lU = l._u || 0;
+                if (rN > lN) { allChats[id] = r; reqChat = true; }
+                else if (rN === lN && rU > lU) { allChats[id] = r; reqChat = true; }
             }
         }
         if (payload.apiKeys) {
@@ -962,12 +900,14 @@ const p2pSync = {
         }
         if (reqChat) { secureSave('ventarys_chats', allChats); updateChatHistory(); if (currentChatId && allChats[currentChatId]) loadChat(currentChatId, true); }
         if (reqKeys || reqSet) {
-            if(reqKeys) secureSave('byok_keys', apiKeys);
-            if(reqSet) secureSave('local_node_settings', localNodeSettings);
+            if (reqKeys) secureSave('byok_keys', apiKeys);
+            if (reqSet) secureSave('local_node_settings', localNodeSettings);
             updateLocalNodeProvider(); initSettingsUI(); fetchAllModels();
         }
+        return reqChat || reqKeys || reqSet;
     }
 };
+
 
 // ==========================================
 // NOTIFICATIONS
@@ -1845,7 +1785,7 @@ async function sendMessage() {
     
     if (!currentChatId) {
         currentChatId = CryptoJS.lib.WordArray.random(16).toString();
-        allChats[currentChatId] = { title: text.substring(0, 30) || "New Chat", messages: [], memory: "" };
+        allChats[currentChatId] = { title: text.substring(0, 30) || "New Chat", messages: [], memory: "", _u: Date.now() };
     }
     
     document.getElementById('welcome-screen').classList.add('hidden');
@@ -2223,6 +2163,7 @@ function closePreviewModal() {
 
 function saveChatsLocally(broadcast = true) {
     try {
+        if (allChats[currentChatId]) allChats[currentChatId]._u = Date.now();
         secureSave('ventarys_chats', allChats);
         AppStorage.setItem('current_chat_id', currentChatId);
         updateChatHistory();
@@ -2318,7 +2259,7 @@ function renameChat(e, id) {
         title: "Rename Chat", message: "Enter the new title:", showInput: true, inputValue: allChats[id].title,
         onConfirm: (v) => {
             if (v && v.trim()) {
-                allChats[id].title = escapeHTML(v.trim()); saveChatsLocally(false); 
+                allChats[id].title = escapeHTML(v.trim()); allChats[id]._u = Date.now(); saveChatsLocally(false); 
                 p2pSync.broadcastAction('RENAME_CHAT', { id, title: allChats[id].title });
             }
         }
@@ -2372,7 +2313,6 @@ function confirmDeleteAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    try { p2pSync.init(); } catch (e) {}
     const encrypted = AppStorage.getItem('ventarys_is_encrypted');
     if (encrypted === 'true') { document.getElementById('login-overlay').classList.add('hidden'); initSecurity(); }
     if (AppStorage.getItem('theme') === 'light') { document.getElementById('ventarys-app-root').classList.add('light'); updateThemeIcon(true); }
