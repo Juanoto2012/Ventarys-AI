@@ -1435,19 +1435,9 @@ async function fetchChatCompletion(messages, onChunk, overrideModelStr = null, s
 
 async function fetchWeb(url, opts = {}) {
     const useProxy = typeof root !== 'undefined' && typeof root.superFetch === 'function';
-    try {
-        const r = useProxy ? await root.superFetch(url, opts) : await fetch(url, opts);
-        if (r.ok) return r;
-        throw new Error('http ' + r.status);
-    } catch (e) {
-        let target = url;
-        if (opts.method === 'POST' && opts.body && opts.headers && opts.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-            target = url + (url.includes('?') ? '&' : '?') + opts.body;
-        }
-        const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(target));
-        if (!r2.ok) throw new Error('proxy failed');
-        return r2;
-    }
+    const r = useProxy ? await root.superFetch(url, opts) : await fetch(url, opts);
+    if (!r.ok) throw new Error('http ' + r.status);
+    return r;
 }
 
 async function performJinaSearch(query) {
@@ -1476,18 +1466,18 @@ async function performJinaSearch(query) {
 }
 
 const SEARXNG_INSTANCES = [
-    "https://search.mdosch.de/search",
-    "https://searx.perennialte.ch/search"
+    "https://searx.party/search",
+    "https://etsi.me/search",
+    "https://sx.xo.st/search",
+    "https://searxng.gr/search"
 ];
 
 async function performWebSearch(query) {
     let lastErr = null;
     for (const instance of SEARXNG_INSTANCES) {
         try {
-            const response = await fetchWeb(instance, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" },
-                body: `q=${encodeURIComponent(query)}&format=json&language=auto&safesearch=2`
+            const response = await fetchWeb(`${instance}?q=${encodeURIComponent(query)}&format=json&language=auto&safesearch=2`, {
+                headers: { "Accept": "application/json" }
             });
             if (!response.ok) throw new Error("SearXNG search failed with status " + response.status);
             const data = await response.json();
