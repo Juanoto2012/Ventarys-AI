@@ -683,16 +683,19 @@ const p2pSync = {
     ],
     mqtt: null, connections: {}, rtcPeers: {}, pendingCandidates: {}, knownDevices: [], myPeerId: null,
     html5QrcodeScanner: null, _syncTimeout: null, _brokerIndex: 0, _brokerReady: false, _stopped: false,
-    _readyCallbacks: [], _presenceTimer: null, _sweepTimer: null,
+    _started: false, _readyCallbacks: [], _presenceTimer: null, _sweepTimer: null,
     init() {
         this.knownDevices = secureLoad('p2p_known_devices', []);
         this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
         AppStorage.setItem('p2p_my_id', this.myPeerId);
         this.startPeerServer();
+        if (this._brokerReady && this.knownDevices.length) this.connectToKnownDevices();
     },
     startPeerServer(onReady = null) {
         if (this.mqtt && this.mqtt.connected) { if (onReady) onReady(this.myPeerId); return; }
         if (onReady) this._readyCallbacks.push(onReady);
+        if (this._started) return;
+        this._started = true;
         this.connectBroker();
     },
     connectBroker() {
@@ -2395,6 +2398,7 @@ function confirmDeleteAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    try { p2pSync.init(); } catch (e) {}
     const encrypted = AppStorage.getItem('ventarys_is_encrypted');
     if (encrypted === 'true') { document.getElementById('login-overlay').classList.add('hidden'); initSecurity(); }
     if (AppStorage.getItem('theme') === 'light') { document.getElementById('ventarys-app-root').classList.add('light'); updateThemeIcon(true); }
