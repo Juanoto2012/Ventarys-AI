@@ -22,7 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 
     <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -667,8 +667,23 @@ function toggleImageMode() {
 // ==========================================
 // P2P SYNC CHAIN IMPLEMENTATION
 // ==========================================
+// Transport: MQTT signaling (public brokers) + WebRTC DataChannel (DTLS-encrypted end-to-end).
+// Replaces the old PeerJS public cloud, which is unreliable/broken. Works both inside and
+// outside Perchance (plain WebSocket, no CORS, no Perchance dependency).
 const p2pSync = {
-    peer: null, connections: {}, knownDevices: [], myPeerId: null, html5QrcodeScanner: null, _syncTimeout: null,
+    MQTT_BROKERS: [
+        "wss://broker.emqx.io:8084/mqtt",
+        "wss://broker.hive-mq.com:8884/mqtt",
+        "wss://test.mosquitto.org:8081/mqtt"
+    ],
+    ICE_SERVERS: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:global.stun.twilio.com:3478" },
+        { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" }
+    ],
+    mqtt: null, connections: {}, rtcPeers: {}, pendingCandidates: {}, knownDevices: [], myPeerId: null,
+    html5QrcodeScanner: null, _syncTimeout: null, _brokerIndex: 0, _brokerReady: false, _stopped: false,
+    _readyCallbacks: [], _presenceTimer: null, _sweepTimer: null,
     init() {
         this.knownDevices = secureLoad('p2p_known_devices', []);
         this.myPeerId = AppStorage.getItem('p2p_my_id') || ('ventarys-' + crypto.randomUUID());
@@ -676,38 +691,168 @@ const p2pSync = {
         this.startPeerServer();
     },
     startPeerServer(onReady = null) {
-        if (this.peer && !this.peer.destroyed) { if(onReady) onReady(this.myPeerId); return; }
-        this.peer = new Peer(this.myPeerId);
-        this.peer.on('open', (id) => { this.updateStatusIndicator(); this.connectToKnownDevices(); if(onReady) onReady(id); });
-        this.peer.on('connection', (conn) => { this.setupConnection(conn); });
-        this.peer.on('disconnected', () => { setTimeout(() => { if (this.peer && !this.peer.destroyed) this.peer.reconnect(); }, 5000); });
+        if (this.mqtt && this.mqtt.connected) { if (onReady) onReady(this.myPeerId); return; }
+        if (onReady) this._readyCallbacks.push(onReady);
+        this.connectBroker();
     },
-    connectToKnownDevices() {
-        this.knownDevices.forEach(device => {
-            if (device.id !== this.myPeerId && !this.connections[device.id]) {
-                const conn = this.peer.connect(device.id, { reliable: true });
-                this.setupConnection(conn);
-            }
+    connectBroker() {
+        if (this._stopped) return;
+        const url = this.MQTT_BROKERS[this._brokerIndex % this.MQTT_BROKERS.length];
+        try { this.mqtt = mqtt.connect(url, { clientId: 'ventarys-' + Math.random().toString(16).slice(2), clean: true, reconnectPeriod: 0, connectTimeout: 15000 }); }
+        catch (e) { this._brokerIndex++; setTimeout(() => this.connectBroker(), 3000); return; }
+        this.mqtt.on('connect', () => {
+            this._brokerReady = true;
+            this.mqtt.subscribe('ventarys/sync/' + this.myPeerId);
+            this.mqtt.subscribe('ventarys/sync/presence');
+            this.updateStatusIndicator();
+            this.publishPresence();
+            this._presenceTimer = setInterval(() => this.publishPresence(), 15000);
+            this.startSweep();
+            this.connectToKnownDevices();
+            this._readyCallbacks.splice(0).forEach(cb => { try { cb(this.myPeerId); } catch (e) {} });
+        });
+        this.mqtt.on('message', (topic, payload) => this.handleSignal(payload));
+        const retry = () => { if (!this._stopped) { this._brokerIndex++; setTimeout(() => this.connectBroker(), 2500); } };
+        this.mqtt.on('error', () => { if (this.mqtt && !this.mqtt.connected) retry(); });
+        this.mqtt.on('close', () => {
+            if (this._stopped) return;
+            this._brokerReady = false;
+            clearInterval(this._presenceTimer);
+            Object.keys(this.rtcPeers).forEach(id => this.teardownRTC(id));
+            this.updateStatusIndicator();
+            retry();
         });
     },
-    setupConnection(conn) {
-        conn.on('open', () => {
-            this.connections[conn.peer] = conn;
-            this.addDeviceToList(conn.peer);
+    publishPresence() {
+        if (!this.mqtt || !this.mqtt.connected) return;
+        try { this.mqtt.publish('ventarys/sync/presence', JSON.stringify({ type: 'presence', from: this.myPeerId })); } catch (e) {}
+    },
+    sendSignal(msg) {
+        if (this.mqtt && this.mqtt.connected && msg && msg.to) {
+            try { this.mqtt.publish('ventarys/sync/' + msg.to, JSON.stringify(msg)); } catch (e) {}
+        }
+    },
+    startSweep() {
+        if (this._sweepTimer) clearInterval(this._sweepTimer);
+        this._sweepTimer = setInterval(() => this.sweep(), 15000);
+    },
+    sweep() {
+        if (!this.mqtt || !this.mqtt.connected) return;
+        this.knownDevices.forEach(d => {
+            if (d.id === this.myPeerId) return;
+            if (this.connections[d.id] || this.rtcPeers[d.id]) return;
+            if (d.id < this.myPeerId) this.establishRTC(d.id);
+        });
+    },
+    connectToKnownDevices() { this.sweep(); },
+    establishRTC(peerId) {
+        if (peerId === this.myPeerId || this.rtcPeers[peerId] || this.connections[peerId]) return;
+        let pc;
+        try { pc = new RTCPeerConnection({ iceServers: this.ICE_SERVERS }); } catch (e) { return; }
+        this.rtcPeers[peerId] = pc;
+        if (peerId < this.myPeerId) {
+            try { this.wireDataChannel(peerId, pc.createDataChannel('ventarys-sync', { ordered: true })); }
+            catch (e) { this.teardownRTC(peerId); return; }
+        } else {
+            pc.ondatachannel = (ev) => { this.wireDataChannel(peerId, ev.channel); };
+        }
+        pc.onicecandidate = (ev) => {
+            if (ev.candidate) this.sendSignal({ type: 'candidate', from: this.myPeerId, to: peerId, candidate: ev.candidate.toJSON() });
+        };
+        pc.onconnectionstatechange = () => {
+            const st = pc.connectionState;
+            if (st === 'failed' || st === 'closed') this.teardownRTC(peerId);
+        };
+        if (peerId < this.myPeerId) {
+            pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => {
+                if (pc.localDescription) this.sendSignal({ type: 'offer', from: this.myPeerId, to: peerId, sdp: pc.localDescription.sdp });
+            }).catch(() => this.teardownRTC(peerId));
+        }
+    },
+    wireDataChannel(peerId, dc) {
+        dc.binaryType = 'arraybuffer';
+        dc.onopen = () => {
+            this.connections[peerId] = dc;
+            this.addDeviceToList(peerId);
             this.updateStatusIndicator(); this.updateDeviceUI();
             notify("P2P Chain connected to device.", "success");
             this.closeOverlay();
-            conn.send({ type: 'PEER_EXCHANGE', payload: this.knownDevices });
-            this.triggerFullSync(); 
-        });
-        conn.on('data', (data) => {
-            try { const parsed = typeof data === 'string' ? JSON.parse(data) : data; this.handleIncomingData(parsed, conn); } catch (e) {}
-        });
-        const onEnd = () => {
-            delete this.connections[conn.peer];
-            this.updateStatusIndicator(); this.updateDeviceUI();
+            this.sendData(dc, { type: 'PEER_EXCHANGE', payload: this.knownDevices });
+            this.triggerFullSync();
         };
-        conn.on('close', onEnd); conn.on('error', onEnd);
+        dc.onmessage = (ev) => {
+            try {
+                const parsed = JSON.parse(typeof ev.data === 'string' ? ev.data : new TextDecoder().decode(ev.data));
+                if (parsed.type === 'FULL_SYNC_COMPRESSED' && typeof parsed.payload === 'string') {
+                    parsed.payload = Uint8Array.from(atob(parsed.payload), c => c.charCodeAt(0));
+                }
+                this.handleIncomingData(parsed, { peer: peerId, open: true });
+            } catch (e) {}
+        };
+        dc.onclose = () => this.teardownRTC(peerId);
+        dc.onerror = () => this.teardownRTC(peerId);
+    },
+    teardownRTC(peerId) {
+        delete this.connections[peerId];
+        const pc = this.rtcPeers[peerId];
+        if (pc) { try { pc.close(); } catch (e) {} }
+        delete this.rtcPeers[peerId];
+        delete this.pendingCandidates[peerId];
+        this.updateStatusIndicator(); this.updateDeviceUI();
+    },
+    handleSignal(payload) {
+        try {
+            const msg = JSON.parse(new TextDecoder().decode(payload));
+            if (!msg || !msg.from || msg.from === this.myPeerId) return;
+            if (msg.type === 'presence') {
+                if (this.knownDevices.some(d => d.id === msg.from) && msg.from < this.myPeerId) this.establishRTC(msg.from);
+                return;
+            }
+            if (msg.to && msg.to !== this.myPeerId) return;
+            if (msg.type === 'offer') this.handleOffer(msg);
+            else if (msg.type === 'answer') this.handleAnswer(msg);
+            else if (msg.type === 'candidate') this.handleCandidate(msg);
+        } catch (e) {}
+    },
+    handleOffer(msg) {
+        if (!this.rtcPeers[msg.from]) this.establishRTC(msg.from);
+        const pc = this.rtcPeers[msg.from];
+        if (!pc) return;
+        pc.setRemoteDescription({ type: 'offer', sdp: msg.sdp }).then(() => pc.createAnswer()).then(answer => pc.setLocalDescription(answer)).then(() => {
+            this.flushPendingCandidates(msg.from);
+            if (pc.localDescription) this.sendSignal({ type: 'answer', from: this.myPeerId, to: msg.from, sdp: pc.localDescription.sdp });
+        }).catch(() => this.teardownRTC(msg.from));
+    },
+    handleAnswer(msg) {
+        const pc = this.rtcPeers[msg.from];
+        if (!pc) return;
+        pc.setRemoteDescription({ type: 'answer', sdp: msg.sdp }).then(() => this.flushPendingCandidates(msg.from)).catch(() => this.teardownRTC(msg.from));
+    },
+    handleCandidate(msg) {
+        const pc = this.rtcPeers[msg.from];
+        if (!pc) return;
+        if (pc.remoteDescription && pc.remoteDescription.type) {
+            try { pc.addIceCandidate(msg.candidate); } catch (e) {}
+        } else {
+            (this.pendingCandidates[msg.from] = this.pendingCandidates[msg.from] || []).push(msg.candidate);
+        }
+    },
+    flushPendingCandidates(peerId) {
+        const pc = this.rtcPeers[peerId];
+        const list = this.pendingCandidates[peerId] || [];
+        delete this.pendingCandidates[peerId];
+        if (pc) list.forEach(c => { try { pc.addIceCandidate(c); } catch (e) {} });
+    },
+    sendData(dc, obj) {
+        try {
+            if (!dc || dc.readyState !== 'open') return;
+            if (obj && obj.payload instanceof Uint8Array) {
+                let s = ''; const chunk = 0x8000;
+                for (let i = 0; i < obj.payload.length; i += chunk) s += String.fromCharCode.apply(null, obj.payload.subarray(i, i + chunk));
+                obj.payload = btoa(s);
+            }
+            dc.send(JSON.stringify(obj));
+        } catch (e) {}
     },
     addDeviceToList(id, name = "Linked Device") {
         if (id === this.myPeerId) return;
@@ -715,12 +860,13 @@ const p2pSync = {
             this.knownDevices.push({ id, name, addedAt: Date.now() });
             secureSave('p2p_known_devices', this.knownDevices);
             this.updateDeviceUI();
+            this.publishPresence();
         }
     },
     removeDevice(id) {
         this.knownDevices = this.knownDevices.filter(d => d.id !== id);
         secureSave('p2p_known_devices', this.knownDevices);
-        if (this.connections[id]) { this.connections[id].close(); delete this.connections[id]; }
+        this.teardownRTC(id);
         this.updateDeviceUI(); this.updateStatusIndicator();
     },
     updateDeviceUI() {
@@ -743,7 +889,7 @@ const p2pSync = {
             txt.textContent = `${Object.keys(this.connections).length} Connected`;
             txt.className = "font-medium text-green-500";
         } else {
-            txt.textContent = "Offline/Searching";
+            txt.textContent = this._brokerReady ? "Offline/Searching" : "Connecting...";
             txt.className = "font-medium text-amber-500";
         }
     },
@@ -784,8 +930,8 @@ const p2pSync = {
     closeOverlay() { this.stopScanner(); document.getElementById('sync-overlay').classList.add('hidden'); document.getElementById('sync-overlay').classList.remove('flex'); },
     broadcastAction(action, payload) {
         if (!this.isConnected()) return;
-        const msg = JSON.stringify({ type: 'ACTION', action, payload });
-        Object.values(this.connections).forEach(c => { if(c.open) c.send(msg); });
+        const msg = { type: 'ACTION', action, payload };
+        Object.values(this.connections).forEach(dc => this.sendData(dc, msg));
     },
     triggerFullSync() {
         if (!this.isConnected()) return;
@@ -797,7 +943,8 @@ const p2pSync = {
         const payload = { chats: allChats, apiKeys: apiKeys, localNodeSettings: localNodeSettings, unifiedModel: currentUnifiedModel, imageModel: currentImageModelId };
         try {
             const compressed = pako.deflate(JSON.stringify(payload));
-            Object.values(this.connections).forEach(c => { if(c.open) c.send({ type: 'FULL_SYNC_COMPRESSED', payload: compressed }); });
+            const msg = { type: 'FULL_SYNC_COMPRESSED', payload: compressed };
+            Object.values(this.connections).forEach(dc => this.sendData(dc, msg));
         } catch(err) {}
     },
     handleIncomingData(data, conn) {
