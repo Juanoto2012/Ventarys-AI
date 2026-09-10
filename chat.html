@@ -1536,7 +1536,100 @@ const SEARXNG_INSTANCES = [
     "https://searxng.gr/search"
 ];
 
+const DUCKDUCKGO_SEARCH_TARGETS = [
+    (q) => `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&ia=web`,
+    (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}&t=brave&ia=web`
+];
+
+function decodeDuckDuckGoRedirect(url) {
+    const m = String(url).match(/[?&]uddg=([^&"']+)/);
+    if (m) { try { return decodeURIComponent(m[1]); } catch (e) { return url; } }
+    return url;
+}
+
+function markdownInlineToText(str) {
+    return String(str)
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .replace(/\*+/g, ' ')
+        .replace(/`/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function isBareUrlLine(str) {
+    return /^[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(str) || /^https?:\/\//i.test(str);
+}
+
+function parseDuckDuckGoResults(markdown) {
+    if (!markdown || typeof markdown !== 'string') return [];
+    const results = [];
+    const seen = new Set();
+
+    const headRe = /^#{1,6}\s*\[([^\]]+)\]\((https?:\/\/[^)\s]+?)(?:\s+"[^"]*")?\)/gm;
+    const heads = [...markdown.matchAll(headRe)];
+    for (let i = 0; i < heads.length; i++) {
+        const title = markdownInlineToText(heads[i][1]);
+        const realUrl = decodeDuckDuckGoRedirect(heads[i][2]);
+        if (!/^https?:\/\//i.test(realUrl) || /duckduckgo\.com/i.test(realUrl)) continue;
+        if (seen.has(realUrl)) continue;
+        seen.add(realUrl);
+        const start = heads[i].index + heads[i][0].length;
+        const end = i + 1 < heads.length ? heads[i + 1].index : markdown.length;
+        let snippet = '';
+        for (const line of markdown.slice(start, end).split('\n')) {
+            const txt = markdownInlineToText(line);
+            if (!txt || isBareUrlLine(txt)) continue;
+            if (txt.length > snippet.length) snippet = txt;
+        }
+        results.push({ title: title || realUrl, url: realUrl, content: snippet.slice(0, 600) });
+        if (results.length >= 6) break;
+    }
+    if (results.length > 0) return results;
+
+    const marker = markdown.indexOf('Markdown Content:');
+    let body = marker >= 0 ? markdown.slice(marker + 'Markdown Content:'.length) : markdown;
+    const footer = body.indexOf('[Homepage](https://start.duckduckgo.com/)');
+    if (footer >= 0) body = body.slice(0, footer);
+    for (const raw of body.split(/\n(?=\d+\.\s{2})/)) {
+        const chunk = raw.trim();
+        if (!/^\d+\.\s/.test(chunk)) continue;
+        if (/duckduckgo\.com\/y\.js|report ad/i.test(chunk)) continue;
+        const block = chunk.replace(/^\d+\.\s+/, '');
+        const site = block.match(/site:([a-z0-9.-]+\.[a-z]{2,})/i);
+        const badge = block.match(/!\[[^\]]*\]\([^)]*\)([a-z0-9.-]+\.[a-z]{2,})/i);
+        const plain = block.match(/\b([a-z0-9-]+(?:\.[a-z0-9-]+)+\.[a-z]{2,})\b/i);
+        const domain = ((site || badge || plain || [])[1] || '').replace(/^www\./i, '');
+        const ext = [...block.matchAll(/\[([^\]]+)\]\((https?:\/\/(?!duckduckgo\.com|external-content\.duckduckgo\.com)[^)\s]+)/gi)][0];
+        const url = ext ? ext[2] : (domain ? 'https://' + domain : '');
+        const content = markdownInlineToText(block).slice(0, 600);
+        if (!content) continue;
+        const key = url || content;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        results.push({ title: ext ? (markdownInlineToText(ext[1]) || domain || 'Result') : (domain || 'Result'), url: url, content: content });
+        if (results.length >= 6) break;
+    }
+    return results;
+}
+
+async function performDuckDuckGoSearch(query) {
+    for (const target of DUCKDUCKGO_SEARCH_TARGETS) {
+        try {
+            const response = await fetchWeb(`https://r.jina.ai/${target(query)}`, {
+                headers: { 'X-Return-Format': 'markdown', 'Accept': 'text/plain' }
+            });
+            const markdown = await response.text();
+            const results = parseDuckDuckGoResults(markdown);
+            if (results.length > 0) return results;
+        } catch (e) { /* try next DuckDuckGo target */ }
+    }
+    return [];
+}
+
 async function performWebSearch(query) {
+    const ddgResults = await performDuckDuckGoSearch(query);
+    if (ddgResults.length > 0) return ddgResults;
     let lastErr = null;
     for (const instance of SEARXNG_INSTANCES) {
         try {
