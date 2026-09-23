@@ -65,7 +65,7 @@
         @layer utilities {
             /* Glassmorphism that adapts perfectly to dark mode */
             .glass {
-                @apply bg-white/70 dark:bg-zinc-950/70 backdrop-blur-md border border-black/5 dark:border-white/5;
+                @apply bg-white/70 dark:bg-zinc-950/70 backdrop-blur-md border-b border-black/5 dark:border-white/5;
             }
 
             .text-gradient {
@@ -113,51 +113,75 @@
 
     <div class="ambient-glow"></div>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass top-0 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3 group">
-                <img src="logo.png" alt="Ventarys Logo" class="w-6 h-6 object-contain logo-adapt opacity-90 group-hover:opacity-100 transition-opacity">
-                <span class="text-xl font-sans font-semibold tracking-tight">Ventarys</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-8">
-                <a href="https://www.buymeacoffee.com/JJDEVStudio"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=JJDEVStudio&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
-                <a href="#features" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Features</a>
-                <a href="#architecture" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Architecture</a>
-                <a href="#ai-news" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">AI Radar</a>
+    <div class="fixed w-full top-0 z-50 flex flex-col transition-all duration-300 shadow-sm">
+        
+        <!-- URGENT FOSS BANNER -->
+        <div id="urgent-foss-banner" class="bg-red-600 dark:bg-red-700 text-white px-4 py-2.5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm transition-all duration-500 shadow-md relative z-50">
+            <div class="flex items-start sm:items-center gap-2 max-w-5xl">
+                <i class="ri-alert-fill text-lg shrink-0 mt-0.5 sm:mt-0 animate-pulse"></i>
+                <p class="font-medium leading-tight text-center sm:text-left">
+                    <strong>Critical FOSS Alert:</strong> Ventarys AI relies entirely on community support. The project is in real danger of shutting down due to a lack of donations. Your contributions are the only thing keeping this privacy-first, open-source project alive!
+                </p>
             </div>
-
-            <div class="flex items-center gap-4">
-                <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors">
-                    GitHub
+            <div class="flex items-center gap-3 shrink-0">
+                <a href="https://www.buymeacoffee.com/JJDEVStudio" target="_blank" class="bg-white text-red-600 hover:bg-zinc-100 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-transform hover:scale-105 flex items-center gap-1.5 shadow-sm">
+                    <i class="ri-heart-fill"></i> Donate To Keep Us Alive
                 </a>
-                <a href="https://ventarys.net/chat" class="hidden md:flex items-center justify-center h-9 px-5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-sm font-medium hover:scale-105 transition-transform shadow-lg shadow-zinc-900/20 dark:shadow-white/10">
-                    Launch AI
-                </a>
-                
-                <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2">
-                    <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
-                    <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
+                <button onclick="dismissDonationBanner()" class="text-white/80 hover:text-white p-1 transition-colors" aria-label="Dismiss">
+                    <i class="ri-close-line text-lg"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full glass border-b border-zinc-200 dark:border-zinc-800 shadow-2xl">
-            <div class="flex flex-col p-6 gap-6 font-sans">
-                <a href="https://www.buymeacoffee.com/JJDEVStudio"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=JJDEVStudio&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
-                <a href="#features" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Features</a>
-                <a href="#architecture" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Architecture</a>
-                <a href="#ai-news" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">AI Radar</a>
-                <div class="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
-                <a href="https://ventarys.net/chat" class="flex items-center justify-center h-12 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium">Launch Ventarys AI</a>
+        <!-- Navigation -->
+        <nav class="w-full glass relative transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+                <a href="#" class="flex items-center gap-3 group">
+                    <img src="logo.png" alt="Ventarys Logo" class="w-6 h-6 object-contain logo-adapt opacity-90 group-hover:opacity-100 transition-opacity">
+                    <span class="text-xl font-sans font-semibold tracking-tight">Ventarys</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8">
+ <a href="https://www.buymeacoffee.com/JJDEVStudio" target="_blank" class="bg-white text-red-600 hover:bg-zinc-100 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-transform hover:scale-105 flex items-center gap-1.5 shadow-sm">
+                    <i class="ri-heart-fill"></i> Donate
+                </a>
+                    <a href="#features" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Features</a>
+                    <a href="#architecture" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Architecture</a>
+                    <a href="#ai-news" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">AI Radar</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors">
+                        GitHub
+                    </a>
+                    <a href="https://ventarys.net/chat" class="hidden md:flex items-center justify-center h-9 px-5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-sm font-medium hover:scale-105 transition-transform shadow-lg shadow-zinc-900/20 dark:shadow-white/10">
+                        Launch AI
+                    </a>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2">
+                        <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
+                        <span class="w-5 h-0.5 bg-zinc-900 dark:bg-white rounded-full"></span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </nav>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full glass shadow-2xl">
+                <div class="flex flex-col p-6 gap-6 font-sans">
+                    <a href="https://www.buymeacoffee.com/JJDEVStudio" target="_blank" class="self-start"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=JJDEVStudio&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" class="h-10" alt="Buy me a coffee"/></a>
+                    <a href="#features" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Features</a>
+                    <a href="#architecture" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">Architecture</a>
+                    <a href="#ai-news" class="text-lg font-medium text-zinc-800 dark:text-zinc-200" onclick="toggleMenu()">AI Radar</a>
+                    <div class="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
+                    <a href="https://ventarys.net/chat" class="flex items-center justify-center h-12 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium">Launch Ventarys AI</a>
+                </div>
+            </div>
+        </nav>
+    </div>
 
     <!-- Hero Section -->
-    <header class="relative pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col items-center text-center z-10 px-6">
+    <!-- Increased padding-top to account for the new banner -->
+    <header class="relative pt-44 pb-24 md:pt-60 md:pb-32 flex flex-col items-center text-center z-10 px-6">
         <div class="max-w-4xl mx-auto animate-fade-in-up">
             <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
@@ -403,8 +427,30 @@
 
     <!-- Scripts -->
     <script>
+        // Donation Banner Logic
+        function dismissDonationBanner() {
+            const banner = document.getElementById('urgent-foss-banner');
+            if(banner) {
+                // Smooth collapse animation
+                banner.style.marginTop = `-${banner.offsetHeight}px`;
+                banner.style.opacity = '0';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 500);
+                
+                // Remember user's choice in local storage
+                localStorage.setItem('ventarys_foss_alert_dismissed', 'true');
+            }
+        }
+
         // Scroll Reveal Animation
         document.addEventListener("DOMContentLoaded", () => {
+            // Check if banner was previously dismissed
+            if (localStorage.getItem('ventarys_foss_alert_dismissed')) {
+                const banner = document.getElementById('urgent-foss-banner');
+                if (banner) banner.style.display = 'none';
+            }
+
             const reveals = document.querySelectorAll('.reveal');
             const observer = new IntersectionObserver((entries, obs) => {
                 entries.forEach(entry => {
