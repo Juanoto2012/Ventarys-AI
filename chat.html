@@ -749,7 +749,7 @@ const p2pSync = {
         if (!this._active || !this.isAuthed()) return;
         if (this._syncing) { this._dirty = true; return; }
         const payload = {
-            chats: allChats,
+            chats: sanitizeChatsForCloud(allChats),
             apiKeys: apiKeys,
             localNodeSettings: localNodeSettings,
             unifiedModel: currentUnifiedModel,
@@ -785,6 +785,7 @@ const p2pSync = {
         return btoa(s);
     },
     ensurePuterAuth() {
+        if (!window.puter || !puter.auth) { notify("Sync no disponible fuera de linea.", "info"); return; }
         const done = () => {
             this.updateSignInUI();
             this.enableSync();
@@ -1370,8 +1371,13 @@ function finishInitApp(isSoftReload = false) {
 
     const savedChats = secureLoad('ventarys_chats', null);
     if (savedChats) allChats = savedChats;
+    for (const [id, c] of Object.entries(allChats || {})) {
+        if (!c || !Array.isArray(c.messages)) { delete allChats[id]; continue; }
+        c.messages.forEach(m => { if (m) m.files = sanitizeFilesForStorage(m.files); });
+    }
 
     currentChatId = AppStorage.getItem('current_chat_id');
+    if (currentChatId && !allChats[currentChatId]) currentChatId = null;
     currentImageModelId = AppStorage.getItem('byok_image_model') || 'flux';
     
     initSettingsUI(); fetchAllModels(); updateChatHistory(); 
@@ -1536,100 +1542,7 @@ const SEARXNG_INSTANCES = [
     "https://searxng.gr/search"
 ];
 
-const DUCKDUCKGO_SEARCH_TARGETS = [
-    (q) => `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&ia=web`,
-    (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}&t=brave&ia=web`
-];
-
-function decodeDuckDuckGoRedirect(url) {
-    const m = String(url).match(/[?&]uddg=([^&"']+)/);
-    if (m) { try { return decodeURIComponent(m[1]); } catch (e) { return url; } }
-    return url;
-}
-
-function markdownInlineToText(str) {
-    return String(str)
-        .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-        .replace(/\*+/g, ' ')
-        .replace(/`/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-function isBareUrlLine(str) {
-    return /^[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(str) || /^https?:\/\//i.test(str);
-}
-
-function parseDuckDuckGoResults(markdown) {
-    if (!markdown || typeof markdown !== 'string') return [];
-    const results = [];
-    const seen = new Set();
-
-    const headRe = /^#{1,6}\s*\[([^\]]+)\]\((https?:\/\/[^)\s]+?)(?:\s+"[^"]*")?\)/gm;
-    const heads = [...markdown.matchAll(headRe)];
-    for (let i = 0; i < heads.length; i++) {
-        const title = markdownInlineToText(heads[i][1]);
-        const realUrl = decodeDuckDuckGoRedirect(heads[i][2]);
-        if (!/^https?:\/\//i.test(realUrl) || /duckduckgo\.com/i.test(realUrl)) continue;
-        if (seen.has(realUrl)) continue;
-        seen.add(realUrl);
-        const start = heads[i].index + heads[i][0].length;
-        const end = i + 1 < heads.length ? heads[i + 1].index : markdown.length;
-        let snippet = '';
-        for (const line of markdown.slice(start, end).split('\n')) {
-            const txt = markdownInlineToText(line);
-            if (!txt || isBareUrlLine(txt)) continue;
-            if (txt.length > snippet.length) snippet = txt;
-        }
-        results.push({ title: title || realUrl, url: realUrl, content: snippet.slice(0, 600) });
-        if (results.length >= 6) break;
-    }
-    if (results.length > 0) return results;
-
-    const marker = markdown.indexOf('Markdown Content:');
-    let body = marker >= 0 ? markdown.slice(marker + 'Markdown Content:'.length) : markdown;
-    const footer = body.indexOf('[Homepage](https://start.duckduckgo.com/)');
-    if (footer >= 0) body = body.slice(0, footer);
-    for (const raw of body.split(/\n(?=\d+\.\s{2})/)) {
-        const chunk = raw.trim();
-        if (!/^\d+\.\s/.test(chunk)) continue;
-        if (/duckduckgo\.com\/y\.js|report ad/i.test(chunk)) continue;
-        const block = chunk.replace(/^\d+\.\s+/, '');
-        const site = block.match(/site:([a-z0-9.-]+\.[a-z]{2,})/i);
-        const badge = block.match(/!\[[^\]]*\]\([^)]*\)([a-z0-9.-]+\.[a-z]{2,})/i);
-        const plain = block.match(/\b([a-z0-9-]+(?:\.[a-z0-9-]+)+\.[a-z]{2,})\b/i);
-        const domain = ((site || badge || plain || [])[1] || '').replace(/^www\./i, '');
-        const ext = [...block.matchAll(/\[([^\]]+)\]\((https?:\/\/(?!duckduckgo\.com|external-content\.duckduckgo\.com)[^)\s]+)/gi)][0];
-        const url = ext ? ext[2] : (domain ? 'https://' + domain : '');
-        const content = markdownInlineToText(block).slice(0, 600);
-        if (!content) continue;
-        const key = url || content;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        results.push({ title: ext ? (markdownInlineToText(ext[1]) || domain || 'Result') : (domain || 'Result'), url: url, content: content });
-        if (results.length >= 6) break;
-    }
-    return results;
-}
-
-async function performDuckDuckGoSearch(query) {
-    for (const target of DUCKDUCKGO_SEARCH_TARGETS) {
-        try {
-            const response = await fetchWeb(`https://r.jina.ai/${target(query)}`, {
-                headers: { 'X-Return-Format': 'markdown', 'Accept': 'text/plain' }
-            });
-            const markdown = await response.text();
-            const results = parseDuckDuckGoResults(markdown);
-            if (results.length > 0) return results;
-        } catch (e) { /* try next DuckDuckGo target */ }
-    }
-    return [];
-}
-
 async function performWebSearch(query) {
-    const ddgResults = await performDuckDuckGoSearch(query);
-    if (ddgResults.length > 0) return ddgResults;
     let lastErr = null;
     for (const instance of SEARXNG_INSTANCES) {
         try {
@@ -1735,6 +1648,58 @@ function fillInput(t) {
     i.value = t; i.focus(); handleInput({ target: i });
 }
 
+function ensureChatObj(text) {
+    if (!currentChatId || !allChats[currentChatId] || !Array.isArray(allChats[currentChatId].messages)) {
+        try { currentChatId = CryptoJS.lib.WordArray.random(16).toString(); }
+        catch (e) { currentChatId = 'chat-' + Date.now() + '-' + Math.floor(Math.random() * 1e9); }
+        allChats[currentChatId] = { title: (text || '').substring(0, 30) || "New Chat", messages: [], memory: "", _u: Date.now() };
+    }
+    if (!Array.isArray(allChats[currentChatId].messages)) allChats[currentChatId].messages = [];
+    return allChats[currentChatId];
+}
+function sanitizeFilesForStorage(files) {
+    return (files || []).map(f => {
+        if (f && f.type === 'image') {
+            if (f.url) return { name: f.name, type: 'image', url: f.url, expiresAt: f.expiresAt || null };
+            return { name: f.name, type: 'image', expired: true };
+        }
+        return { name: f.name, type: f.type, text: String(f.text || '').substring(0, 8000) };
+    });
+}
+function sanitizeChatsForCloud(chats) {
+    const out = {};
+    for (const [id, c] of Object.entries(chats || {})) {
+        if (!c || !Array.isArray(c.messages)) continue;
+        out[id] = { title: String(c.title || 'Chat').substring(0, 80), memory: String(c.memory || '').substring(0, 4000), _u: c._u || 0, messages: c.messages.slice(-30).map(m => ({ role: m.role, content: String(m.content || '').substring(0, 4000), apiContent: String(typeof m.apiContent === 'string' ? m.apiContent : m.content || '').substring(0, 4000), formattedContent: String(m.formattedContent || '').substring(0, 8000), providerId: m.providerId, files: sanitizeFilesForStorage(m.files) })) };
+    }
+    return out;
+}
+function dataUrlToBlob(dataUrl) {
+    try {
+        const parts = dataUrl.split(','), mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/png';
+        const bin = atob(parts[1]); const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new Blob([arr], { type: mime });
+    } catch (e) { return null; }
+}
+async function uploadTempImage(fileOrBlob, filename) {
+    const blob = typeof fileOrBlob === 'string' ? dataUrlToBlob(fileOrBlob) : fileOrBlob;
+    if (!blob) throw new Error('no-blob');
+    const name = filename || 'image.png';
+    try {
+        const fd = new FormData(); fd.append('file', blob, name);
+        const r = await fetch('https://0x0.st', { method: 'POST', body: fd });
+        if (r.ok) { const url = (await r.text()).trim(); if (url && url.indexOf('http') === 0) return { url, label: 'temporal (0x0.st, se elimina solo)' }; }
+    } catch (e) {}
+    const fd2 = new FormData(); fd2.append('file', blob, name);
+    const r2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
+    if (!r2.ok) throw new Error('upload-failed');
+    const j = await r2.json();
+    let url = j && j.data && j.data.url ? j.data.url : null;
+    if (!url) throw new Error('upload-failed');
+    url = url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+    return { url, label: 'temporal (tmpfiles.org, se elimina solo)' };
+}
 async function handleFileSelect(event) {
     const files = event.target.files;
     if (!files.length) return;
@@ -1768,7 +1733,8 @@ async function handleFileSelect(event) {
                         const reader = new FileReader(); reader.onload = () => resolve(reader.result);
                         reader.onerror = reject; reader.readAsDataURL(file);
                     });
-                    attachedFiles[idx] = { name: file.name, type: 'image', base64: base64, processing: false };
+                    attachedFiles[idx] = { name: file.name, type: 'image', base64: base64, _file: file, tempState: 'local', processing: false };
+                    notify("Imagen lista. Al enviar se subira como archivo temporal (no se guarda en la nube) y se eliminara sola.", "info");
                 } else {
                     let text = ""; try { text = await file.text(); } catch(e){}
                     attachedFiles[idx] = { name: file.name, type: 'text', text: `Document: ${file.name}\n\n${text}`, processing: false };
@@ -1789,7 +1755,8 @@ function renderAttachments() {
     container.innerHTML = '';
     attachedFiles.forEach((file, idx) => {
         let icon = file.type === 'pdf' ? 'ri-file-pdf-line' : (file.type === 'image' ? 'ri-image-line' : (file.processing ? 'ri-loader-4-line' : 'ri-file-text-line'));
-        container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><i class="${icon} text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}"></i><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><i class="ri-close-line text-[14px]"></i></button></div>`;
+        const tempNote = file.type === 'image' ? `<span class="text-[9px] text-amber-500 font-medium">temporal, se eliminara</span>` : '';
+        container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><i class="${icon} text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}"></i><span class="flex flex-col"><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span>${tempNote}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><i class="ri-close-line text-[14px]"></i></button></div>`;
     });
 }
 
@@ -1864,22 +1831,35 @@ async function sendMessage() {
     if (isProcessing) { abortControllers.forEach(c => c.abort()); abortControllers = []; stopGenerationUI(); return; }
     
     const input = document.getElementById('user-input');
-    const text = input.value.trim();
+    const text = (input.value || '').trim();
     if (!text && attachedFiles.length === 0) return;
-    
+    if (attachedFiles.some(f => f.processing)) { notify("Espera a que terminen de procesarse los adjuntos.", "info"); return; }
+
+    for (const f of attachedFiles) {
+        if (f.type === 'image' && !f.url && !f.expired) {
+            try {
+                notify("Subiendo imagen a archivo temporal (no se guarda en la nube, se eliminara)...", "info");
+                const src = f._file || f.base64;
+                const up = await uploadTempImage(src, f.name);
+                f.url = up.url; f.expiresAt = Date.now() + 24 * 3600 * 1000; f.tempLabel = up.label;
+                notify("Imagen temporal lista: no esta en la nube y se eliminara sola.", "success");
+            } catch (e) {
+                if (f.base64) { f.url = null; notify("El host temporal fallo; se usara la imagen solo para este mensaje, sin guardarla.", "error"); }
+                else { f.expired = true; notify("No se pudo subir la imagen temporal.", "error"); }
+            }
+        }
+    }
+
     let apiContent = text, hasImages = false, imagePayloads = [];
     attachedFiles.forEach(f => {
         if (f.type === 'pdf' || f.type === 'text') apiContent += `\n\n[Doc ${f.name}]:\n${f.text}`;
-        else if (f.type === 'image') { hasImages = true; imagePayloads.push({ type: "image_url", image_url: { url: f.tempBase64 || f.base64 } }); }
+        else if (f.type === 'image' && !f.expired) { hasImages = true; const u = f.url || f.base64; if (u) imagePayloads.push({ type: "image_url", image_url: { url: u } }); }
     });
-    
+
     const uiFiles = [...attachedFiles]; attachedFiles = []; renderAttachments();
     input.value = ''; input.style.height = 'auto';
-    
-    if (!currentChatId) {
-        currentChatId = CryptoJS.lib.WordArray.random(16).toString();
-        allChats[currentChatId] = { title: text.substring(0, 30) || "New Chat", messages: [], memory: "", _u: Date.now() };
-    }
+
+    const chat = ensureChatObj(text);
     
     document.getElementById('welcome-screen').classList.add('hidden');
     document.getElementById('messages-list').classList.remove('hidden');
@@ -1887,8 +1867,8 @@ async function sendMessage() {
     const formattedUserContent = escapeHTML(text).replace(/\n/g, '<br>');
     addMessageUI('user', formattedUserContent, uiFiles, null, true);
     
-    const savedFiles = uiFiles.map(f => { let fCopy = { ...f }; if (fCopy.type === 'image') delete fCopy.tempBase64; return fCopy; });
-    allChats[currentChatId].messages.push({ role: 'user', content: text, apiContent: apiContent, formattedContent: formattedUserContent, files: savedFiles });
+    const savedFiles = sanitizeFilesForStorage(uiFiles);
+    chat.messages.push({ role: 'user', content: text, apiContent: apiContent, formattedContent: formattedUserContent, files: savedFiles });
     saveChatsLocally();
     
     isProcessing = true; updateSendButtonState();
@@ -1900,12 +1880,12 @@ async function sendMessage() {
     }
 
     // Add rolling memory if it exists
-    if (allChats[currentChatId].memory) {
-        context.push({ role: 'system', content: `[COMPACTED PAST MEMORY OF THIS CONVERSATION]:\n${allChats[currentChatId].memory}` });
+    if (chat.memory) {
+        context.push({ role: 'system', content: `[COMPACTED PAST MEMORY OF THIS CONVERSATION]:\n${chat.memory}` });
     }
 
-    for (let i = 0; i < allChats[currentChatId].messages.length - 1; i++) {
-        const m = allChats[currentChatId].messages[i];
+    for (let i = 0; i < chat.messages.length - 1; i++) {
+        const m = chat.messages[i];
         context.push({ role: m.role, content: typeof m.apiContent === 'string' ? m.apiContent : m.content });
     }
     let currentApiMsg = { role: 'user', content: apiContent };
@@ -1950,7 +1930,7 @@ async function sendMessage() {
                 chipsContainer.innerHTML += `<div class="inline-flex items-center w-fit gap-2 bg-secondary border border-secondary rounded-full px-3 py-1 text-xs text-adaptive shadow-sm mb-3 ml-2"><i class="ri-brain-line text-[14px] text-accent"></i><span class="font-medium">Consulting Memory...</span></div>`;
                 context.push({ role: 'assistant', content: finalContent });
                 finalSaveApiText += finalContent + "\n\n";
-                const memData = allChats[currentChatId].memory || "No compacted memories have been established yet for this conversation.";
+                const memData = chat.memory || "No compacted memories have been established yet for this conversation.";
                 context.push({ role: 'user', content: `[MEMORY DATA]:\n${memData}\n\nContinue analyzing or responding based on this.` });
                 continue;
             }
@@ -2096,10 +2076,13 @@ async function sendMessage() {
             hydrateVentarysImages(contentEl);
             setTimeout(() => hydrateLocalImages(contentEl), 10);
             
-            allChats[currentChatId].messages.push({
+            const liveChat = allChats[currentChatId];
+            if (liveChat && Array.isArray(liveChat.messages)) {
+                liveChat.messages.push({
                 role: 'assistant', content: finalContent, apiContent: stripBase64ForAPI(finalSaveApiText),
                 formattedContent: fullyFormattedContent, providerId: pId
             });
+            }
             saveChatsLocally();
             break;
         } catch (err) {
@@ -2116,7 +2099,7 @@ async function sendMessage() {
 // Background memory compaction
 async function compactConversation(chatId) {
     const chat = allChats[chatId];
-    if (!chat || chat.isSummarizing || chat.messages.length <= 15) return;
+    if (!chat || !Array.isArray(chat.messages) || chat.isSummarizing || chat.messages.length <= 15) return;
     chat.isSummarizing = true;
     try {
         const msgsToCompact = chat.messages.slice(0, chat.messages.length - 6);
@@ -2154,9 +2137,12 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
         filesHtml = '<div class="flex flex-wrap gap-2 mb-3">';
         files.forEach(f => {
             if (f.type === 'image') {
-                if (f.tempBase64) filesHtml += `<img data-img-id="${f.localImgId}" src="${DOMPurify.sanitize(f.tempBase64)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm lazy-local-img loaded">`;
-                else if (f.localImgId) filesHtml += `<img data-img-id="${f.localImgId}" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23222'/%3E%3C/svg%3E" class="w-48 rounded-lg border border-secondary object-cover shadow-sm lazy-local-img">`;
-                else if (f.base64) filesHtml += `<img src="${DOMPurify.sanitize(f.base64)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm">`;
+                const src = f.url || f.base64 || f.tempBase64;
+                if (src) {
+                    const warn = f.url ? `<div class="text-[10px] text-amber-500 mt-1 flex items-center gap-1"><i class="ri-time-line text-[12px]"></i>Temporal: no esta en la nube y se eliminara</div>` : '';
+                    filesHtml += `<div class="flex flex-col"><img src="${DOMPurify.sanitize(src)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm" onerror="window.handleExpiredImage(this)">${warn}</div>`;
+                }
+                else filesHtml += `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-lg border border-secondary h-24 w-48 text-muted text-xs font-medium"><i class="ri-image-line mb-1 text-[20px]"></i>Imagen temporal eliminada</div>`;
             } else { filesHtml += `<div class="bg-main px-3 py-1.5 rounded-lg text-xs font-medium border border-secondary flex items-center gap-1.5 shadow-sm"><i class="ri-file-text-line text-[16px] text-muted"></i> ${escapeHTML(f.name)}</div>`; }
         });
         filesHtml += '</div>';
@@ -2256,7 +2242,7 @@ function closePreviewModal() {
 
 function saveChatsLocally(broadcast = true) {
     try {
-        if (allChats[currentChatId]) allChats[currentChatId]._u = Date.now();
+        if (currentChatId && allChats[currentChatId]) allChats[currentChatId]._u = Date.now();
         secureSave('ventarys_chats', allChats);
         AppStorage.setItem('current_chat_id', currentChatId);
         updateChatHistory();
