@@ -1674,32 +1674,6 @@ function sanitizeChatsForCloud(chats) {
     }
     return out;
 }
-function dataUrlToBlob(dataUrl) {
-    try {
-        const parts = dataUrl.split(','), mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/png';
-        const bin = atob(parts[1]); const arr = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        return new Blob([arr], { type: mime });
-    } catch (e) { return null; }
-}
-async function uploadTempImage(fileOrBlob, filename) {
-    const blob = typeof fileOrBlob === 'string' ? dataUrlToBlob(fileOrBlob) : fileOrBlob;
-    if (!blob) throw new Error('no-blob');
-    const name = filename || 'image.png';
-    try {
-        const fd = new FormData(); fd.append('file', blob, name);
-        const r = await fetch('https://0x0.st', { method: 'POST', body: fd });
-        if (r.ok) { const url = (await r.text()).trim(); if (url && url.indexOf('http') === 0) return { url, label: 'temporal (0x0.st, se elimina solo)' }; }
-    } catch (e) {}
-    const fd2 = new FormData(); fd2.append('file', blob, name);
-    const r2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
-    if (!r2.ok) throw new Error('upload-failed');
-    const j = await r2.json();
-    let url = j && j.data && j.data.url ? j.data.url : null;
-    if (!url) throw new Error('upload-failed');
-    url = url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
-    return { url, label: 'temporal (tmpfiles.org, se elimina solo)' };
-}
 async function handleFileSelect(event) {
     const files = event.target.files;
     if (!files.length) return;
@@ -1733,8 +1707,8 @@ async function handleFileSelect(event) {
                         const reader = new FileReader(); reader.onload = () => resolve(reader.result);
                         reader.onerror = reject; reader.readAsDataURL(file);
                     });
-                    attachedFiles[idx] = { name: file.name, type: 'image', base64: base64, _file: file, tempState: 'local', processing: false };
-                    notify("Imagen lista. Al enviar se subira como archivo temporal (no se guarda en la nube) y se eliminara sola.", "info");
+                    attachedFiles[idx] = { name: file.name, type: 'image', base64: base64, processing: false };
+                    notify("Imagen lista. Solo se usara en este mensaje, no se guarda ni se sube a ningun servidor.", "info");
                 } else {
                     let text = ""; try { text = await file.text(); } catch(e){}
                     attachedFiles[idx] = { name: file.name, type: 'text', text: `Document: ${file.name}\n\n${text}`, processing: false };
@@ -1755,7 +1729,7 @@ function renderAttachments() {
     container.innerHTML = '';
     attachedFiles.forEach((file, idx) => {
         let icon = file.type === 'pdf' ? 'ri-file-pdf-line' : (file.type === 'image' ? 'ri-image-line' : (file.processing ? 'ri-loader-4-line' : 'ri-file-text-line'));
-        const tempNote = file.type === 'image' ? `<span class="text-[9px] text-amber-500 font-medium">temporal, se eliminara</span>` : '';
+        const tempNote = file.type === 'image' ? `<span class="text-[9px] text-amber-500 font-medium">solo este mensaje, no se guarda</span>` : '';
         container.innerHTML += `<div class="flex items-center gap-2 bg-secondary border border-secondary rounded-lg px-3 py-1.5 text-xs text-adaptive shadow-sm"><i class="${icon} text-[16px] text-muted ${file.processing ? 'animate-spin' : ''}"></i><span class="flex flex-col"><span class="truncate max-w-[120px] font-medium">${escapeHTML(file.name)}</span>${tempNote}</span><button onclick="removeAttachment(${idx})" class="text-muted hover:text-adaptive ml-1"><i class="ri-close-line text-[14px]"></i></button></div>`;
     });
 }
@@ -1835,25 +1809,10 @@ async function sendMessage() {
     if (!text && attachedFiles.length === 0) return;
     if (attachedFiles.some(f => f.processing)) { notify("Espera a que terminen de procesarse los adjuntos.", "info"); return; }
 
-    for (const f of attachedFiles) {
-        if (f.type === 'image' && !f.url && !f.expired) {
-            try {
-                notify("Subiendo imagen a archivo temporal (no se guarda en la nube, se eliminara)...", "info");
-                const src = f._file || f.base64;
-                const up = await uploadTempImage(src, f.name);
-                f.url = up.url; f.expiresAt = Date.now() + 24 * 3600 * 1000; f.tempLabel = up.label;
-                notify("Imagen temporal lista: no esta en la nube y se eliminara sola.", "success");
-            } catch (e) {
-                if (f.base64) { f.url = null; notify("El host temporal fallo; se usara la imagen solo para este mensaje, sin guardarla.", "error"); }
-                else { f.expired = true; notify("No se pudo subir la imagen temporal.", "error"); }
-            }
-        }
-    }
-
     let apiContent = text, hasImages = false, imagePayloads = [];
     attachedFiles.forEach(f => {
         if (f.type === 'pdf' || f.type === 'text') apiContent += `\n\n[Doc ${f.name}]:\n${f.text}`;
-        else if (f.type === 'image' && !f.expired) { hasImages = true; const u = f.url || f.base64; if (u) imagePayloads.push({ type: "image_url", image_url: { url: u } }); }
+        else if (f.type === 'image' && f.base64) { hasImages = true; imagePayloads.push({ type: "image_url", image_url: { url: f.base64 } }); }
     });
 
     const uiFiles = [...attachedFiles]; attachedFiles = []; renderAttachments();
@@ -2139,10 +2098,10 @@ function addMessageUI(role, text, files = [], id = null, isPreFormatted = false,
             if (f.type === 'image') {
                 const src = f.url || f.base64 || f.tempBase64;
                 if (src) {
-                    const warn = f.url ? `<div class="text-[10px] text-amber-500 mt-1 flex items-center gap-1"><i class="ri-time-line text-[12px]"></i>Temporal: no esta en la nube y se eliminara</div>` : '';
+                    const warn = f.url ? `<div class="text-[10px] text-amber-500 mt-1 flex items-center gap-1"><i class="ri-time-line text-[12px]"></i>Solo este mensaje, no se guarda</div>` : '';
                     filesHtml += `<div class="flex flex-col"><img src="${DOMPurify.sanitize(src)}" class="w-48 rounded-lg border border-secondary object-cover shadow-sm" onerror="window.handleExpiredImage(this)">${warn}</div>`;
                 }
-                else filesHtml += `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-lg border border-secondary h-24 w-48 text-muted text-xs font-medium"><i class="ri-image-line mb-1 text-[20px]"></i>Imagen temporal eliminada</div>`;
+                else filesHtml += `<div class="flex flex-col items-center justify-center bg-secondary/50 rounded-lg border border-secondary h-24 w-48 text-muted text-xs font-medium"><i class="ri-image-line mb-1 text-[20px]"></i>Imagen no guardada (solo ese mensaje)</div>`;
             } else { filesHtml += `<div class="bg-main px-3 py-1.5 rounded-lg text-xs font-medium border border-secondary flex items-center gap-1.5 shadow-sm"><i class="ri-file-text-line text-[16px] text-muted"></i> ${escapeHTML(f.name)}</div>`; }
         });
         filesHtml += '</div>';
