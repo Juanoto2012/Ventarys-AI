@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Ventarys CLI | Command Line Intelligence</title>
+    <meta name="description" content="Ventarys CLI: Autonomous, terminal-based AI assistant with local encryption, WebGPU, and system execution." />
+    <meta name="theme-color" content="#09090b">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Outfit"', 'sans-serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        zinc: {
+                            850: '#1f1f22',
+                            900: '#18181b',
+                            950: '#09090b',
+                        },
+                        ventarys: {
+                            glow: 'rgba(75, 69, 178, 0.15)',
+                            accent: '#4B45B2',
+                            accentLight: '#6B65D2'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'blink': 'blink-caret .75s step-end infinite',
+                        'type': 'typewriter 2s steps(40, end) forwards'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        'blink-caret': { 'from, to': { borderColor: 'transparent' }, '50%': { borderColor: 'currentColor' } },
+                        typewriter: { '0%': { width: '0' }, '100%': { width: '100%' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-zinc-950 text-zinc-50 antialiased overflow-x-hidden selection:bg-ventarys-accent selection:text-white;
+            }
+        }
+
+        @layer utilities {
+            .glass-nav {
+                @apply bg-zinc-950/70 backdrop-blur-xl border-b border-white/5;
+            }
+            
+            .glass-panel {
+                @apply bg-zinc-900/30 backdrop-blur-md border border-zinc-800/80 rounded-2xl relative overflow-hidden;
+            }
+
+            .text-gradient {
+                @apply bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent;
+            }
+
+            .ambient-glow {
+                @apply absolute w-[800px] h-[800px] rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-screen;
+                background: radial-gradient(circle, rgba(75, 69, 178, 0.15) 0%, rgba(9,9,11,0) 70%);
+            }
+
+            /* Terminal specific styles */
+            .terminal-window {
+                @apply bg-[#0c0c0e] rounded-2xl border border-zinc-800/80 shadow-2xl shadow-ventarys-glow/20 overflow-hidden;
+            }
+            .terminal-header {
+                @apply flex items-center justify-between px-4 py-3 bg-[#151518] border-b border-zinc-800/50;
+            }
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    </style>
+</head>
+
+<body class="font-body relative">
+
+    <!-- Ambient Background Effects -->
+    <div class="ambient-glow top-[-200px] left-[-100px]"></div>
+    <div class="ambient-glow bottom-[20%] right-[-200px] opacity-50"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3N2Zz4=')] -z-20"></div>
+
+    <nav class="fixed w-full top-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center transition-transform group-hover:scale-105">
+                    <i class="ri-terminal-box-line text-zinc-950 text-lg"></i>
+                </div>
+                <span class="text-xl font-sans font-semibold tracking-tight text-white">Ventarys CLI</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#install" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Install</a>
+                <a href="#features" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Features</a>
+                <a href="#security" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Security</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="flex items-center justify-center h-10 px-5 rounded-full bg-white/10 hover:bg-white/20 border border-white/5 text-white text-sm font-medium transition-all">
+                    <i class="ri-github-fill mr-2 text-lg"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 md:pt-48 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+        
+        <div class="animate-slide-up flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm mb-8">
+                <span class="w-2 h-2 rounded-full bg-ventarys-accent animate-pulse"></span>
+                <span class="text-xs font-mono font-medium tracking-wide text-zinc-300">vnt-cli @ v2.0.0</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-sans font-bold tracking-tight mb-6 leading-[1.1] text-gradient">
+                Command Line <br /> Intelligence.
+            </h1>
+
+            <p class="text-zinc-400 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12">
+                An autonomous, private AI assistant that lives directly in your terminal. 
+                Execute commands, edit files, and research the web without ever leaving your workflow.
+            </p>
+        </div>
+
+        <!-- Terminal Interactive Mockup -->
+        <div class="terminal-window w-full max-w-4xl mx-auto animate-fade-in mt-4 text-left">
+            <div class="terminal-header">
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-zinc-700 hover:bg-red-500 transition-colors"></div>
+                    <div class="w-3 h-3 rounded-full bg-zinc-700 hover:bg-yellow-500 transition-colors"></div>
+                    <div class="w-3 h-3 rounded-full bg-zinc-700 hover:bg-green-500 transition-colors"></div>
+                </div>
+                <span class="text-xs font-mono text-zinc-500 flex items-center gap-2"><i class="ri-lock-line"></i> AES-256 Vault Active</span>
+            </div>
+            <div class="p-6 md:p-8 font-mono text-sm leading-relaxed h-[360px] md:h-[400px] overflow-hidden relative">
+                <!-- Line 1 -->
+                <div class="text-zinc-500 mb-4">$ vnt-cli</div>
+                <!-- Line 2 -->
+                <div class="text-ventarys-accentLight font-semibold mb-6 flex items-center gap-2">
+                    <i class="ri-check-line"></i> Vault decrypted. Ventarys AI ready.
+                </div>
+                <!-- Line 3 (User) -->
+                <div class="mb-6 flex gap-3">
+                    <span class="text-green-400 mt-0.5">❯</span> 
+                    <span class="text-zinc-100">Find the syntax error in my current directory, fix it, and start the dev server.</span>
+                </div>
+                <!-- Line 4 (AI Thinking / Action) -->
+                <div class="pl-5 border-l-2 border-zinc-800 space-y-4">
+                    <div class="text-zinc-400 flex items-center gap-2">
+                        <i class="ri-loader-4-line animate-spin text-ventarys-accentLight"></i> Analyzing request...
+                    </div>
+                    <div class="text-zinc-500 italic">
+                        [RUN_CMD]: npm run lint
+                    </div>
+                    <div class="text-yellow-400/90 font-medium bg-yellow-400/10 inline-block px-3 py-1.5 rounded-md border border-yellow-400/20">
+                        ? Allow Ventarys to run this command? (Y/n) y
+                    </div>
+                    <!-- Typing Effect for final response -->
+                    <div class="text-zinc-300 mt-4 overflow-hidden whitespace-nowrap border-r-2 border-ventarys-accent pr-1 w-fit" style="animation: typewriter 2s steps(50, end) 1s forwards, blink-caret .75s step-end infinite; width: 0;">
+                        Found a missing bracket in src/app.ts. Fixing now...
+                    </div>
+                </div>
+                
+                <!-- Fade out gradient for terminal bottom -->
+                <div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-[#0c0c0e] to-transparent pointer-events-none"></div>
+            </div>
+        </div>
+    </main>
+
+    <section id="install" class="py-24 relative z-10 bg-zinc-900/20 border-y border-white/5 mt-10">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-sans font-bold tracking-tight text-white mb-4">Install Ventarys CLI</h2>
+                <p class="text-zinc-400 font-light">Get up and running in seconds. No complex dependencies.</p>
+            </div>
+
+            <div class="glass-panel p-2 md:p-4 reveal delay-100">
+                <!-- OS Tabs -->
+                <div class="flex items-center gap-2 mb-4 px-2 pt-2">
+                    <button onclick="switchTab('linux')" id="tab-linux" class="px-4 py-2 text-sm font-medium rounded-lg transition-all bg-white/10 text-white border border-white/10">
+                        <i class="ri-apple-fill mr-1"></i> macOS / Linux
+                    </button>
+                    <button onclick="switchTab('windows')" id="tab-windows" class="px-4 py-2 text-sm font-medium rounded-lg transition-all text-zinc-400 hover:text-white hover:bg-white/5">
+                        <i class="ri-windows-fill mr-1"></i> Windows
+                    </button>
+                </div>
+
+                <!-- Code Blocks -->
+                <div class="relative bg-black/50 rounded-xl border border-zinc-800/80 p-4">
+                    <!-- Linux/Mac Command -->
+                    <div id="cmd-linux" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 block">
+                        <code class="font-mono text-sm md:text-base text-zinc-300 break-all">
+                            <span class="text-ventarys-accentLight">curl</span> -fsSL https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.sh | <span class="text-ventarys-accentLight">bash</span>
+                        </code>
+                        <button onclick="copyCommand('cmd-linux-text', this)" class="shrink-0 h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all flex items-center gap-2">
+                            <i class="ri-clipboard-line"></i> Copy
+                        </button>
+                        <span id="cmd-linux-text" class="hidden">curl -fsSL https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.sh | bash</span>
+                    </div>
+
+                    <!-- Windows Command -->
+                    <div id="cmd-windows" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hidden">
+                        <code class="font-mono text-sm md:text-base text-zinc-300 break-all">
+                            <span class="text-ventarys-accentLight">irm</span> https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.ps1 | <span class="text-ventarys-accentLight">iex</span>
+                        </code>
+                        <button onclick="copyCommand('cmd-windows-text', this)" class="shrink-0 h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all flex items-center gap-2">
+                            <i class="ri-clipboard-line"></i> Copy
+                        </button>
+                        <span id="cmd-windows-text" class="hidden">irm https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.ps1 | iex</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-32 relative z-10">
+        <div class="max-w-6xl mx-auto px-6 space-y-32">
+            
+            <!-- Feature 1: Execution -->
+            <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-20 reveal">
+                <div class="flex-1 space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+                        <i class="ri-terminal-window-line text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-sans font-bold tracking-tight">Autonomous Execution.</h2>
+                    <p class="text-zinc-400 text-lg font-light leading-relaxed">
+                        Ventarys doesn't just give you code snippets. Through the exclusive <code class="text-ventarys-accentLight font-mono">`[RUN_CMD]`</code> tool, the AI can propose, write, and execute shell commands directly on your OS. It fixes bugs, builds projects, and manages git autonomously—always asking for your confirmation first.
+                    </p>
+                    <ul class="space-y-3 text-sm text-zinc-300 font-medium">
+                        <li class="flex items-center gap-2"><i class="ri-check-line text-green-400"></i> Seamless stdout/stderr context feeding</li>
+                        <li class="flex items-center gap-2"><i class="ri-check-line text-green-400"></i> Built-in safety prompts (Y/n)</li>
+                    </ul>
+                </div>
+                <div class="flex-1 w-full">
+                    <div class="glass-panel p-6 shadow-2xl">
+                        <div class="font-mono text-sm space-y-3 text-zinc-300">
+                            <div class="text-zinc-500">System prompt active...</div>
+                            <div>> Write a python script to resize images and install dependencies.</div>
+                            <div class="text-ventarys-accentLight">[RUN_CMD]: pip install Pillow</div>
+                            <div class="text-green-400">✔ Execution approved.</div>
+                            <div class="text-zinc-500 bg-black/40 p-3 rounded-lg border border-zinc-800">
+                                Requirement already satisfied: Pillow in ./venv/lib...<br>
+                                Successfully installed.
+                            </div>
+                            <div>Script created at <span class="text-white">resize.py</span>.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Secure Vault (Reversed Layout) -->
+            <div id="security" class="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20 reveal">
+                <div class="flex-1 space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+                        <i class="ri-shield-keyhole-line text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-sans font-bold tracking-tight">Impenetrable Local Vault.</h2>
+                    <p class="text-zinc-400 text-lg font-light leading-relaxed">
+                        Your API keys, environment configs, and chat history never leave your machine unencrypted. Ventarys CLI stores everything in <code class="font-mono text-zinc-300">~/.ventarys/vault.enc</code>, locked behind military-grade AES-256-GCM encryption using Node's native crypto module.
+                    </p>
+                </div>
+                <div class="flex-1 w-full">
+                    <div class="glass-panel p-1 border-red-500/20 relative">
+                        <div class="absolute inset-0 bg-red-500/5 mix-blend-screen pointer-events-none"></div>
+                        <div class="bg-[#0c0c0e] rounded-xl p-6 border border-zinc-800">
+                            <pre class="font-mono text-xs md:text-sm text-zinc-400 overflow-x-auto leading-loose">
+<span class="text-pink-400">import</span> { cipher } <span class="text-pink-400">from</span> <span class="text-green-300">'crypto'</span>;
+
+<span class="text-zinc-500">// Vault strictly locked to local machine</span>
+<span class="text-blue-400">const</span> algorithm = <span class="text-green-300">'aes-256-gcm'</span>;
+<span class="text-blue-400">const</span> iv = crypto.randomBytes(16);
+<span class="text-blue-400">const</span> key = deriveKey(masterPassword);
+
+<span class="text-zinc-500">// Encrypting API Keys...</span>
+<span class="text-blue-400">const</span> cypher = crypto.createCipheriv(...);
+<span class="text-green-400">Vault secured.</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3: Web & Local AI -->
+            <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-20 reveal">
+                <div class="flex-1 space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+                        <i class="ri-cpu-line text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-sans font-bold tracking-tight">Hybrid Intelligence.</h2>
+                    <p class="text-zinc-400 text-lg font-light leading-relaxed">
+                        Connect to high-tier remote models via your own API keys (BYOK), or switch instantly to completely offline models using local endpoints like Ollama (<code class="font-mono text-zinc-300">localhost:11434</code>). 
+                    </p>
+                    <p class="text-zinc-400 text-lg font-light leading-relaxed">
+                        Combine this with the <code class="font-mono text-ventarys-accentLight">`[SEARCH]`</code> and <code class="font-mono text-ventarys-accentLight">`[READ_WEBPAGE]`</code> autonomous tools, and your local AI gains real-time internet access directly in the terminal.
+                    </p>
+                </div>
+                <div class="flex-1 w-full grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-6 flex flex-col items-center justify-center text-center gap-3">
+                        <i class="ri-cloud-line text-3xl text-zinc-300"></i>
+                        <span class="font-medium">Cloud API (BYOK)</span>
+                        <span class="text-xs text-zinc-500">Agnes, OpenAI, Anthropic</span>
+                    </div>
+                    <div class="glass-panel p-6 flex flex-col items-center justify-center text-center gap-3 border-ventarys-accent/30">
+                        <i class="ri-server-line text-3xl text-ventarys-accentLight"></i>
+                        <span class="font-medium text-white">Local Node</span>
+                        <span class="text-xs text-zinc-500">Ollama / LM Studio</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 bg-zinc-950/50 pt-16 pb-8 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded bg-white flex items-center justify-center">
+                        <i class="ri-terminal-box-line text-zinc-950 text-xs"></i>
+                    </div>
+                    <span class="text-lg font-sans font-semibold tracking-tight text-white">Ventarys CLI</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="https://github.com/Juanoto2012/Ventarys-AI" target="_blank" class="text-zinc-400 hover:text-white transition-colors">
+                        <i class="ri-github-fill text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500 font-light">
+                <p>© 2026 Ventarys CLI. Open Source Architecture.</p>
+                <div class="flex items-center gap-1">
+                    <span>Engineered by</span>
+                    <a href="https://github.com/Juanoto2012" target="_blank" class="font-medium text-zinc-300 hover:text-white transition-colors">JJDev Studio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // OS Tab Switching Logic
+        function switchTab(os) {
+            const linuxTab = document.getElementById('tab-linux');
+            const windowsTab = document.getElementById('tab-windows');
+            const cmdLinux = document.getElementById('cmd-linux');
+            const cmdWindows = document.getElementById('cmd-windows');
+
+            // Reset tabs
+            linuxTab.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all text-zinc-400 hover:text-white hover:bg-white/5";
+            windowsTab.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all text-zinc-400 hover:text-white hover:bg-white/5";
+            
+            // Hide commands
+            cmdLinux.classList.add('hidden');
+            cmdLinux.classList.remove('flex');
+            cmdWindows.classList.add('hidden');
+            cmdWindows.classList.remove('flex');
+
+            // Activate selected
+            if (os === 'linux') {
+                linuxTab.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all bg-white/10 text-white border border-white/10";
+                cmdLinux.classList.remove('hidden');
+                // Use setTimeout to allow display:flex to apply properly for transitions if needed
+                setTimeout(() => cmdLinux.classList.add('flex'), 10);
+            } else {
+                windowsTab.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all bg-white/10 text-white border border-white/10";
+                cmdWindows.classList.remove('hidden');
+                setTimeout(() => cmdWindows.classList.add('flex'), 10);
+            }
+        }
+
+        // Copy to Clipboard Logic
+        function copyCommand(textElementId, buttonElement) {
+            const textToCopy = document.getElementById(textElementId).innerText;
+            const originalHTML = buttonElement.innerHTML;
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                buttonElement.innerHTML = '<i class="ri-check-line text-green-400"></i> Copied';
+                buttonElement.classList.add('bg-green-400/10', 'text-green-400', 'border-green-400/20');
+                
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalHTML;
+                    buttonElement.classList.remove('bg-green-400/10', 'text-green-400', 'border-green-400/20');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        // Scroll Reveal Animation Observer
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Optional: unobserve after revealing to prevent repeating animation
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { 
+                threshold: 0.15, // Trigger when 15% visible
+                rootMargin: "0px 0px -50px 0px" // Trigger slightly before it comes into view
+            });
+
+            reveals.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
