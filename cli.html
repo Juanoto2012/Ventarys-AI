@@ -212,12 +212,9 @@
             <div class="glass-panel p-2 md:p-4 reveal delay-100">
                 <!-- OS Tabs -->
                 <div class="flex items-center gap-2 mb-4 px-2 pt-2">
-                    <button onclick="switchTab('linux')" id="tab-linux" class="px-4 py-2 text-sm font-medium rounded-lg transition-all bg-white/10 text-white border border-white/10">
+                    <span class="px-4 py-2 text-sm font-medium rounded-lg bg-white/10 text-white border border-white/10">
                         <i class="ri-apple-fill mr-1"></i> macOS / Linux
-                    </button>
-                    <button onclick="switchTab('windows')" id="tab-windows" class="px-4 py-2 text-sm font-medium rounded-lg transition-all text-zinc-400 hover:text-white hover:bg-white/5">
-                        <i class="ri-windows-fill mr-1"></i> Windows
-                    </button>
+                    </span>
                 </div>
 
                 <!-- Code Blocks -->
@@ -231,17 +228,6 @@
                             <i class="ri-clipboard-line"></i> Copy
                         </button>
                         <span id="cmd-linux-text" class="hidden">curl -fsSL https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.sh | bash</span>
-                    </div>
-
-                    <!-- Windows Command -->
-                    <div id="cmd-windows" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hidden">
-                        <code class="font-mono text-sm md:text-base text-zinc-300 break-all">
-                            <span class="text-ventarys-accentLight">irm</span> https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.ps1 | <span class="text-ventarys-accentLight">iex</span>
-                        </code>
-                        <button onclick="copyCommand('cmd-windows-text', this)" class="shrink-0 h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all flex items-center gap-2">
-                            <i class="ri-clipboard-line"></i> Copy
-                        </button>
-                        <span id="cmd-windows-text" class="hidden">irm https://raw.githubusercontent.com/Juanoto2012/Ventarys-AI/main/cli/install.ps1 | iex</span>
                     </div>
                 </div>
             </div>
