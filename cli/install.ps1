@@ -35,8 +35,18 @@ function Check-Prerequisites {
     }
     
     if ($UseBun -and -not $hasBun) {
-        Write-Error "Bun requested but not found. Install from https://bun.sh"
-        exit 1
+        Write-Host "Bun not found. Installing via npm..." -ForegroundColor Yellow
+        & npm install -g bun
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to install Bun via npm. Install manually from https://bun.sh"
+            exit 1
+        }
+        $hasBun = Get-Command bun -ErrorAction SilentlyContinue
+        if (-not $hasBun) {
+            Write-Error "Bun installed but not in PATH. Restart terminal and try again."
+            exit 1
+        }
+        Write-Host "  Bun installed successfully" -ForegroundColor Green
     }
     
     if (-not $UseBun -and -not $hasNpm) {
